@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class File implements Iterable<Document> {
     private String fileName;
-    private Iterator<Document> iterator;
+    private FileIterator<Document> iterator;
     private ArrayList<Document> documents;
 
     //TODO Implement Iterator of Documents.
@@ -18,5 +18,17 @@ public class File implements Iterable<Document> {
     //test for File
     public static void main(String[] args) {
 
+    }
+    private class FileIterator<Document> implements Iterator<Document>{
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public Document next() {
+            return null;
+        }
     }
 }
