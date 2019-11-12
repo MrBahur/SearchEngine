@@ -3,6 +3,13 @@ package Model.File;
 public class Word extends Phrase {
     private String value;
 
+    public Word(String value) {
+        this.value = value.toLowerCase();
+    }
+    public Word(Name name){
+        this.value = name.getValue().toLowerCase();
+    }
+
     @Override
     public String toString() {
         return null;
@@ -16,5 +23,9 @@ public class Word extends Phrase {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
