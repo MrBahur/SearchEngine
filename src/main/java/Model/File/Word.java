@@ -6,9 +6,6 @@ public class Word extends Phrase {
     public Word(String value) {
         this.value = value.toLowerCase();
     }
-    public Word(Name name){
-        this.value = name.getValue().toLowerCase();
-    }
 
     @Override
     public String toString() {

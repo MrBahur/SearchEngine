@@ -7,11 +7,6 @@ public class Name extends Phrase {
         this.value = value.toUpperCase();
     }
 
-    public Name(Word word){
-        value = word.getValue().toUpperCase();
-    }
-
-
     @Override
     public String toString() {
         return null;
