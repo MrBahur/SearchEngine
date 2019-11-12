@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class InvertFile {
     private int[][] matrix;
     private MyDictionary words;
-    private HashMap<String,Integer> documents;
+    private HashMap<Integer,String> documents;
     private int currentSizeRows;
     private int currentSizeColumns;
 
