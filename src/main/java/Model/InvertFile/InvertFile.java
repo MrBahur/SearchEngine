@@ -2,12 +2,12 @@ package Model.InvertFile;
 
 import Model.File.Phrase;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class InvertFile {
     private int[][] matrix;
     private MyDictionary words;
-    private HashMap<Integer,String> documents;
+    private Map<Integer,String> documents;
     private int currentSizeRows;
     private int currentSizeColumns;
 
