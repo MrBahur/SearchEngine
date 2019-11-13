@@ -5,9 +5,8 @@ import Model.File.Phrase;
 import Model.File.Word;
 import javafx.util.Pair;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyDictionary {
     private int nextPhrase;
@@ -15,11 +14,11 @@ public class MyDictionary {
 
     public MyDictionary() {
         nextPhrase = 1;
-        wordsList = Collections.synchronizedMap(new HashMap<>());
+        wordsList = new ConcurrentHashMap<>(512);
     }
 
     public void insertWord(Phrase toInsert){
-
+        // make this thread safe!!
         if(!wordsList.containsKey(toInsert)){
             wordsList.put(toInsert,new Pair<>(nextPhrase++,1));
         }
