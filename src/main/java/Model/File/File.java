@@ -14,11 +14,7 @@ public class File implements Iterable<Document> {
         return iterator;
     }
 
-    //TODO Implement Test for File.
-    //test for File
-    public static void main(String[] args) {
 
-    }
     private class FileIterator<Document> implements Iterator<Document>{
 
         @Override
@@ -30,5 +26,10 @@ public class File implements Iterable<Document> {
         public Document next() {
             return null;
         }
+    }
+    //TODO Implement Test for File.
+    //test for File
+    public static void main(String[] args) {
+
     }
 }
