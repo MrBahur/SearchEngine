@@ -11,7 +11,11 @@ public class Number extends Phrase {
 
     @Override
     public boolean equals(Object other) {
-        return false;
+        if(!(other instanceof Number)){
+            return false;
+        }
+        Number x = (Number)other;
+        return this.sign.equals(x.sign) && this.value == x.value;
     }
 
     @Override
