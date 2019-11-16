@@ -26,9 +26,11 @@ public class MyDictionary {
             //check if Name or Word and according to this check if need to remove and re insert
         }
         else{
-            Pair<Integer, Integer> old = wordsList.get(toInsert);
-            Pair<Integer, Integer> x = new Pair<>(old.getKey(),old.getValue()+1);
-            wordsList.replace(toInsert,x);
+            synchronized (this) {
+                Pair<Integer, Integer> old = wordsList.get(toInsert);
+                Pair<Integer, Integer> x = new Pair<>(old.getKey(), old.getValue() + 1);
+                wordsList.replace(toInsert, x);
+            }
         }
     }
 }
