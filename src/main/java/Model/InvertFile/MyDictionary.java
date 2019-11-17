@@ -20,7 +20,11 @@ public class MyDictionary {
     public void insertWord(Phrase toInsert){
         // make this thread safe!!
         if(!wordsList.containsKey(toInsert)){
-            wordsList.put(toInsert,new Pair<>(nextPhrase++,1));
+            int x;
+            synchronized (this) {
+                x = nextPhrase++;
+            }
+            wordsList.put(toInsert,new Pair<>(x,1));
         }
         else if (toInsert instanceof Name || toInsert instanceof Word){
             //check if Name or Word and according to this check if need to remove and re insert
