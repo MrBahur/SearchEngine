@@ -4,9 +4,29 @@ public class Number extends Phrase {
     private double value;
     private String sign;
 
+    public Number (double value) {
+        this.sign = null;
+        this.value = value;
+    }
     @Override
     public String toString() {
-        return null;
+        String str = Double.toString(this.value);
+        double num = this.value;
+        if (this.value>999 && this.value<100000) {
+            num = num/1000;
+            str = Double.toString(num) + "K";
+        }
+        if (this.value>999999 && this.value<1000000000) {
+            num = num/1000000;
+            str = Double.toString(num) + "M";
+        }
+        if (this.value>999999999) {
+            num = num/1000000000;
+            str = Double.toString(num) + "B";
+        }
+        System.out.println(str);
+
+        return str;
     }
 
     @Override
