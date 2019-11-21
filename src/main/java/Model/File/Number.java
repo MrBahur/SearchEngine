@@ -7,10 +7,16 @@ public class Number extends Phrase {
     private double value;
     private String sign;
 
- /*   public Number (double value) {
-        this.sign = null;
+
+
+    public Number(double value, String sign){
+        this.sign = sign;
         this.value = value;
-    }*/
+    }
+    public Number (double value) {
+        this(value,null);
+    }
+
     @Override
     public String toString() {
         String str = Double.toString(this.value);
@@ -49,5 +55,9 @@ public class Number extends Phrase {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    public static void main(String[] args) {
+        
     }
 }
