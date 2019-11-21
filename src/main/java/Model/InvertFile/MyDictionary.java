@@ -9,15 +9,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MyDictionary {
-    private int nextPhrase;
-    private Map<Phrase, Pair<Integer,Integer>> wordsList;
+    private Integer nextPhrase;
+    private Map<Phrase, Pair<Integer,Integer>> wordsList;//first number is the num in the invertFile table, second
+    // number is the amount in corpus
 
     public MyDictionary() {
         nextPhrase = 1;
         wordsList = new ConcurrentHashMap<>(512);
     }
 
-    public void insertWord(Phrase toInsert){
+    public Integer insertWord(Phrase toInsert){
         // make this thread safe!!
         if(!wordsList.containsKey(toInsert)){
             int x;
@@ -36,5 +37,6 @@ public class MyDictionary {
                 wordsList.replace(toInsert, x);
             }
         }
+        return null;//need to return the index that the Phrase sit in
     }
 }
