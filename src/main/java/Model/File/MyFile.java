@@ -3,7 +3,7 @@ package Model.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class File implements Iterable<Document> {
+public class MyFile implements Iterable<Document> {
     private String fileName;
     private FileIterator<Document> iterator;
     private ArrayList<Document> documents;
