@@ -3,19 +3,19 @@ package Model.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class File implements Iterable<Document> {
+public class MyFile implements Iterable<MyDocument> {
     private String fileName;
-    private FileIterator<Document> iterator;
-    private ArrayList<Document> documents;
+    private FileIterator<MyDocument> iterator;
+    private ArrayList<MyDocument> documents;
 
     //TODO Implement Iterator of Documents.
     @Override
-    public Iterator<Document> iterator() {
+    public Iterator<MyDocument> iterator() {
         return iterator;
     }
 
 
-    private class FileIterator<Document> implements Iterator<Document>{
+    private class FileIterator<T> implements Iterator<T>{
 
         @Override
         public boolean hasNext() {
@@ -23,7 +23,7 @@ public class File implements Iterable<Document> {
         }
 
         @Override
-        public Document next() {
+        public T next() {
             return null;
         }
     }
