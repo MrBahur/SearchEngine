@@ -42,17 +42,28 @@ public class Number extends Phrase {
             }
         } else if (sign.equals("$")) {
             if (this.value<1000000) {
-                str = this.value + " Dollars";
+                if (str.charAt(str.indexOf('.')+1) == '0' && (str.length() -1) == (str.indexOf('.') + 1)) {
+                    str = str.substring(0, str.indexOf('.')) + " Dollars";
+                }
+                else {
+                    str = this.value + " Dollars";
+                }
             }
             else {
                 num = num / 1000000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
-                str = d.format(num) + "M";
+                str = d.format(num) + " M Dollars";
             }
 
         } else if (sign.equals("%")) {
-            str = this.value + this.sign;
+            str = Double.toString(this.value);
+            if (str.charAt(str.indexOf('.')+1) == '0' && (str.length() -1) == (str.indexOf('.') + 1)) {
+                    str = str.substring(0, str.indexOf('.')) + this.sign;
+                }
+                else {
+                    str = this.value + this.sign;
+            }
         }
         return str;
     }
@@ -72,6 +83,7 @@ public class Number extends Phrase {
     }
 
     public static void main(String[] args) {
-
+        Number n = new Number(320000000,"$");
+        System.out.println(n.toString());
     }
 }
