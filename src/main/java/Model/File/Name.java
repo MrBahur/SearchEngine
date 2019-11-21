@@ -9,12 +9,16 @@ public class Name extends Phrase {
 
     @Override
     public String toString() {
-        return null;
+        return value;
     }
 
     @Override
     public boolean equals(Object other) {
-        return false;
+        if (!(other instanceof Name)) {
+            return false;
+        }
+        Name n = (Name) other;
+        return this.value.equals(n.value);
     }
 
     @Override
@@ -25,4 +29,10 @@ public class Name extends Phrase {
     public String getValue() {
         return value;
     }
+
+    public static void main(String[] args) {
+        Name n = new Name("Shahar");
+        System.out.println(n.toString());
+    }
+
 }

@@ -9,12 +9,16 @@ public class Word extends Phrase {
 
     @Override
     public String toString() {
-        return null;
+        return value;
     }
 
     @Override
     public boolean equals(Object other) {
-        return false;
+        if (!(other instanceof Word)) {
+            return false;
+        }
+        Word w = (Word) other;
+        return this.value.equals(w.value);
     }
 
     @Override
@@ -25,4 +29,10 @@ public class Word extends Phrase {
     public String getValue() {
         return value;
     }
+
+    public static void main(String[] args) {
+       Word w = new Word("Hello");
+        System.out.println(w.toString());
+    }
+
 }
