@@ -1,12 +1,26 @@
 package Model.File;
 
 public class Range extends Phrase {
-    private double small;
-    private double large;
+    private String left;
+    private String middle;
+    private String right;
+
+    public Range(String left, String middle, String right) {
+        this.left = left;
+        this.middle = middle;
+        this.right = right;
+    }
 
     @Override
     public String toString() {
-        return null;
+        String str = "";
+        if (middle == null) {
+            str = left + "-" + right;
+        }
+        else {
+            str = left + "-" + middle + "-" + right;
+        }
+        return str;
     }
 
     @Override
@@ -17,5 +31,16 @@ public class Range extends Phrase {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    public static void main(String[] args) {
+        Range r1 = new Range("Value",null, "added");
+        System.out.println(r1.toString());
+        Range r2 = new Range("step","by", "step");
+        System.out.println(r2.toString());
+        Range r3 = new Range("10",null, "part");
+        System.out.println(r3.toString());
+        Range r4 = new Range("6",null, "7");
+        System.out.println(r4.toString());
     }
 }
