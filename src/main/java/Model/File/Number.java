@@ -41,9 +41,18 @@ public class Number extends Phrase {
                 str = d.format(num) + "B";
             }
         } else if (sign.equals("$")) {
+            if (this.value<1000000) {
+                str = this.value + " Dollars";
+            }
+            else {
+                num = num / 1000000;
+                DecimalFormat d = new DecimalFormat("###.###");
+                d.setRoundingMode(RoundingMode.DOWN);
+                str = d.format(num) + "M";
+            }
 
         } else if (sign.equals("%")) {
-
+            str = this.value + this.sign;
         }
         return str;
     }
