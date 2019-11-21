@@ -45,7 +45,7 @@ public class Date extends Phrase {
 
     @Override
     public int hashCode() {
-        return 0;
+        return Integer.hashCode(day)*Integer.hashCode(month)*Integer.hashCode(year);
     }
 
     public static void main(String[] args) {

@@ -23,7 +23,7 @@ public class Word extends Phrase {
 
     @Override
     public int hashCode() {
-        return 0;
+        return value.hashCode();
     }
 
     public String getValue() {

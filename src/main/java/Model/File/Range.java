@@ -30,7 +30,7 @@ public class Range extends Phrase {
 
     @Override
     public int hashCode() {
-        return 0;
+        return left.hashCode()*middle.hashCode()*right.hashCode();
     }
 
     public static void main(String[] args) {
