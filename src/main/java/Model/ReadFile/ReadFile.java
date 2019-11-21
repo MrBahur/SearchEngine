@@ -1,5 +1,7 @@
 package Model.ReadFile;
 
+import Model.File.MyFile;
+
 import java.io.File;
 
 public class ReadFile {
@@ -15,14 +17,13 @@ public class ReadFile {
 
 
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         ReadFile r = new ReadFile("F:\\Study\\SearchEngine\\corpus");
         for (String s : r.directories) {
-            File f = new File(r.path + "\\" + s);
-            String[] p = f.list();
-            if (p[0].equals(s)) {
-                System.out.println("good");
-            } else
-                System.out.println("bad");
+            MyFile f = new MyFile(r.path + "\\" + s + "\\" + s);
+            //f.printFile();
         }
+        long finish = System.currentTimeMillis();
+        System.out.println("Time Elapsed =" + (finish - start));
     }
 }
