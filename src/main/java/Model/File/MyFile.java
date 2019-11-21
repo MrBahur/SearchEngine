@@ -17,15 +17,15 @@ public class MyFile implements Iterable<MyDocument> {
     public MyFile(String path) {
         this.path = path;
         documents = new ArrayList<>();
-        //TODO fill documents with docs from file
         fillDocsFromFile(path);
         iterator = new FileIterator<>();
         iterator.list = this.documents;
         currentIndex = 0;
     }
-    public void printFile(){
+
+    public void printFile() {
         for (MyDocument x : this.documents) {
-            System.out.println(x.getDocNumber());
+            x.printDoc();
         }
     }
 
@@ -44,6 +44,7 @@ public class MyFile implements Iterable<MyDocument> {
                     inFile = false;
                 } else if (inFile) {
                     stringBuilder.append(line);
+                    stringBuilder.append("\n");
                 }
             }
         } catch (IOException e) {

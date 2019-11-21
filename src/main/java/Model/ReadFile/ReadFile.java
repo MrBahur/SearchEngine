@@ -24,6 +24,6 @@ public class ReadFile {
             //f.printFile();
         }
         long finish = System.currentTimeMillis();
-        System.out.println("Time Elapsed =" + (finish - start));
+        System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
     }
 }
