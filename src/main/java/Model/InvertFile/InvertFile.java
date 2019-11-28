@@ -29,11 +29,25 @@ public class InvertFile {
     }
 
     private void extendRow() {
-
+        int[][] tmpMatrix = new int[currentSizeRows*2][currentSizeColumns];
+        for (int i = 0; i<currentSizeRows; i++) {
+            for (int j = 0; j<currentSizeColumns; j++) {
+                tmpMatrix[i][j] = matrix[i][j];
+            }
+        }
+        matrix = tmpMatrix;
+        currentSizeRows = currentSizeRows * 2;
     }
 
     private void extendColumn() {
-
+        int[][] tmpMatrix = new int[currentSizeRows][currentSizeColumns*2];
+        for (int i = 0; i<currentSizeColumns; i++) {
+            for (int j = 0; j<currentSizeColumns; j++) {
+                tmpMatrix[i][j] = matrix[i][j];
+            }
+        }
+        matrix = tmpMatrix;
+        currentSizeColumns = currentSizeColumns * 2;
     }
 
     public void addWord(Phrase p) {
@@ -55,5 +69,14 @@ public class InvertFile {
             }
         }
         documents.put(currentDoc++, doc);
+    }
+
+    public static void main(String[] args) {
+        InvertFile invertFile = new InvertFile(2,2);
+        invertFile.extendRow();
+        System.out.println(invertFile.currentSizeRows);
+        invertFile.extendColumn();
+        System.out.println(invertFile.currentSizeColumns);
+
     }
 }
