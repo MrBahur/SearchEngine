@@ -14,6 +14,7 @@ public class InvertFile {
     private Integer currentDoc;
     private Integer currentWord;
 
+
     public InvertFile(int currentSizeRows, int currentSizeColumns) {
         this.currentSizeRows = currentSizeRows;
         this.currentSizeColumns = currentSizeColumns;
@@ -29,9 +30,9 @@ public class InvertFile {
     }
 
     private void extendRow() {
-        int[][] tmpMatrix = new int[currentSizeRows*2][currentSizeColumns];
-        for (int i = 0; i<currentSizeRows; i++) {
-            for (int j = 0; j<currentSizeColumns; j++) {
+        int[][] tmpMatrix = new int[currentSizeRows * 2][currentSizeColumns];
+        for (int i = 0; i < currentSizeRows; i++) {
+            for (int j = 0; j < currentSizeColumns; j++) {
                 tmpMatrix[i][j] = matrix[i][j];
             }
         }
@@ -40,9 +41,9 @@ public class InvertFile {
     }
 
     private void extendColumn() {
-        int[][] tmpMatrix = new int[currentSizeRows][currentSizeColumns*2];
-        for (int i = 0; i<currentSizeColumns; i++) {
-            for (int j = 0; j<currentSizeColumns; j++) {
+        int[][] tmpMatrix = new int[currentSizeRows][currentSizeColumns * 2];
+        for (int i = 0; i < currentSizeColumns; i++) {
+            for (int j = 0; j < currentSizeColumns; j++) {
                 tmpMatrix[i][j] = matrix[i][j];
             }
         }
@@ -71,8 +72,16 @@ public class InvertFile {
         documents.put(currentDoc++, doc);
     }
 
+    public MyDictionary getWords() {
+        return words;
+    }
+
+    public Map<Integer, String> getDocuments() {
+        return documents;
+    }
+
     public static void main(String[] args) {
-        InvertFile invertFile = new InvertFile(2,2);
+        InvertFile invertFile = new InvertFile(2, 2);
         invertFile.extendRow();
         System.out.println(invertFile.currentSizeRows);
         invertFile.extendColumn();

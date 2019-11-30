@@ -1,30 +1,67 @@
 package Model.Parser;
 
+import Model.File.MyDocument;
+import Model.File.MyFile;
+import Model.File.Number;
+import Model.File.Phrase;
+import Model.InvertFile.InvertFile;
+import Model.ReadFile.ReadFile;
+
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
+    private ReadFile<String> readFile;
+    private InvertFile invertFile;
+    private WordsToNumber wordsToNumber;
+    private static long numberOfParsePhrases = 0;
+    private static long numberOfNotParsePhrases = 0;
 
-    public static void main(String args[]) {
-        // String to be scanned to find the pattern.
-        String line = "This order was placed for QT3000! OK3000?";
-        String pattern = " ";
-        String[] arr = line.split(pattern);
-        for (String asd : arr) {
-            System.out.println(asd);
+    public Parser(String path) {
+        readFile = new ReadFile<>(path);
+        invertFile = new InvertFile();
+        wordsToNumber = new WordsToNumber();
+    }
+
+    public void parse() {
+        for (String filePath : readFile) {
+            MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
+            for (MyDocument doc : myFile) {
+                parse(doc);
+            }
         }
+    }
 
-        // Create a Pattern object
-        Pattern r = Pattern.compile(pattern);
+    private void parse(MyDocument d) {
+        String[] splitted = d.getTitle().getPlainText().split(" ");
+        parse(splitted);
+        splitted = d.getText().getPlainText().split(" ");
+        parse(splitted);
+    }
 
-        // Now create matcher object.
-        Matcher m = r.matcher(line);
-        if (m.find()) {
-            System.out.println("Found value: " + m.group(0));
-
-
-        } else {
-            System.out.println("NO MATCH");
+    private void parse(String[] splitted) {
+        for (int i = 0; i < splitted.length; i++) {
+            if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
+                StringBuilder number = new StringBuilder();
+                while (WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                    number.append(splitted[i]);
+                    i++;
+                }
+                invertFile.addWord(new Number(wordsToNumber.execute(number.toString())));
+                numberOfParsePhrases++;
+            } else {
+                numberOfNotParsePhrases++;
+            }
         }
+    }
+
+    public static void main(String[] args) {
+        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
+        p.parse();
+        Map<Integer, String> documents = p.invertFile.getDocuments();
+        System.out.println(documents.size());
+        System.out.println("already parsed: " + numberOfParsePhrases);
+        System.out.println("left to paes: " + numberOfNotParsePhrases);
     }
 }

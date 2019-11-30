@@ -16,6 +16,10 @@ public class WordsToNumber {
                     "hundred", "thousand", "million", "millions", "billion", "trillion"
             );
 
+    public static List<String> getAllowedStrings() {
+        return allowedStrings;
+    }
+
     public long execute(String toConvert) {
         boolean isValidInput = true;
         long result = 0;

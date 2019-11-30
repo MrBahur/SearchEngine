@@ -12,6 +12,10 @@ public class ReadFile<T> implements Iterable<T> {
     private int currentDir;
     private StringIterator<String> iterator;
 
+    public String getPath() {
+        return path;
+    }
+
     private class StringIterator<E> implements Iterator<E> {
         private E[] list;
 
