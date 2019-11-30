@@ -1,5 +1,6 @@
 package Model.ReadFile;
 
+import Model.File.MyDocument;
 import Model.File.MyFile;
 
 import java.io.File;
@@ -48,10 +49,18 @@ public class ReadFile<T> implements Iterable<T> {
         ReadFile<String> r = new ReadFile<>("F:\\Study\\SearchEngine\\corpus");
         for (String s : r) {
             MyFile f = new MyFile(r.path + "\\" + s + "\\" + s);
+            for (MyDocument d : f) {
+                //System.out.println(d.getDocNumber());
+                try {
+                    if (d.getText().getPlainText().contains("twenty point")) {
+                        //d.printDoc();
+                    }
+                } catch (Exception e) {
+                    System.out.println(d.getDocNumber());
+                }
+            }
         }
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
     }
-
-
 }

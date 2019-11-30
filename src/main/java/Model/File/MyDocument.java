@@ -16,22 +16,50 @@ public class MyDocument {
 
     public MyDocument(String plainText) {
         BufferedReader bufferedReader = new BufferedReader(new StringReader(plainText));
+        boolean foundText = false;
         String line;
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            boolean inText = false;
             line = bufferedReader.readLine();
             docNumber = line.substring(line.indexOf("<DOCNO>") + 7, line.indexOf("</DOCNO>"));
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.equals("<TEXT>")) {
-                    inText = true;
-                } else if (line.equals("</TEXT>")) {
-                    this.text = new Text(stringBuilder.toString());
-                    break;
-                } else if (inText) {
-                    stringBuilder.append(line);
+                    foundText = true;
+                    while (!(line = bufferedReader.readLine()).equals("</TEXT>")) {
+                        stringBuilder.append(line);
+                    }
                 }
             }
+            if (!foundText || stringBuilder.length() == 0) {
+                bufferedReader = new BufferedReader(new StringReader(plainText));
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (line.equals("<DATELINE>")) {
+                        while (!(line = bufferedReader.readLine()).equals("</DATELINE>")) {
+                            stringBuilder.append(line);
+                        }
+                    } else if (line.equals("<GRAPHIC>")) {
+                        while (!(line = bufferedReader.readLine()).equals("</GRAPHIC>")) {
+                            stringBuilder.append(line);
+                        }
+                    } else if (line.equals("<CORRECTION>")) {
+                        while (!(line = bufferedReader.readLine()).equals("</CORRECTION>")) {
+                            stringBuilder.append(line);
+                        }
+                    }
+                }
+
+            }
+            this.text = new Text(stringBuilder.toString());
+            bufferedReader = new BufferedReader(new StringReader(plainText));
+            stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals("<HEADLINE>")) {
+                    while (!(line = bufferedReader.readLine()).equals("</HEADLINE>")) {
+                        stringBuilder.append(line);
+                    }
+                }
+            }
+            this.title = new Text(stringBuilder.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,6 +67,10 @@ public class MyDocument {
 
     public String getDocNumber() {
         return docNumber;
+    }
+
+    public Text getText() {
+        return this.text;
     }
 
     public void printDoc() {

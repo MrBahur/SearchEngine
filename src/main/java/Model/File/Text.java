@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 public class Text extends Node {
     private ArrayList<Phrase> phrases;
-    String[] tempForTests;
+    private String plainText;
+
+    public String getPlainText() {
+        return plainText;
+    }
 
     public Text(String plainText) {
-        tempForTests = plainText.split(" ");
+        this.plainText = plainText;
 
     }
 
     public void printText() {
-        for (String s : tempForTests) {
-            System.out.print(s);
-        }
+        System.out.println(plainText);
     }
 }
