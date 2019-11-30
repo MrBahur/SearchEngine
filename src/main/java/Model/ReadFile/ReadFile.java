@@ -4,7 +4,7 @@ import Model.File.MyDocument;
 import Model.File.MyFile;
 
 import java.io.File;
-import java.util.Iterator;
+import java.util.*;
 
 public class ReadFile<T> implements Iterable<T> {
     private String path;
@@ -50,14 +50,7 @@ public class ReadFile<T> implements Iterable<T> {
         for (String s : r) {
             MyFile f = new MyFile(r.path + "\\" + s + "\\" + s);
             for (MyDocument d : f) {
-                //System.out.println(d.getDocNumber());
-                try {
-                    if (d.getText().getPlainText().contains("twenty point")) {
-                        //d.printDoc();
-                    }
-                } catch (Exception e) {
-                    System.out.println(d.getDocNumber());
-                }
+
             }
         }
         long finish = System.currentTimeMillis();

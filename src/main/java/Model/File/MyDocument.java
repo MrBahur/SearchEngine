@@ -77,9 +77,15 @@ public class MyDocument {
         return this.text;
     }
 
+    public Text getTitle() {
+        return title;
+    }
+
     public void printDoc() {
         System.out.println("Number: " + this.docNumber);
-        System.out.println("Text: ");
+        System.out.println("Title:");
+        this.title.printText();
+        System.out.println("Text:");
         this.text.printText();
         System.out.println();
     }
