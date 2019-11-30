@@ -33,18 +33,22 @@ public class MyDocument {
             if (!foundText || stringBuilder.length() == 0) {
                 bufferedReader = new BufferedReader(new StringReader(plainText));
                 while ((line = bufferedReader.readLine()) != null) {
-                    if (line.equals("<DATELINE>")) {
-                        while (!(line = bufferedReader.readLine()).equals("</DATELINE>")) {
-                            stringBuilder.append(line);
-                        }
-                    } else if (line.equals("<GRAPHIC>")) {
-                        while (!(line = bufferedReader.readLine()).equals("</GRAPHIC>")) {
-                            stringBuilder.append(line);
-                        }
-                    } else if (line.equals("<CORRECTION>")) {
-                        while (!(line = bufferedReader.readLine()).equals("</CORRECTION>")) {
-                            stringBuilder.append(line);
-                        }
+                    switch (line) {
+                        case "<DATELINE>":
+                            while (!(line = bufferedReader.readLine()).equals("</DATELINE>")) {
+                                stringBuilder.append(line);
+                            }
+                            break;
+                        case "<GRAPHIC>":
+                            while (!(line = bufferedReader.readLine()).equals("</GRAPHIC>")) {
+                                stringBuilder.append(line);
+                            }
+                            break;
+                        case "<CORRECTION>":
+                            while (!(line = bufferedReader.readLine()).equals("</CORRECTION>")) {
+                                stringBuilder.append(line);
+                            }
+                            break;
                     }
                 }
 
