@@ -34,6 +34,7 @@ public class Parser {
         }
     }
 
+
     private void parse(MyDocument d) {
         String[] splitted = d.getTitle().getPlainText().split(" ");
         parse(splitted);
@@ -46,7 +47,7 @@ public class Parser {
             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 StringBuilder number = new StringBuilder();
                 while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                    number.append(splitted[i] + " ");
+                    number.append(splitted[i]).append(" ");
                     i++;
                 }
                 invertFile.addWord(new Number(wordsToNumber.execute(number.toString())));
@@ -58,8 +59,11 @@ public class Parser {
     }
 
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
         p.parse();
+        long finish = System.currentTimeMillis();
+        System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         Map<Integer, String> documents = p.invertFile.getDocuments();
         System.out.println("Number of documents in the corpus:" + documents.size());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);

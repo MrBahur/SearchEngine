@@ -21,7 +21,7 @@ public class Number extends Phrase {
     public String toString() {
         String str = Double.toString(this.value);
         double num = this.value;
-        if (sign == null) {
+        if (sign.equals("#")) {
             if (this.value > 999 && this.value < 1000000) {
                 num = num / 1000;
                 DecimalFormat d = new DecimalFormat("###.###");
