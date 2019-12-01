@@ -14,7 +14,7 @@ public class Number extends Phrase {
     }
 
     public Number(double value) {
-        this(value, null);
+        this(value, "#");
     }
 
     @Override
@@ -41,15 +41,13 @@ public class Number extends Phrase {
                 str = d.format(num) + "B";
             }
         } else if (sign.equals("$")) {
-            if (this.value<1000000) {
-                if (str.charAt(str.indexOf('.')+1) == '0' && (str.length() -1) == (str.indexOf('.') + 1)) {
+            if (this.value < 1000000) {
+                if (str.charAt(str.indexOf('.') + 1) == '0' && (str.length() - 1) == (str.indexOf('.') + 1)) {
                     str = str.substring(0, str.indexOf('.')) + " Dollars";
-                }
-                else {
+                } else {
                     str = this.value + " Dollars";
                 }
-            }
-            else {
+            } else {
                 num = num / 1000000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
@@ -58,11 +56,10 @@ public class Number extends Phrase {
 
         } else if (sign.equals("%")) {
             str = Double.toString(this.value);
-            if (str.charAt(str.indexOf('.')+1) == '0' && (str.length() -1) == (str.indexOf('.') + 1)) {
-                    str = str.substring(0, str.indexOf('.')) + this.sign;
-                }
-                else {
-                    str = this.value + this.sign;
+            if (str.charAt(str.indexOf('.') + 1) == '0' && (str.length() - 1) == (str.indexOf('.') + 1)) {
+                str = str.substring(0, str.indexOf('.')) + this.sign;
+            } else {
+                str = this.value + this.sign;
             }
         }
         return str;
@@ -83,7 +80,7 @@ public class Number extends Phrase {
     }
 
     public static void main(String[] args) {
-        Number n = new Number(320000000,"$");
+        Number n = new Number(320000000, "$");
         System.out.println(n.toString());
     }
 }

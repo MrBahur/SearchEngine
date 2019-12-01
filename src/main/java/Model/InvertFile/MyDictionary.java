@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MyDictionary {
     private Integer nextPhrase;
-    private Map<Phrase, Pair<Integer,Integer>> wordsList;//first number is the num in the invertFile table, second
+    private Map<Phrase, Pair<Integer, Integer>> wordsList;//first number is the num in the invertFile table, second
     // number is the amount in corpus
 
     public MyDictionary() {
@@ -18,25 +18,24 @@ public class MyDictionary {
         wordsList = new ConcurrentHashMap<>(512);
     }
 
-    public Integer insertWord(Phrase toInsert){
+    public Integer insertWord(Phrase toInsert) {
         // make this thread safe!!
-        if(!wordsList.containsKey(toInsert)){
-            int x;
+        Integer index = 0;
+        if (!wordsList.containsKey(toInsert)) {
             synchronized (this) {
-                x = nextPhrase++;
+                index = nextPhrase++;
             }
-            wordsList.put(toInsert,new Pair<>(x,1));
-        }
-        else if (toInsert instanceof Name || toInsert instanceof Word){
+            wordsList.put(toInsert, new Pair<>(index, 1));
+        } else if (toInsert instanceof Name || toInsert instanceof Word) {
             //check if Name or Word and according to this check if need to remove and re insert
-        }
-        else{
+        } else {
             synchronized (this) {
                 Pair<Integer, Integer> old = wordsList.get(toInsert);
                 Pair<Integer, Integer> x = new Pair<>(old.getKey(), old.getValue() + 1);
                 wordsList.replace(toInsert, x);
+                index = old.getKey();
             }
         }
-        return null;//need to return the index that the Phrase sit in
+        return index;//need to return the index that the Phrase sit in
     }
 }

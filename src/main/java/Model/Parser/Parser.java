@@ -28,6 +28,7 @@ public class Parser {
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
             for (MyDocument doc : myFile) {
+                invertFile.addDoc(doc.getDocNumber());
                 parse(doc);
             }
         }
@@ -44,8 +45,8 @@ public class Parser {
         for (int i = 0; i < splitted.length; i++) {
             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 StringBuilder number = new StringBuilder();
-                while (WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                    number.append(splitted[i]);
+                while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                    number.append(splitted[i] + " ");
                     i++;
                 }
                 invertFile.addWord(new Number(wordsToNumber.execute(number.toString())));
@@ -62,6 +63,6 @@ public class Parser {
         Map<Integer, String> documents = p.invertFile.getDocuments();
         System.out.println(documents.size());
         System.out.println("already parsed: " + numberOfParsePhrases);
-        System.out.println("left to paes: " + numberOfNotParsePhrases);
+        System.out.println("left to parse: " + numberOfNotParsePhrases);
     }
 }

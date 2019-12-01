@@ -42,7 +42,7 @@ public class InvertFile {
 
     private void extendColumn() {
         int[][] tmpMatrix = new int[currentSizeRows][currentSizeColumns * 2];
-        for (int i = 0; i < currentSizeColumns; i++) {
+        for (int i = 0; i < currentSizeRows; i++) {
             for (int j = 0; j < currentSizeColumns; j++) {
                 tmpMatrix[i][j] = matrix[i][j];
             }
