@@ -61,8 +61,9 @@ public class Parser {
         Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
         p.parse();
         Map<Integer, String> documents = p.invertFile.getDocuments();
-        System.out.println(documents.size());
-        System.out.println("already parsed: " + numberOfParsePhrases);
-        System.out.println("left to parse: " + numberOfNotParsePhrases);
+        System.out.println("Number of documents in the corpus:" + documents.size());
+        System.out.println("Phrases already parsed: " + numberOfParsePhrases);
+        System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
+        System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));
     }
 }
