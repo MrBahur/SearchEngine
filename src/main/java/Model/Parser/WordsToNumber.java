@@ -93,20 +93,20 @@ public class WordsToNumber {
                     } else if (str.equalsIgnoreCase("ninety")) {
                         result += 90;
                     } else if (str.equalsIgnoreCase("hundred")) {
-                        if(result==0){
-                            result=1;
+                        if (result == 0) {
+                            result = 1;
                         }
                         result *= 100;
                     } else if (str.equalsIgnoreCase("thousand")) {
-                        if(result==0){
-                            result=1;
+                        if (result == 0) {
+                            result = 1;
                         }
                         result *= 1000;
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("million")) {
-                        if(result==0){
-                            result=1;
+                        if (result == 0) {
+                            result = 1;
                         }
                         result *= 1000000;
                         finalResult += result;
@@ -116,15 +116,15 @@ public class WordsToNumber {
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("billion")) {
-                        if(result==0){
-                            result=1;
+                        if (result == 0) {
+                            result = 1;
                         }
                         result *= 1000000000;
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("trillion")) {
-                        if(result==0){
-                            result=1;
+                        if (result == 0) {
+                            result = 1;
                         }
                         result *= 1000000000000L;
                         finalResult += result;

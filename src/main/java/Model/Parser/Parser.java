@@ -58,6 +58,45 @@ public class Parser {
                 continue;
             } else if (isNumeric(splitted[i])) {
                 //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
+                double value = 0;
+                StringBuilder num = new StringBuilder();
+                while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                    num.append(splitted[i] + " ");
+                    i++;
+                }
+                if (i < splitted.length && splitted[i].equalsIgnoreCase(".")) {
+                    i++;
+                    StringBuilder afterPointNum = new StringBuilder();
+                    while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                        afterPointNum.append(splitted[i]).append(" ");
+                        i++;
+                    }
+                    String myStr = afterPointNum.toString();
+                    value = Double.parseDouble(myStr);
+                    if (value <= 9) {
+                        value /= 10;
+                    } else if (value <= 99) {
+                        value /= 100;
+                    }
+                }
+                String myNum = num.toString();
+                value = Double.parseDouble(myNum) + value;
+                value = multiplication(splitted[i], value);
+                String sign = "#";
+                if (i < splitted.length && (splitted[i].equalsIgnoreCase("%") ||
+                        splitted[i].equalsIgnoreCase("percent") ||
+                        splitted[i].equalsIgnoreCase("percentage"))) {
+                    sign = "%";
+                    i++;
+                }
+                if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
+                        splitted[i].equalsIgnoreCase("dollars"))) {
+                    sign = "$";
+                    i++;
+                }
+
+                invertFile.addWord(new Number(value, sign));
+                numberOfParsePhrases++;
             } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 double value = 0;
                 StringBuilder number = new StringBuilder();
@@ -103,6 +142,28 @@ public class Parser {
             }
         }
     }
+    private double multiplication (String multi, double value) {
+        if (multi.equalsIgnoreCase("hundred")) {
+            value = value * 100;
+        }
+        if (multi.equalsIgnoreCase("thousand")) {
+            value = value * 1000;
+        }
+        if (multi.equalsIgnoreCase("thousand")) {
+            value = value * 1000;
+        }
+        if (multi.equalsIgnoreCase("millions")) {
+            value = value * 1000000;
+        }
+        if (multi.equalsIgnoreCase("billion")) {
+            value = value * 1000000000;
+        }
+        /*if (multi.equalsIgnoreCase("trillion")) {
+            value = value * 1000000000000;
+        }*/
+        return value;
+    }
+
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
