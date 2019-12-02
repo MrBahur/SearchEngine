@@ -41,7 +41,7 @@ public class Parser {
         splitted = d.getText().getPlainText().split(" ");
         parse(splitted);
     }
-
+    //next thing to parse - > Numbers (regular numbers)
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; i++) {
             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
