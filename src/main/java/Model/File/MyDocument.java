@@ -55,7 +55,7 @@ public class MyDocument {
             }
             this.text = new Text(stringBuilder.toString());
             bufferedReader = new BufferedReader(new StringReader(plainText));
-            stringBuilder = new StringBuilder();
+            stringBuilder.delete(0, stringBuilder.length());
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.equals("<HEADLINE>")) {
                     while (!(line = bufferedReader.readLine()).equals("</HEADLINE>")) {
