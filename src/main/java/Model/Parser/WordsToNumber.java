@@ -93,12 +93,21 @@ public class WordsToNumber {
                     } else if (str.equalsIgnoreCase("ninety")) {
                         result += 90;
                     } else if (str.equalsIgnoreCase("hundred")) {
+                        if(result==0){
+                            result=1;
+                        }
                         result *= 100;
                     } else if (str.equalsIgnoreCase("thousand")) {
+                        if(result==0){
+                            result=1;
+                        }
                         result *= 1000;
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("million")) {
+                        if(result==0){
+                            result=1;
+                        }
                         result *= 1000000;
                         finalResult += result;
                         result = 0;
@@ -107,10 +116,16 @@ public class WordsToNumber {
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("billion")) {
+                        if(result==0){
+                            result=1;
+                        }
                         result *= 1000000000;
                         finalResult += result;
                         result = 0;
                     } else if (str.equalsIgnoreCase("trillion")) {
+                        if(result==0){
+                            result=1;
+                        }
                         result *= 1000000000000L;
                         finalResult += result;
                         result = 0;
@@ -148,5 +163,6 @@ public class WordsToNumber {
         System.out.println(test.execute("two billion one hundred forty seven millions"));
         System.out.println(test.execute("four hundred eighty three thousand six hundred forty seven"));
         System.out.println(test.execute("three billion ten"));
+        System.out.println(test.execute("million"));
     }
 }

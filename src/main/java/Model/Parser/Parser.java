@@ -45,7 +45,7 @@ public class Parser {
     //next thing to parse - > Numbers (regular numbers)
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; i++) {
-            if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
+             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 double value = 0;
                 StringBuilder number = new StringBuilder();
                 while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
@@ -70,7 +70,20 @@ public class Parser {
                     }
                 }
                 value += wordsToNumber.execute(number.toString());
-                invertFile.addWord(new Number(value));
+                String sign = "#";
+                if (i < splitted.length && (splitted[i].equalsIgnoreCase("%") ||
+                        splitted[i].equalsIgnoreCase("percent") ||
+                        splitted[i].equalsIgnoreCase("percentage"))) {
+                    sign = "%";
+                    i++;
+                }
+                if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
+                        splitted[i].equalsIgnoreCase("dollars"))) {
+                    sign = "$";
+                    i++;
+                }
+
+                invertFile.addWord(new Number(value, sign));
                 numberOfParsePhrases++;
             } else {
                 numberOfNotParsePhrases++;
