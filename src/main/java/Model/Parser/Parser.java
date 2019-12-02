@@ -6,6 +6,7 @@ import Model.File.Number;
 import Model.File.Phrase;
 import Model.InvertFile.InvertFile;
 import Model.ReadFile.ReadFile;
+import com.sun.deploy.util.StringUtils;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -43,9 +44,22 @@ public class Parser {
     }
 
     //next thing to parse - > Numbers (regular numbers)
+    private boolean isNumeric(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; i++) {
-             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
+            if (splitted[i].length() == 0) {//empty string, nothing to parse.
+                continue;
+            } else if (isNumeric(splitted[i])) {
+                //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
+            } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 double value = 0;
                 StringBuilder number = new StringBuilder();
                 while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
