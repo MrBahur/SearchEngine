@@ -38,7 +38,18 @@ public class Number extends Phrase {
                 num = num / 1000000000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
-                str = d.format(num) + "B";
+                if (num / 1000000 > 999999) {
+                    num = num / 1000000;
+                    str = d.format(num) + "M";
+                }
+                else if (num / 1000 > 999) {
+                    num = num / 1000;
+                    str = d.format(num) + "K";
+                }
+                else {
+                    str = d.format(num);
+                }
+                str = str + "B";
             }
         } else if (sign.equals("$")) {
             if (this.value < 1000000) {
@@ -80,7 +91,7 @@ public class Number extends Phrase {
     }
 
     public static void main(String[] args) {
-        Number n = new Number(320000000, "$");
+        Number n = new Number(1820000000, "#");
         System.out.println(n.toString());
     }
 }
