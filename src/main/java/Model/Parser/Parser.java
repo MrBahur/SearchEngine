@@ -41,16 +41,36 @@ public class Parser {
         splitted = d.getText().getPlainText().split(" ");
         parse(splitted);
     }
+
     //next thing to parse - > Numbers (regular numbers)
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; i++) {
             if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
+                double value = 0;
                 StringBuilder number = new StringBuilder();
                 while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
                     number.append(splitted[i]).append(" ");
                     i++;
                 }
-                invertFile.addWord(new Number(wordsToNumber.execute(number.toString())));
+                if (i < splitted.length && splitted[i].equalsIgnoreCase("point")) {
+                    i++;
+                    StringBuilder afterPointNumber = new StringBuilder();
+                    while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                        afterPointNumber.append(splitted[i]).append(" ");
+                        i++;
+                        if (splitted[i].equalsIgnoreCase("and")) {
+                            i++;
+                        }
+                    }
+                    value = wordsToNumber.execute(afterPointNumber.toString());
+                    if (value <= 9) {
+                        value /= 10;
+                    } else if (value <= 99) {
+                        value /= 100;
+                    }
+                }
+                value += wordsToNumber.execute(number.toString());
+                invertFile.addWord(new Number(value));
                 numberOfParsePhrases++;
             } else {
                 numberOfNotParsePhrases++;
