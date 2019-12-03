@@ -42,9 +42,9 @@ public class Parser {
 
 
     private void parse(MyDocument d) {
-        String[] splitted = d.getTitle().getPlainText().split(" ");
+        String[] splitted = d.getTitle().getPlainText().trim().split(" ");
         parse(splitted);
-        splitted = d.getText().getPlainText().split(" ");
+        splitted = d.getText().getPlainText().trim().split(" ");
         parse(splitted);
     }
 
@@ -106,7 +106,6 @@ public class Parser {
                     sign = "$";
                     i++;
                 }
-
                 invertFile.addWord(new Number(value, sign));
                 numberOfParsePhrases++;
             } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
