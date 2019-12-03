@@ -35,7 +35,7 @@ public class Parser {
 
             }
             if (tempNumOfDocs >= 20000) {
-                break;
+                //break;
             }
         }
     }
