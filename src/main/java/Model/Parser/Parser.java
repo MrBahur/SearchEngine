@@ -62,6 +62,13 @@ public class Parser {
         for (int i = 0; i < splitted.length; i++) {
             if (splitted[i].length() == 0) {//empty string, nothing to parse.
                 continue;
+
+            } else if (isRange(splitted, i)) {
+                //parse range
+            } else if (isName(splitted, i)) {
+                //parse name
+            } else if (isDate(splitted, i)) {
+                //parse date
             } else if (isNumeric(splitted[i])) {
                 //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
                 double value = 0;
@@ -141,8 +148,7 @@ public class Parser {
                     i++;
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars") ||
-                        splitted[i].equalsIgnoreCase("U.S. dollars"))) {
+                        splitted[i].equalsIgnoreCase("dollars"))) {
                     sign = "$";
                     i++;
                 }
@@ -154,6 +160,41 @@ public class Parser {
             }
         }
     }
+
+    private boolean isRange(String[] splitted, int i) {
+        return false;
+    }
+
+    private boolean isName(String[] splitted, int i) {
+        return false;
+    }
+
+    private boolean isDate(String[] splitted, int i) {
+        return false;
+    }
+
+    private double multiplication(String multi, double value) {
+        if (multi.equalsIgnoreCase("hundred")) {
+            value = value * 100;
+        }
+        if (multi.equalsIgnoreCase("thousand")) {
+            value = value * 1000;
+        }
+        if (multi.equalsIgnoreCase("thousand")) {
+            value = value * 1000;
+        }
+        if (multi.equalsIgnoreCase("millions")) {
+            value = value * 1000000;
+        }
+        if (multi.equalsIgnoreCase("billion")) {
+            value = value * 1000000000;
+        }
+        /*if (multi.equalsIgnoreCase("trillion")) {
+            value = value * 1000000000000;
+        }*/
+        return value;
+    }
+
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
