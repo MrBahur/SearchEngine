@@ -1,0 +1,15 @@
+Model\File\Document.class
+Model\File\Range.class
+Model\File\Text.class
+Model\InvertFile\InvertFile.class
+Model\Model.class
+Model\InvertFile\MyDictionary.class
+Controller\Controller.class
+Model\File\Node.class
+Model\File\Name.class
+Model\File\Date.class
+Model\File\PhraseFactory.class
+Model\File\Number.class
+Model\File\Phrase.class
+sample\Main.class
+Model\File\Word.class
