@@ -141,7 +141,8 @@ public class Parser {
                     i++;
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars"))) {
+                        splitted[i].equalsIgnoreCase("dollars") ||
+                        splitted[i].equalsIgnoreCase("U.S. dollars"))) {
                     sign = "$";
                     i++;
                 }
@@ -153,29 +154,6 @@ public class Parser {
             }
         }
     }
-
-    private double multiplication(String multi, double value) {
-        if (multi.equalsIgnoreCase("hundred")) {
-            value = value * 100;
-        }
-        if (multi.equalsIgnoreCase("thousand")) {
-            value = value * 1000;
-        }
-        if (multi.equalsIgnoreCase("thousand")) {
-            value = value * 1000;
-        }
-        if (multi.equalsIgnoreCase("millions")) {
-            value = value * 1000000;
-        }
-        if (multi.equalsIgnoreCase("billion")) {
-            value = value * 1000000000;
-        }
-        /*if (multi.equalsIgnoreCase("trillion")) {
-            value = value * 1000000000000;
-        }*/
-        return value;
-    }
-
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
