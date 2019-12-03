@@ -26,7 +26,7 @@ public class InvertFile {
     }
 
     public InvertFile() {
-        this(512, 472526);
+        this(2048, 472526);
     }
 
     private void extendRow() {

@@ -17,6 +17,7 @@ public class Parser {
     private WordsToNumber wordsToNumber;
     private static long numberOfParsePhrases = 0;
     private static long numberOfNotParsePhrases = 0;
+    private static int tempNumOfDocs = 0;
 
     public Parser(String path) {
         readFile = new ReadFile<>(path);
@@ -30,6 +31,11 @@ public class Parser {
             for (MyDocument doc : myFile) {
                 invertFile.addDoc(doc.getDocNumber());
                 parse(doc);
+                tempNumOfDocs += 1;
+
+            }
+            if (tempNumOfDocs >= 20000) {
+                break;
             }
         }
     }
@@ -76,6 +82,16 @@ public class Parser {
                             value += afterPointValue / 100.0;
                         }
                     }
+                }
+                StringBuilder millionValue = new StringBuilder();
+                while (i < splitted.length && (splitted[i].length() == 0 || splitted[i].equals(" "))) {
+                    if (WordsToNumber.getAllowedStrings().contains(splitted[i])) {
+                        millionValue.append(splitted[i]);
+                    }
+                    i++;
+                }
+                if (millionValue.length() >= 0) {
+                    value *= wordsToNumber.execute(millionValue.toString());
                 }
 
                 String sign = "#";
