@@ -59,29 +59,25 @@ public class Parser {
             } else if (isNumeric(splitted[i])) {
                 //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
                 double value = 0;
-                StringBuilder num = new StringBuilder();
-                while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                    num.append(splitted[i] + " ");
-                    i++;
-                }
-                if (i < splitted.length && splitted[i].equalsIgnoreCase(".")) {
+                value = Double.parseDouble(splitted[i]);
+                i++;
+                if (i < splitted.length && (splitted[i].equalsIgnoreCase("point") || splitted[i].equals("."))) {
                     i++;
                     StringBuilder afterPointNum = new StringBuilder();
-                    while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                        afterPointNum.append(splitted[i]).append(" ");
+                    while (i < splitted.length && (isNumeric(splitted[i]) || splitted[i].length() == 0)) {
+                        afterPointNum.append(splitted[i]);
                         i++;
                     }
-                    String myStr = afterPointNum.toString();
-                    value = Double.parseDouble(myStr);
-                    if (value <= 9) {
-                        value /= 10;
-                    } else if (value <= 99) {
-                        value /= 100;
+                    if (afterPointNum.length() > 0) {
+                        int afterPointValue = Integer.parseInt(afterPointNum.toString());
+                        if (afterPointValue <= 9) {
+                            value += afterPointValue / 10.0;
+                        } else if (value <= 99) {
+                            value += afterPointValue / 100.0;
+                        }
                     }
                 }
-                String myNum = num.toString();
-                value = Double.parseDouble(myNum) + value;
-                value = multiplication(splitted[i], value);
+
                 String sign = "#";
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("%") ||
                         splitted[i].equalsIgnoreCase("percent") ||
@@ -142,7 +138,8 @@ public class Parser {
             }
         }
     }
-    private double multiplication (String multi, double value) {
+
+    private double multiplication(String multi, double value) {
         if (multi.equalsIgnoreCase("hundred")) {
             value = value * 100;
         }

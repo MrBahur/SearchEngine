@@ -26,7 +26,7 @@ public class InvertFile {
     }
 
     public InvertFile() {
-        this(512, 512);
+        this(512, 472526);
     }
 
     private void extendRow() {
@@ -52,13 +52,17 @@ public class InvertFile {
     }
 
     public void addWord(Phrase p) {
+        Integer wordIndex = words.insertWord(p);
+        if (wordIndex > currentWord) {
+            currentWord = wordIndex;
+        }
         if (currentWord == currentSizeRows - 1) {
             synchronized (this) {
                 extendRow();
             }
         }
         synchronized (this) {
-            Integer wordIndex = words.insertWord(p);
+
             matrix[wordIndex][currentDoc]++;
         }
     }
