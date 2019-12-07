@@ -39,9 +39,9 @@ public class Parser {
 
 
     private void parse(MyDocument d) {
-        String[] splitted = d.getTitle().getPlainText().trim().split(" ");
+        String[] splitted = d.getTitle().getPlainText().trim().replaceAll(",","").replaceAll(" +"," ").split(" ");
         parse(splitted);
-        splitted = d.getText().getPlainText().trim().split(" ");
+        splitted = d.getText().getPlainText().trim().replaceAll(",","").replaceAll(" +"," ").split(" ");
         parse(splitted);
     }
 
