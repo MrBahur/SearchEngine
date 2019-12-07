@@ -3,17 +3,14 @@ package Model.Parser;
 import Model.File.MyDocument;
 import Model.File.MyFile;
 import Model.File.Number;
-import Model.File.Phrase;
-import Model.InvertFile.InvertFile;
+import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Parser {
     private ReadFile<String> readFile;
-    private InvertFile invertFile;
+    private Indexer indexer;
     private WordsToNumber wordsToNumber;
     private static long numberOfParsePhrases = 0;
     private static long numberOfNotParsePhrases = 0;
@@ -21,7 +18,7 @@ public class Parser {
 
     public Parser(String path) {
         readFile = new ReadFile<>(path);
-        invertFile = new InvertFile();
+        indexer = new Indexer();
         wordsToNumber = new WordsToNumber();
     }
 
@@ -29,7 +26,7 @@ public class Parser {
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
             for (MyDocument doc : myFile) {
-                invertFile.addDoc(doc.getDocNumber());
+                indexer.addDoc(doc.getDocNumber());
                 parse(doc);
                 tempNumOfDocs += 1;
 
@@ -59,7 +56,7 @@ public class Parser {
     }
 
     private void parse(String[] splitted) {
-        for (int i = 0; i < splitted.length; i++) {
+        for (Integer i = 0; i < splitted.length; i++) {
             if (splitted[i].length() == 0) {//empty string, nothing to parse.
                 continue;
 
@@ -113,7 +110,7 @@ public class Parser {
                     sign = "$";
                     i++;
                 }
-                invertFile.addWord(new Number(value, sign));
+                indexer.addWord(new Number(value, sign));
                 numberOfParsePhrases++;
             } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
                 double value = 0;
@@ -153,7 +150,7 @@ public class Parser {
                     i++;
                 }
 
-                invertFile.addWord(new Number(value, sign));
+                indexer.addWord(new Number(value, sign));
                 numberOfParsePhrases++;
             } else {
                 numberOfNotParsePhrases++;
@@ -202,7 +199,7 @@ public class Parser {
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
-        Map<Integer, String> documents = p.invertFile.getDocuments();
+        Map<Integer, String> documents = p.indexer.getDocuments();
         System.out.println("Number of documents in the corpus:" + documents.size());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);

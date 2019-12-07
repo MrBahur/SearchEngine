@@ -1,7 +1,7 @@
 package Model.InvertFile;
 
 import Model.File.Name;
-import Model.File.Phrase;
+import Model.File.Term;
 import Model.File.Word;
 import javafx.util.Pair;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MyDictionary {
     private Integer nextPhrase;
-    private Map<Phrase, Pair<Integer, Integer>> wordsList;//first number is the num in the invertFile table, second
+    private Map<Term, Pair<Integer, Integer>> wordsList;//first number is the num in the invertFile table, second
     // number is the amount in corpus
 
     public MyDictionary() {
@@ -18,7 +18,7 @@ public class MyDictionary {
         wordsList = new ConcurrentHashMap<>(512);
     }
 
-    public Integer insertWord(Phrase toInsert) {
+    public Integer insertWord(Term toInsert) {
         // make this thread safe!!
         Integer index = 0;
         if (!wordsList.containsKey(toInsert)) {

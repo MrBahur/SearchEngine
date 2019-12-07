@@ -1,7 +1,7 @@
 package Model.File;
 
 public class PhraseFactory {
-    public Phrase getPhrase(String type){
+    public Term getPhrase(String type){
         return null;
     }
 }

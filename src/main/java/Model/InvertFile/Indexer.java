@@ -1,11 +1,11 @@
 package Model.InvertFile;
 
-import Model.File.Phrase;
+import Model.File.Term;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InvertFile {
+public class Indexer {
     private int[][] matrix;
     private MyDictionary words;
     private Map<Integer, String> documents;
@@ -15,7 +15,7 @@ public class InvertFile {
     private Integer currentWord;
 
 
-    public InvertFile(int currentSizeRows, int currentSizeColumns) {
+    public Indexer(int currentSizeRows, int currentSizeColumns) {
         this.currentSizeRows = currentSizeRows;
         this.currentSizeColumns = currentSizeColumns;
         matrix = new int[currentSizeRows][currentSizeColumns];
@@ -25,7 +25,7 @@ public class InvertFile {
         currentWord = 1;
     }
 
-    public InvertFile() {
+    public Indexer() {
         this(2048, 16384);
     }
 
@@ -51,7 +51,7 @@ public class InvertFile {
         currentSizeColumns = currentSizeColumns * 2;
     }
 
-    public void addWord(Phrase p) {
+    public void addWord(Term p) {
         Integer wordIndex = words.insertWord(p);
         if (wordIndex > currentWord) {
             currentWord = wordIndex;
@@ -85,11 +85,11 @@ public class InvertFile {
     }
 
     public static void main(String[] args) {
-        InvertFile invertFile = new InvertFile(2, 2);
-        invertFile.extendRow();
-        System.out.println(invertFile.currentSizeRows);
-        invertFile.extendColumn();
-        System.out.println(invertFile.currentSizeColumns);
+        Indexer indexer = new Indexer(2, 2);
+        indexer.extendRow();
+        System.out.println(indexer.currentSizeRows);
+        indexer.extendColumn();
+        System.out.println(indexer.currentSizeColumns);
 
     }
 }

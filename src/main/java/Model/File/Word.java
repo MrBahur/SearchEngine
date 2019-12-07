@@ -1,6 +1,6 @@
 package Model.File;
 
-public class Word extends Phrase {
+public class Word extends Term {
     private String value;
 
     public Word(String value) {

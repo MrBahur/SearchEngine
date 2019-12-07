@@ -1,6 +1,6 @@
 package Model.File;
 
-public abstract class Phrase {
+public abstract class Term {
 
     @Override
     public abstract String toString();

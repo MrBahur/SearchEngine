@@ -1,6 +1,6 @@
 package Model.File;
 
-public class Range extends Phrase {
+public class Range extends Term {
     private String left;
     private String middle;
     private String right;

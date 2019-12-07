@@ -3,7 +3,7 @@ package Model.File;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class Number extends Phrase {
+public class Number extends Term {
     private double value;
     private String sign;
 

@@ -1,6 +1,6 @@
 package Model.File;
 
-public class Name extends Phrase {
+public class Name extends Term {
     private String value;
 
     public Name(String value) {

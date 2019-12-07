@@ -1,6 +1,6 @@
 package Model.File;
 
-public class Date extends Phrase {
+public class Date extends Term {
     private int day;
     private int month;
     private int year;
