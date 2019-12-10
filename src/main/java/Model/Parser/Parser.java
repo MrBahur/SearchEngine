@@ -112,20 +112,15 @@ public class Parser {
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
                         splitted[i].equalsIgnoreCase("dollars") ||
-                        splitted[i].equalsIgnoreCase("U.S."))) {
-                    if (splitted[i].equalsIgnoreCase("U.S.") && i+1 < splitted.length) {
-                        if (splitted[i+1].equalsIgnoreCase("dollars")) {
-                            i++;
-                        }
-                        else {
-                            continue;
-                        }
+                        (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")))) {
+                    if (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")) {
+                        i += 2;
+                        sign = "$";
+                    } else {
+                        sign = "$";
+                        i++;
                     }
-                    else {
-                        continue;
-                    }
-                    sign = "$";
-                    i++;
+
                 }
                 indexer.addWord(new Number(value, sign));
                 numberOfParsePhrases++;
@@ -163,20 +158,14 @@ public class Parser {
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
                         splitted[i].equalsIgnoreCase("dollars") ||
-                        splitted[i].equalsIgnoreCase("U.S."))) {
-                    if (splitted[i].equalsIgnoreCase("U.S.") && i+1 < splitted.length) {
-                        if (splitted[i+1].equalsIgnoreCase("dollars")) {
-                            i++;
-                        }
-                        else {
-                            continue;
-                        }
+                        (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")))) {
+                    if (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")) {
+                        i += 2;
+                        sign = "$";
+                    } else {
+                        sign = "$";
+                        i++;
                     }
-                    else {
-                        continue;
-                    }
-                    sign = "$";
-                    i++;
                 }
 
                 indexer.addWord(new Number(value, sign));
