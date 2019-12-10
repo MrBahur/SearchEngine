@@ -91,7 +91,7 @@ public class Number extends Term {
     }
 
     public static void main(String[] args) {
-        Number n = new Number(1820000000, "#");
+        Number n = new Number(10123000000.0, "#");
         System.out.println(n.toString());
     }
 }

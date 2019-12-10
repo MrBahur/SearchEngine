@@ -23,18 +23,23 @@ public class Parser {
     }
 
     public void parse() {
+        int counter = 0;
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
             for (MyDocument doc : myFile) {
-                indexer.addDoc(doc.getDocNumber());
-                parse(doc);
-                tempNumOfDocs += 1;
-
+                if (counter < 20000) {
+                    indexer.addDoc(doc.getDocNumber());
+                    parse(doc);
+                    tempNumOfDocs += 1;
+                    counter++;
+                }
             }
             if (tempNumOfDocs >= 20000) {
                 //break;
             }
         }
+        //System.out.println(indexer.getCurrentSizeColumns() + " " + indexer.getCurrentSizeRows());
+        //System.out.println(counter);
     }
 
 
@@ -106,7 +111,19 @@ public class Parser {
                     i++;
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars"))) {
+                        splitted[i].equalsIgnoreCase("dollars") ||
+                        splitted[i].equalsIgnoreCase("U.S."))) {
+                    if (splitted[i].equalsIgnoreCase("U.S.") && i+1 < splitted.length) {
+                        if (splitted[i+1].equalsIgnoreCase("dollars")) {
+                            i++;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    else {
+                        continue;
+                    }
                     sign = "$";
                     i++;
                 }
@@ -145,7 +162,19 @@ public class Parser {
                     i++;
                 }
                 if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars"))) {
+                        splitted[i].equalsIgnoreCase("dollars") ||
+                        splitted[i].equalsIgnoreCase("U.S."))) {
+                    if (splitted[i].equalsIgnoreCase("U.S.") && i+1 < splitted.length) {
+                        if (splitted[i+1].equalsIgnoreCase("dollars")) {
+                            i++;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    else {
+                        continue;
+                    }
                     sign = "$";
                     i++;
                 }
@@ -170,32 +199,9 @@ public class Parser {
         return false;
     }
 
-    private double multiplication(String multi, double value) {
-        if (multi.equalsIgnoreCase("hundred")) {
-            value = value * 100;
-        }
-        if (multi.equalsIgnoreCase("thousand")) {
-            value = value * 1000;
-        }
-        if (multi.equalsIgnoreCase("thousand")) {
-            value = value * 1000;
-        }
-        if (multi.equalsIgnoreCase("millions")) {
-            value = value * 1000000;
-        }
-        if (multi.equalsIgnoreCase("billion")) {
-            value = value * 1000000000;
-        }
-        /*if (multi.equalsIgnoreCase("trillion")) {
-            value = value * 1000000000000;
-        }*/
-        return value;
-    }
-
-
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
+        Parser p = new Parser("C:\\corpus");
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

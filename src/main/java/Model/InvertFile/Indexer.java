@@ -26,7 +26,7 @@ public class Indexer {
     }
 
     public Indexer() {
-        this(2048, 16384);
+        this(2048, 25000);
     }
 
     private void extendRow() {
@@ -82,6 +82,14 @@ public class Indexer {
 
     public Map<Integer, String> getDocuments() {
         return documents;
+    }
+
+    public int getCurrentSizeRows() {
+        return currentSizeRows;
+    }
+
+    public int getCurrentSizeColumns() {
+        return currentSizeColumns;
     }
 
     public static void main(String[] args) {
