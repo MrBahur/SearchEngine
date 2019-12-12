@@ -29,6 +29,9 @@ public class Date extends Term {
             if (this.month < 10) {
                 m = "0" + this.month;
             }
+            if (this.year<1900) {
+                this.year += 1900;
+            }
             str = this.year + "-" + m;
         }
         return str;
@@ -49,7 +52,7 @@ public class Date extends Term {
     }
 
     public static void main(String[] args) {
-        Date d1 = new Date(-1,5,1994);
+        Date d1 = new Date(-1,5,94);
         System.out.println(d1.toString());
         Date d2 = new Date(14, 5,-1);
         System.out.println(d2.toString());
