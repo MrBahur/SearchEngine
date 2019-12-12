@@ -9,7 +9,7 @@ public class Date extends Term {
         this.day = day;
         this.month = month;
         this.year = year;
-        if (this.year<100) {
+        if (this.year<100 && this.year>0) {
             this.year += 1900;
         }
     }
