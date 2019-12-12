@@ -38,4 +38,7 @@ public class MyDictionary {
         }
         return index;//need to return the index that the Phrase sit in
     }
+    public int getSize(){
+        return wordsList.size();
+    }
 }

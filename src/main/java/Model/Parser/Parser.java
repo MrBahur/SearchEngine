@@ -5,7 +5,9 @@ import Model.File.MyFile;
 import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
+import com.sun.javafx.util.Utils;
 
+import javax.rmi.CORBA.Util;
 import java.util.Map;
 
 public class Parser {
@@ -23,18 +25,14 @@ public class Parser {
     }
 
     public void parse() {
-        int counter = 0;
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
             for (MyDocument doc : myFile) {
-                if (counter < 20000) {
-                    indexer.addDoc(doc.getDocNumber());
-                    parse(doc);
-                    tempNumOfDocs += 1;
-                    counter++;
-                }
+                indexer.addDoc(doc.getDocNumber());
+                parse(doc);
+                tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 20000) {
+            if (tempNumOfDocs >= 50000) {
                 //break;
             }
         }
@@ -44,9 +42,9 @@ public class Parser {
 
 
     private void parse(MyDocument d) {
-        String[] splitted = d.getTitle().getPlainText().trim().replaceAll(",","").replaceAll(" +"," ").split(" ");
+        String[] splitted = d.getTitle().getPlainText().trim().split(" +");
         parse(splitted);
-        splitted = d.getText().getPlainText().trim().replaceAll(",","").replaceAll(" +"," ").split(" ");
+        splitted = d.getText().getPlainText().trim().split(" +");
         parse(splitted);
     }
 
@@ -190,12 +188,13 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("C:\\corpus");
+        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         Map<Integer, String> documents = p.indexer.getDocuments();
         System.out.println("Number of documents in the corpus:" + documents.size());
+        System.out.println("Number of types of word in the corpus:" + p.indexer.getWords().getSize());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
         System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));

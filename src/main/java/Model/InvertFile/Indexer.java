@@ -26,7 +26,7 @@ public class Indexer {
     }
 
     public Indexer() {
-        this(2048, 25000);
+        this(2048, 472550);
     }
 
     private void extendRow() {
