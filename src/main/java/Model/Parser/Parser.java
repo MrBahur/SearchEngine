@@ -195,7 +195,7 @@ public class Parser {
             if (isNumeric(splitted[i])) {
                 if (splitted.length > i + 1 && isMonth(splitted[i + 1])) {
                     int day = Integer.parseInt(splitted[i]);
-                    if (day <= 31) {
+                    if (day <= 31 && day >= 1) {
                         indexer.addWord(new Date(day, MONTHS.indexOf(splitted[i + 1].toUpperCase()) % 12 + 1, -1));
                         return 2;
                     }
@@ -208,7 +208,7 @@ public class Parser {
                     if (yearOrDay > 31) {
                         indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, yearOrDay));
                         return 2;
-                    } else {
+                    } else if (yearOrDay >= 1) {
                         indexer.addWord(new Date(yearOrDay, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, -1));
                         return 2;
                     }
