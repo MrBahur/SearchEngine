@@ -1,16 +1,25 @@
 package Model.Parser;
 
-import Model.File.MyDocument;
-import Model.File.MyFile;
+import Model.File.*;
 import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
 import com.sun.javafx.util.Utils;
 
 import javax.rmi.CORBA.Util;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Parser {
+    private static final List<String> MONTHS = Arrays.asList
+            (
+                    "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+                    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER",
+                    "OCTOBER", "NOVEMBER", "DECEMBER"
+            );
     private ReadFile<String> readFile;
     private Indexer indexer;
     private WordsToNumber wordsToNumber;
@@ -36,16 +45,17 @@ public class Parser {
                 //break;
             }
         }
-        //System.out.println(indexer.getCurrentSizeColumns() + " " + indexer.getCurrentSizeRows());
-        //System.out.println(counter);
     }
 
-
     private void parse(MyDocument d) {
-        String[] splitted = d.getTitle().getPlainText().trim().split(" +");
-        parse(splitted);
-        splitted = d.getText().getPlainText().trim().split(" +");
-        parse(splitted);
+        if (d.getTitle().getPlainText().length() > 0) {
+            String[] splitted = d.getTitle().getPlainText().trim().split(" +");
+            parse(splitted);
+        }
+        if (d.getText().getPlainText().length() > 0) {
+            String[] splitted = d.getText().getPlainText().trim().split(" +");
+            parse(splitted);
+        }
     }
 
     //next thing to parse - > Numbers (regular numbers)
@@ -59,16 +69,14 @@ public class Parser {
     }
 
     private void parse(String[] splitted) {
+        int j = 0;
         for (Integer i = 0; i < splitted.length; i++) {
-            if (splitted[i].length() == 0) {//empty string, nothing to parse.
-                continue;
-
-            } else if (isRange(splitted, i)) {
+            if (isRange(splitted, i)) {
                 //parse range
             } else if (isName(splitted, i)) {
                 //parse name
-            } else if (isDate(splitted, i)) {
-                //parse date
+            } else if ((j = isDate(splitted, i)) != 0) {
+                i += j;
             } else if (isNumeric(splitted[i])) {
                 //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
                 double value = 0;
@@ -182,7 +190,47 @@ public class Parser {
         return false;
     }
 
-    private boolean isDate(String[] splitted, int i) {
+    private int isDate(String[] splitted, int i) {
+        if (splitted[i].length() < 3) {//DD-MM
+            if (isNumeric(splitted[i])) {
+                if (splitted.length > i + 1 && isMonth(splitted[i + 1])) {
+                    int day = Integer.parseInt(splitted[i]);
+                    if (day <= 31) {
+                        indexer.addWord(new Date(day, MONTHS.indexOf(splitted[i + 1].toUpperCase()) % 12 + 1, -1));
+                        return 2;
+                    }
+                }
+            }
+        } else if (splitted.length > i + 1 && isMonth(splitted[i])) {//MM-DD OR MM-YYY
+            if (isNumeric(splitted[i + 1])) {
+                if (splitted[i + 1].length() < 3) {
+                    int yearOrDay = Integer.parseInt(splitted[i + 1]);
+                    if (yearOrDay > 31) {
+                        indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, yearOrDay));
+                        return 2;
+                    } else {
+                        indexer.addWord(new Date(yearOrDay, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, -1));
+                        return 2;
+                    }
+                } else if (splitted[i + 1].length() == 4) {
+                    int year = Integer.parseInt(splitted[i + 1]);
+                    if (year < 2500) {
+                        indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, year));
+                        return 2;
+                    }
+                }
+            }
+
+        }
+        return 0;
+    }
+
+    private boolean isMonth(String s) {
+        for (String m : MONTHS) {
+            if (m.equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
         return false;
     }
 
