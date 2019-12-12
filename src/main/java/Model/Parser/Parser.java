@@ -4,11 +4,7 @@ import Model.File.*;
 import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
-import com.sun.javafx.util.Utils;
 
-import javax.rmi.CORBA.Util;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +37,7 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 50000) {
+            if (tempNumOfDocs >= 5000) {
                 //break;
             }
         }
@@ -49,11 +45,11 @@ public class Parser {
 
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
-            String[] splitted = d.getTitle().getPlainText().trim().split(" +");
+            String[] splitted = d.getTitle().getPlainText().trim().replaceAll("-+", " - ").split(" +");
             parse(splitted);
         }
         if (d.getText().getPlainText().length() > 0) {
-            String[] splitted = d.getText().getPlainText().trim().split(" +");
+            String[] splitted = d.getText().getPlainText().trim().replaceAll("-+", " - ").split(" +");
             parse(splitted);
         }
     }
@@ -69,14 +65,17 @@ public class Parser {
     }
 
     private void parse(String[] splitted) {
-        int j = 0;
-        for (Integer i = 0; i < splitted.length; i++) {
-            if (isRange(splitted, i)) {
-                //parse range
-            } else if (isName(splitted, i)) {
-                //parse name
+        for (int i = 0; i < splitted.length; ) {
+            int j = 0;
+            if ((j = isRange(splitted, i + 1)) != 0) {
+                i += j;
+                numberOfParsePhrases++;
+            } else if ((j = isName(splitted, i)) != 0) {
+                i += j;
+                numberOfParsePhrases++;
             } else if ((j = isDate(splitted, i)) != 0) {
                 i += j;
+                numberOfParsePhrases++;
             } else if (isNumeric(splitted[i])) {
                 //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
                 double value = 0;
@@ -178,16 +177,47 @@ public class Parser {
                 numberOfParsePhrases++;
             } else {
                 numberOfNotParsePhrases++;
+                i++;
             }
         }
     }
 
-    private boolean isRange(String[] splitted, int i) {
-        return false;
+    private int isRange(String[] splitted, int j) {
+        String first = null;
+        String second = null;
+        String third = null;
+        int toReturn = 0;
+        if (j + 1 < splitted.length) {
+            if (splitted[j].charAt(0) == '-') {
+                first = splitted[j - 1];
+                second = splitted[j + 1];
+                toReturn = 3;
+                if (j + 3 < splitted.length) {
+                    if (splitted[j + 2].charAt(0) == '-') {
+                        third = splitted[j + 3];
+                        toReturn = 5;
+                    }
+                }
+                indexer.addWord(new Range(first, second, third));
+                return toReturn;
+            } else if (splitted[j - 1].equalsIgnoreCase("Between")) {
+                if (j + 2 < splitted.length && splitted[j + 1].equalsIgnoreCase("and")) {
+                    first = splitted[j];
+                    second = splitted[j + 2];
+                    indexer.addWord(new Range(first, second, third));
+                    return 4;
+                }
+            }
+        }
+        return 0;
     }
 
-    private boolean isName(String[] splitted, int i) {
-        return false;
+    private int isName(String[] splitted, int i) {
+        if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
+            indexer.addWord(new Name(splitted[i]));
+            return 1;
+        }
+        return 0;
     }
 
     private int isDate(String[] splitted, int i) {

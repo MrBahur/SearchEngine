@@ -26,7 +26,7 @@ public class Indexer {
     }
 
     public Indexer() {
-        this(2048, 472550);
+        this(8388608, 4800);
     }
 
     private void extendRow() {
@@ -38,6 +38,7 @@ public class Indexer {
         }
         matrix = tmpMatrix;
         currentSizeRows = currentSizeRows * 2;
+
     }
 
     private void extendColumn() {

@@ -1,0 +1,94 @@
+ private int isRange(String[] splitted, int j) {
+        String first = null;
+        String second = null;
+        String third = null;
+        if (j < splitted.length) {
+            if (splitted[j - 1].charAt(splitted[j - 1].length() - 1) == '-') {//A-??
+                first = splitted[j - 1].substring(0, splitted[j - 1].length() - 1);
+                if (splitted[j].charAt(splitted[j].length() - 1) == '-') {
+                    second = splitted[j].substring(0, splitted[j].length() - 1);
+                    if (j + 1 < splitted.length) {
+                        if (splitted[j + 1].contains("-")) {
+                            if (splitted[j + 1].length() > 1) {
+                                third = splitted[j + 1].substring(0, splitted[j + 1].indexOf('-'));
+                                splitted[j + 1] = splitted[j + 1].substring(splitted[j + 1].indexOf('-') + 1);
+                            }
+                            indexer.addWord(new Range(first, second, third));// A- B- C-
+                            return 2;
+                        } else {
+                            third = splitted[j + 1];
+                            indexer.addWord(new Range(first, second, third));//A- B- C
+                            return 3;
+                        }
+                    }
+                } else {
+                    second = splitted[j];
+                    if (j + 1 < splitted.length) {
+                        if (splitted[j + 1].equals("-")) {
+                            if (j + 2 < splitted.length) {
+                                if (splitted[j + 2].contains("-")) {
+                                    if (splitted[j + 2].length() > 1) {
+                                        third = splitted[j + 2].substring(0, splitted[j + 2].indexOf('-'));
+                                        splitted[j + 2] = splitted[j + 2].substring(splitted[j + 2].indexOf('-') + 1);
+                                    }
+                                    indexer.addWord(new Range(first, second, third));
+                                    return 3;
+                                } else {
+                                    third = splitted[j + 2];
+                                    indexer.addWord(new Range(first, second, third));
+                                    return 4;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (splitted[j].equals("-")) {
+                first = splitted[j - 1];
+                if (j + 1 < splitted.length) {
+                    if (splitted[j + 1].charAt(splitted[j + 1].length() - 1) == '-') {
+                        second = splitted[j + 1].substring(0, splitted[j + 1].length() - 1);
+                        if (j + 2 < splitted.length) {
+                            if (splitted[j + 2].contains("-")) {
+                                if (splitted[j + 2].length() > 1) {
+                                    third = splitted[j + 2].substring(0, splitted[j + 2].indexOf('-'));
+                                    splitted[j + 2] = splitted[j + 2].substring(splitted[j + 2].indexOf('-') + 1);
+                                }
+                                indexer.addWord(new Range(first, second, third));
+                                return 3;
+                            } else {
+                                third = splitted[j + 2];
+                                indexer.addWord(new Range(first, second, third));
+                                return 4;
+                            }
+                        }
+                    } else {
+                        second = splitted[j + 1];
+                        if (j + 2 < splitted.length) {
+                            if (splitted[j + 2].equals("-")) {
+                                if (j + 3 < splitted.length) {
+                                    if (splitted[j + 3].contains("-")) {
+                                        if (splitted[j + 3].length() > 1) {
+                                            third = splitted[j + 3].substring(0, splitted[j + 3].indexOf('-'));
+                                            splitted[j + 3] = splitted[j + 3].substring(splitted[j + 3].indexOf('-') + 1);
+                                        }
+                                        indexer.addWord(new Range(first, second, third));
+                                        return 4;
+                                    } else {
+                                        third = splitted[j + 3];
+                                        indexer.addWord(new Range(first, second, third));
+                                        return 5;
+                                    }
+                                }
+                            }
+                            else {
+
+                            }
+                        }
+                    }
+                }
+            } else if (splitted[j].charAt(0) == '-') {
+
+            } else return 0;
+        } else return 0;
+        return 0;
+    }

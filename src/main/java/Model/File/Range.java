@@ -14,10 +14,9 @@ public class Range extends Term {
     @Override
     public String toString() {
         String str = "";
-        if (middle == null) {
-            str = left + "-" + right;
-        }
-        else {
+        if (right == null) {
+            str = left + "-" + middle;
+        } else {
             str = left + "-" + middle + "-" + right;
         }
         return str;
@@ -25,22 +24,36 @@ public class Range extends Term {
 
     @Override
     public boolean equals(Object other) {
+        if (other instanceof Range) {
+            Range otherRange = (Range) other;
+            if (this.right == null && otherRange.right == null) {
+                return this.left.equals(otherRange.left) && this.middle.equals(otherRange.middle);
+            } else if (this.right == null || otherRange.right == null) {
+                return false;
+            } else {
+                return this.left.equals(otherRange.left) && this.middle.equals(otherRange.middle) && this.right.equals(otherRange.right);
+            }
+        }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return left.hashCode()*middle.hashCode()*right.hashCode();
+        if (right != null) {
+            return left.hashCode() * middle.hashCode() * right.hashCode();
+        } else {
+            return left.hashCode() * middle.hashCode();
+        }
     }
 
     public static void main(String[] args) {
-        Range r1 = new Range("Value",null, "added");
+        Range r1 = new Range("Value", null, "added");
         System.out.println(r1.toString());
-        Range r2 = new Range("step","by", "step");
+        Range r2 = new Range("step", "by", "step");
         System.out.println(r2.toString());
-        Range r3 = new Range("10",null, "part");
+        Range r3 = new Range("10", null, "part");
         System.out.println(r3.toString());
-        Range r4 = new Range("6",null, "7");
+        Range r4 = new Range("6", null, "7");
         System.out.println(r4.toString());
     }
 }
