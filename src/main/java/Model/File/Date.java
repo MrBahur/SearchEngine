@@ -9,6 +9,9 @@ public class Date extends Term {
         this.day = day;
         this.month = month;
         this.year = year;
+        if (this.year<100) {
+            this.year += 1900;
+        }
     }
 
     @Override
@@ -28,9 +31,6 @@ public class Date extends Term {
         if (this.day == -1) {
             if (this.month < 10) {
                 m = "0" + this.month;
-            }
-            if (this.year<1900) {
-                this.year += 1900;
             }
             str = this.year + "-" + m;
         }
