@@ -6,7 +6,7 @@ public class Stemmer {
     public static PorterStemmer p = new PorterStemmer();
 
     public static String stem(String s) {
-        return p.stem(s);
+        return p.stem(s.toLowerCase());
     }
 
     public static void main(String[] args) {
