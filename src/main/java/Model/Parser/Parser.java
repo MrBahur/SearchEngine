@@ -5,6 +5,7 @@ import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,20 @@ public class Parser {
 
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
-            String[] splitted = d.getTitle().getPlainText().trim().replaceAll("-+", " - ")
-                    .replaceAll("[,\\[\\]:();<>~*&{}|]", "")
-                    .replaceAll("%", " % ").split("(-+ *)+");
+            String[] splitted = d.getTitle().getPlainText().replaceAll("(-+ *)+", " - ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ")
+                    .replaceAll("%", " % ").trim().split(" +");
             parse(splitted);
         }
         if (d.getText().getPlainText().length() > 0) {
-            String[] splitted = d.getText().getPlainText().trim().replaceAll("(-+ *)+", " - ")
-                    .replaceAll("[,\\[\\]:();<>~*&{}|]", "")
-                    .replaceAll("%", " % ").split(" +");
+            String[] splitted = d.getText().getPlainText().replaceAll("(-+ *)+", " - ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ")
+                    .replaceAll("%", " % ").trim().split(" +");
+            for (int i = 0; i < splitted.length; i++) {
+                if (splitted[i].length() == 0) {
+                    System.out.println(d.getDocNumber());
+                }
+            }
             parse(splitted);
         }
     }
@@ -473,12 +479,12 @@ public class Parser {
         String third = null;
         int toReturn = 0;
         if (j + 1 < splitted.length) {
-            if (splitted[j].charAt(0) == '-') {
+            if (splitted[j].charAt(0) == '-' && splitted[j - 1].length() > 0 && splitted[j + 1].length() > 0) {
                 first = splitted[j - 1];
                 second = splitted[j + 1];
                 toReturn = 3;
                 if (j + 3 < splitted.length) {
-                    if (splitted[j + 2].charAt(0) == '-') {
+                    if (splitted[j + 2].charAt(0) == '-' && splitted[j + 3].length() > 0) {
                         third = splitted[j + 3];
                         toReturn = 5;
                     }
