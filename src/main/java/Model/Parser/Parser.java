@@ -272,7 +272,7 @@ public class Parser {
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         Map<Integer, String> documents = p.indexer.getDocuments();
         System.out.println("Number of documents in the corpus:" + documents.size());
-        System.out.println("Number of types of word in the corpus:" + p.indexer.getWords().getSize());
+        System.out.println("Number of types of word in the corpus:" + p.indexer.getWords().size());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
         System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));
