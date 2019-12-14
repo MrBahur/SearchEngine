@@ -10,5 +10,13 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
+    <!-- https://mvnrepository.com/artifact/gov.sandia.foundry/porter-stemmer -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-tools</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+    </dependencies>
+
 </project>
