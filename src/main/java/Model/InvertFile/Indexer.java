@@ -1,5 +1,6 @@
 package Model.InvertFile;
 
+import Model.File.Phrase;
 import Model.File.Term;
 
 import java.util.*;
@@ -16,16 +17,18 @@ public class Indexer {
     private Integer currentDoc;
     private Map<Term, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Integer>> postingFiles;
+    private HashSet<Phrase> phrases;
 
     public Indexer() {
-        this(8388608, 4096);
+        this(16777216, 4096);
     }
 
     public Indexer(int initialWordSize, int numOfDocsInMemory) {
-        documents = new HashMap<>(NUM_OF_DOCS);
+        documents = new HashMap<>(NUM_OF_DOCS,8);
         currentDoc = 1;
-        words = new HashMap<>(initialWordSize);
+        words = new HashMap<>(initialWordSize,8);
         postingFiles = new HashMap<>(numOfDocsInMemory);
+        phrases = new HashSet<>();
         //currentWord = 1;
         //this.currentSizeRows = currentSizeRows;
         //this.currentSizeColumns = currentSizeColumns;
@@ -51,6 +54,7 @@ public class Indexer {
         currentDoc++;
         if (currentDoc % 4000 == 0) {
             //write to disc
+            System.out.println("Wrote to disc, doc number:" + currentDoc);
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
 //            System.gc();

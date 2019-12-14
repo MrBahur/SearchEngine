@@ -37,7 +37,7 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 5000) {
+            if (tempNumOfDocs >= 3000) {
                 //break;
             }
         }
@@ -45,17 +45,35 @@ public class Parser {
 
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
-            String[] splitted = d.getTitle().getPlainText().trim().replaceAll("-+", " - ").split(" +");
+            String[] splitted = d.getTitle().getPlainText().trim().replaceAll("-+", " - ")
+                    .replaceAll("[,\\[\\]:();<>~*&{}|]", "")
+                    .replaceAll("%", " % ").split("(-+ *)+");
             parse(splitted);
         }
         if (d.getText().getPlainText().length() > 0) {
-            String[] splitted = d.getText().getPlainText().trim().replaceAll("-+", " - ").split(" +");
+            String[] splitted = d.getText().getPlainText().trim().replaceAll("(-+ *)+", " - ")
+                    .replaceAll("[,\\[\\]:();<>~*&{}|]", "")
+                    .replaceAll("%", " % ").split(" +");
             parse(splitted);
         }
     }
 
     //next thing to parse - > Numbers (regular numbers)
     private boolean isNumeric(String s) {
+        boolean point = false;
+        for (int i = 0; i < s.length(); i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                if (i < s.length() - 1 && s.charAt(i) == '.' && !point) {
+                    point = true;
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isInteger(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
                 return false;
@@ -70,110 +88,17 @@ public class Parser {
             if ((j = isRange(splitted, i + 1)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
-            } else if ((j = isName(splitted, i)) != 0) {
-                i += j;
-                numberOfParsePhrases++;
             } else if ((j = isDate(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
-            } else if (isNumeric(splitted[i])) {
-                //here we need to parse Numeric value, same flow as WordsToNumber parsing, need to usr this code somehow, extract methods and shit.
-                double value = 0;
-                value = Double.parseDouble(splitted[i]);
-                i++;
-                if (i < splitted.length && (splitted[i].equalsIgnoreCase("point") || splitted[i].equals("."))) {
-                    i++;
-                    StringBuilder afterPointNum = new StringBuilder();
-                    while (i < splitted.length && (isNumeric(splitted[i]) || splitted[i].length() == 0)) {
-                        afterPointNum.append(splitted[i]);
-                        i++;
-                    }
-                    if (afterPointNum.length() > 0) {
-                        int afterPointValue = Integer.parseInt(afterPointNum.toString());
-                        if (afterPointValue <= 9) {
-                            value += afterPointValue / 10.0;
-                        } else if (value <= 99) {
-                            value += afterPointValue / 100.0;
-                        }
-                    }
-                }
-                StringBuilder millionValue = new StringBuilder();
-                while (i < splitted.length && (splitted[i].length() == 0 || splitted[i].equals(" "))) {
-                    if (WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                        millionValue.append(splitted[i]);
-                    }
-                    i++;
-                }
-                if (millionValue.length() >= 0) {
-                    value *= wordsToNumber.execute(millionValue.toString());
-                }
-
-                String sign = "#";
-                if (i < splitted.length && (splitted[i].equalsIgnoreCase("%") ||
-                        splitted[i].equalsIgnoreCase("percent") ||
-                        splitted[i].equalsIgnoreCase("percentage"))) {
-                    sign = "%";
-                    i++;
-                }
-                if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars") ||
-                        (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")))) {
-                    if (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")) {
-                        i += 2;
-                        sign = "$";
-                    } else {
-                        sign = "$";
-                        i++;
-                    }
-
-                }
-                indexer.addWord(new Number(value, sign));
+            } else if ((j = isNumber(splitted, i)) != 0) {
+                i += j;
                 numberOfParsePhrases++;
-            } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
-                double value = 0;
-                StringBuilder number = new StringBuilder();
-                while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                    number.append(splitted[i]).append(" ");
-                    i++;
-                }
-                if (i < splitted.length && splitted[i].equalsIgnoreCase("point")) {
-                    i++;
-                    StringBuilder afterPointNumber = new StringBuilder();
-                    while (i < splitted.length && WordsToNumber.getAllowedStrings().contains(splitted[i])) {
-                        afterPointNumber.append(splitted[i]).append(" ");
-                        i++;
-                        if (splitted[i].equalsIgnoreCase("and")) {
-                            i++;
-                        }
-                    }
-                    value = wordsToNumber.execute(afterPointNumber.toString());
-                    if (value <= 9) {
-                        value /= 10;
-                    } else if (value <= 99) {
-                        value /= 100;
-                    }
-                }
-                value += wordsToNumber.execute(number.toString());
-                String sign = "#";
-                if (i < splitted.length && (splitted[i].equalsIgnoreCase("%") ||
-                        splitted[i].equalsIgnoreCase("percent") ||
-                        splitted[i].equalsIgnoreCase("percentage"))) {
-                    sign = "%";
-                    i++;
-                }
-                if (i < splitted.length && (splitted[i].equalsIgnoreCase("$") ||
-                        splitted[i].equalsIgnoreCase("dollars") ||
-                        (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")))) {
-                    if (splitted[i].equalsIgnoreCase("U.S.") && i + 1 < splitted.length && splitted[i + 1].equalsIgnoreCase("dollars")) {
-                        i += 2;
-                        sign = "$";
-                    } else {
-                        sign = "$";
-                        i++;
-                    }
-                }
-
-                indexer.addWord(new Number(value, sign));
+            } else if ((j = isPhrase(splitted, i)) != 0) {
+                i += j;
+                numberOfParsePhrases++;
+            } else if ((j = isName(splitted, i)) != 0) {
+                i += j;
                 numberOfParsePhrases++;
             } else {
                 numberOfNotParsePhrases++;
@@ -182,7 +107,367 @@ public class Parser {
         }
     }
 
-    private int isRange(String[] splitted, int j) {
+    private int isPhrase(String[] splitted, int i) {
+        int toReturn = 0;
+        if (isPhrase(splitted[i])) {
+            if (i + 1 < splitted.length) {
+                if (splitted[i + 1].equals("-")) {
+                    if (i + 2 < splitted.length) {
+                        if (isPhrase(splitted[i + 2])) {
+                            if (i + 3 < splitted.length) {
+                                if (splitted[i + 3].equals("-")) {
+                                    if (i + 4 < splitted.length) {
+                                        if (isPhrase(splitted[i + 4])) {
+                                            indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 4]));//A-A-A
+                                            toReturn = 5;
+                                        }
+                                    }
+                                } else if (isPhrase(splitted[i + 3])) {
+                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 3]));//A-AA
+                                    toReturn = 4;
+                                } else {
+                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2]));
+                                    toReturn = 3;//A-A
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (isPhrase(splitted[i + 1])) {
+                        if (i + 2 < splitted.length) {
+                            if (splitted[i + 2].equals("-")) {
+                                if (i + 3 < splitted.length) {
+                                    if (isPhrase(splitted[i + 3])) {
+                                        indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 3]));
+                                        toReturn = 4;//AA-A
+                                    }
+                                }
+                            } else if (isPhrase(splitted[i + 2])) {
+                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 2]));
+                                toReturn = 3;//AAA
+                            } else {
+                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1]));
+                                toReturn = 2;//AA
+                            }
+                        }
+                    } else {
+                        indexer.addWord(new Name(splitted[i]));
+                        toReturn = 1;
+                    }
+                }
+            } else {
+                indexer.addWord(new Name(splitted[i]));
+                toReturn = 1;
+            }
+        }
+
+        return toReturn;
+    }
+
+    private boolean isPhrase(String s) {
+        return s.charAt(0) >= 'A' && s.charAt(0) <= 'Z';
+    }
+
+    private int isNumber(String[] splitted, int i) {//TBD handle fractions
+        int toReturn = 0;
+        if (isNumeric(splitted[i])) {
+            double value = Double.parseDouble(splitted[i]);
+            long multiplyValue = 1;
+            int numberAfterPoint = 0;
+            String sign = "#";
+            if (i + 1 < splitted.length) {
+                if (splitted[i + 1].equalsIgnoreCase("point")) {
+                    if (i + 2 < splitted.length) {
+                        if (isNumeric(splitted[i + 2])) {
+                            numberAfterPoint = Integer.parseInt(splitted[i + 2]);
+                            if (i + 3 < splitted.length) {
+                                if (WordsToNumber.getAllowedStrings().contains(splitted[i + 3].toLowerCase())) {
+                                    multiplyValue = wordsToNumber.execute(splitted[i + 3]);
+                                    if (i + 4 < splitted.length) {
+                                        if (splitted[i + 4].equalsIgnoreCase("%") ||
+                                                splitted[i + 4].equalsIgnoreCase("%.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage.")) {
+                                            sign = "%";
+                                            toReturn = 5;
+                                        } else if (splitted[i + 4].equalsIgnoreCase("dollars") ||
+                                                splitted[i + 4].equalsIgnoreCase("$")) {
+                                            sign = "$";
+                                            toReturn = 5;
+                                        } else if (i + 5 < splitted.length && splitted[i + 4].equalsIgnoreCase("U.S.") && splitted[i + 5].equalsIgnoreCase("dollars")) {
+                                            sign = "$";
+                                            toReturn = 6;
+                                        } else {
+                                            toReturn = 4;
+                                        }
+                                    } else {
+                                        toReturn = 4;
+                                    }
+                                } else if (splitted[i + 3].equalsIgnoreCase("%") ||
+                                        splitted[i + 3].equalsIgnoreCase("%.") ||
+                                        splitted[i + 3].equalsIgnoreCase("percent") ||
+                                        splitted[i + 3].equalsIgnoreCase("percent.") ||
+                                        splitted[i + 3].equalsIgnoreCase("percentage") ||
+                                        splitted[i + 3].equalsIgnoreCase("percentage.")) {
+                                    sign = "%";
+                                    toReturn = 4;
+                                } else if (splitted[i + 3].equalsIgnoreCase("dollars") ||
+                                        splitted[i + 3].equalsIgnoreCase("$")) {
+                                    sign = "$";
+                                    toReturn = 4;
+                                } else if (i + 4 < splitted.length && splitted[i + 3].equalsIgnoreCase("U.S.") && splitted[i + 4].equalsIgnoreCase("dollars")) {
+                                    sign = "$";
+                                    toReturn = 5;
+                                } else {
+                                    toReturn = 3;
+                                }
+                            } else {
+                                toReturn = 3;
+                            }
+                        } else {
+                            toReturn = 1;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 1].toLowerCase())) {
+                    multiplyValue = wordsToNumber.execute(splitted[i + 1]);
+                    if (i + 2 < splitted.length) {
+                        if (splitted[i + 2].equalsIgnoreCase("%") ||
+                                splitted[i + 2].equalsIgnoreCase("%.") ||
+                                splitted[i + 2].equalsIgnoreCase("percent") ||
+                                splitted[i + 2].equalsIgnoreCase("percent.") ||
+                                splitted[i + 2].equalsIgnoreCase("percentage") ||
+                                splitted[i + 2].equalsIgnoreCase("percentage.")) {
+                            sign = "%";
+                            toReturn = 3;
+                        } else if (splitted[i + 2].equalsIgnoreCase("dollars") ||
+                                splitted[i + 2].equalsIgnoreCase("$")) {
+                            sign = "$";
+                            toReturn = 3;
+                        } else if (i + 3 < splitted.length && splitted[i + 2].equalsIgnoreCase("U.S.") && splitted[i + 3].equalsIgnoreCase("dollars")) {
+                            sign = "$";
+                            toReturn = 4;
+                        } else {
+                            toReturn = 2;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                } else if (splitted[i + 1].equalsIgnoreCase("%") ||
+                        splitted[i + 1].equalsIgnoreCase("%.") ||
+                        splitted[i + 1].equalsIgnoreCase("percent") ||
+                        splitted[i + 1].equalsIgnoreCase("percent.") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage.")) {
+                    sign = "%";
+                    toReturn = 2;
+                } else if (splitted[i + 1].equalsIgnoreCase("dollars") ||
+                        splitted[i + 1].equalsIgnoreCase("$")) {
+                    sign = "$";
+                    toReturn = 2;
+                } else if (i + 2 < splitted.length && splitted[i + 1].equalsIgnoreCase("U.S.") && splitted[i + 2].equalsIgnoreCase("dollars")) {
+                    sign = "$";
+                    toReturn = 3;
+                } else {
+                    toReturn = 1;
+                }
+                double valueAfterPoint = 0;
+                if (numberAfterPoint > 0) {
+                    String s = "0." + numberAfterPoint;
+                    valueAfterPoint = Double.parseDouble(s);
+                }
+                indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, sign));
+                return toReturn;
+            }
+        } else if (splitted[i].charAt(0) == '$') {
+            toReturn = 0;
+            double value = 0;
+            long multiplyValue = 1;
+            int numberAfterPoint = 0;
+            if (splitted[i].length() == 1) {
+                if (i + 1 < splitted.length) {
+                    if (isNumeric(splitted[i + 1])) {
+                        value = Double.parseDouble(splitted[i + 1]);
+                        if (i + 2 < splitted.length) {
+                            if (splitted[i + 2].equalsIgnoreCase("point")) {
+                                if (i + 3 < splitted.length) {
+                                    if (isNumeric(splitted[i + 3])) {
+                                        numberAfterPoint = Integer.parseInt(splitted[i + 3]);
+                                        if (i + 4 < splitted.length) {
+                                            if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
+                                                multiplyValue = wordsToNumber.execute(splitted[i + 4]);
+                                                toReturn = 5;
+                                            }
+                                        } else {
+                                            toReturn = 3;
+                                        }
+                                    } else {
+                                        toReturn = 3;
+                                    }
+                                } else {
+                                    toReturn = 2;
+                                }
+                            } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 2].toLowerCase())) {
+                                multiplyValue = wordsToNumber.execute(splitted[i + 2]);
+                                toReturn = 3;
+                            } else {
+                                toReturn = 2;
+                            }
+                        } else {
+                            toReturn = 2;
+                        }
+                        double valueAfterPoint = 0;
+                        if (numberAfterPoint > 0) {
+                            String s = "0." + numberAfterPoint;
+                            valueAfterPoint = Double.parseDouble(s);
+                        }
+                        indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, "$"));
+                        return toReturn;
+                    } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 1].toLowerCase())) {
+                        //TBD - handle very little cases
+                    } else {
+                        toReturn = 1;
+                    }
+                } else {
+                    toReturn = 1;
+                }
+            } else {
+                String splittedI = splitted[i].substring(1);
+                if (isNumeric(splittedI)) {
+                    value = Double.parseDouble(splittedI);
+                    if (i + 1 < splitted.length) {
+                        if (splitted[i + 1].equalsIgnoreCase("point")) {
+                            if (i + 2 > splitted.length) {
+                                if (isInteger(splitted[i + 2])) {
+                                    numberAfterPoint = Integer.parseInt(splitted[i + 2]);
+                                    if (i + 3 < splitted.length) {
+                                        if (WordsToNumber.getAllowedStrings().contains(splitted[i + 3].toLowerCase())) {
+                                            multiplyValue = wordsToNumber.execute(splitted[i + 3]);
+                                            toReturn = 4;
+                                        } else {
+                                            toReturn = 3;
+                                        }
+                                    } else {
+                                        toReturn = 3;
+                                    }
+                                } else {
+                                    toReturn = 1;
+                                }
+                            } else {
+                                toReturn = 1;
+                            }
+                        } else {
+                            toReturn = 1;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                    double afterPointValue = 0;
+                    if (numberAfterPoint > 0) {
+                        String s = "0." + numberAfterPoint;
+                        afterPointValue = Double.parseDouble(s);
+                    }
+                    indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$"));
+                    return toReturn;
+                } else if (WordsToNumber.getAllowedStrings().contains(splittedI.toLowerCase())) {
+                    //TBD - handle very little cases
+                } else {
+                    return 0;
+                }
+            }
+
+        } else if (WordsToNumber.getAllowedStrings().contains(splitted[i].toLowerCase())) {
+            double value = wordsToNumber.execute(splitted[i]);
+            long multiplyValue = 1;
+            long numberAfterPoint = 0;
+            String sign = "#";
+            if (i + 1 < splitted.length) {
+                if (splitted[i + 1].equalsIgnoreCase("point")) {
+                    if (i + 2 < splitted.length) {
+                        if (WordsToNumber.getAllowedStrings().contains(splitted[i + 2].toLowerCase())) {
+                            numberAfterPoint = wordsToNumber.execute(splitted[i + 2]);
+                            if (i + 3 < splitted.length) {
+                                if (WordsToNumber.getAllowedStrings().contains(splitted[i + 3].toLowerCase())) {
+                                    multiplyValue = wordsToNumber.execute(splitted[i + 3]);
+                                    if (i + 4 < splitted.length) {
+                                        if (splitted[i + 4].equalsIgnoreCase("%") ||
+                                                splitted[i + 4].equalsIgnoreCase("%.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage.")) {
+                                            sign = "%";
+                                            toReturn = 5;
+                                        } else if (splitted[i + 4].equalsIgnoreCase("dollars") ||
+                                                splitted[i + 4].equalsIgnoreCase("$")) {
+                                            sign = "$";
+                                            toReturn = 5;
+                                        } else if (i + 5 < splitted.length && splitted[i + 4].equalsIgnoreCase("U.S.") && splitted[i + 5].equalsIgnoreCase("dollars")) {
+                                            sign = "$";
+                                            toReturn = 6;
+                                        } else {
+                                            toReturn = 3;
+                                        }
+                                    } else {
+                                        toReturn = 3;
+                                    }
+                                } else {
+                                    toReturn = 2;
+                                }
+                            } else {
+                                toReturn = 2;
+                            }
+                        } else {
+                            toReturn = 1;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 1].toLowerCase())) {
+                    multiplyValue = wordsToNumber.execute(splitted[i + 1]);
+                    if (i + 2 < splitted.length) {
+                        if (splitted[i + 2].equalsIgnoreCase("%") ||
+                                splitted[i + 2].equalsIgnoreCase("%.") ||
+                                splitted[i + 2].equalsIgnoreCase("percent") ||
+                                splitted[i + 2].equalsIgnoreCase("percent.") ||
+                                splitted[i + 2].equalsIgnoreCase("percentage") ||
+                                splitted[i + 2].equalsIgnoreCase("percentage.")) {
+                            sign = "%";
+                            toReturn = 3;
+                        } else if (splitted[i + 2].equalsIgnoreCase("dollars") ||
+                                splitted[i + 2].equalsIgnoreCase("$")) {
+                            sign = "$";
+                            toReturn = 3;
+                        } else if (i + 3 < splitted.length && splitted[i + 2].equalsIgnoreCase("U.S.") && splitted[i + 3].equalsIgnoreCase("dollars")) {
+                            sign = "$";
+                            toReturn = 4;
+                        } else {
+                            toReturn = 2;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                } else {
+                    toReturn = 1;
+                }
+            } else {
+                toReturn = 1;
+            }
+            double afterPointValue = 0;
+            if (numberAfterPoint > 0) {
+                String s = "0." + numberAfterPoint;
+                afterPointValue = Double.parseDouble(s);
+            }
+            indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$"));
+            return toReturn;
+        }
+        return toReturn;
+    }
+
+    private int isRange(String[] splitted, int j) {//TBD = Repair
         String first = null;
         String second = null;
         String third = null;
@@ -222,7 +507,7 @@ public class Parser {
 
     private int isDate(String[] splitted, int i) {
         if (splitted[i].length() < 3) {//DD-MM
-            if (isNumeric(splitted[i])) {
+            if (isInteger(splitted[i])) {
                 if (splitted.length > i + 1 && isMonth(splitted[i + 1])) {
                     int day = Integer.parseInt(splitted[i]);
                     if (day <= 31 && day >= 1) {
@@ -232,7 +517,7 @@ public class Parser {
                 }
             }
         } else if (splitted.length > i + 1 && isMonth(splitted[i])) {//MM-DD OR MM-YYY
-            if (isNumeric(splitted[i + 1])) {
+            if (isInteger(splitted[i + 1])) {
                 if (splitted[i + 1].length() < 3) {
                     int yearOrDay = Integer.parseInt(splitted[i + 1]);
                     if (yearOrDay > 31) {

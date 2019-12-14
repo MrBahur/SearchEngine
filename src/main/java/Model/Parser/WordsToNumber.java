@@ -13,7 +13,7 @@ public class WordsToNumber {
                     "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
                     "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
                     "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
-                    "hundred", "thousand", "million", "millions", "billion", "trillion"
+                    "hundred", "thousand", "million", "millions", "billion", "trillion", "m", "bn"
             );
 
     public static List<String> getAllowedStrings() {
@@ -104,18 +104,14 @@ public class WordsToNumber {
                         result *= 1000;
                         finalResult += result;
                         result = 0;
-                    } else if (str.equalsIgnoreCase("million")) {
+                    } else if (str.equalsIgnoreCase("million") || str.equalsIgnoreCase("m") || str.equalsIgnoreCase("millions")) {
                         if (result == 0) {
                             result = 1;
                         }
                         result *= 1000000;
                         finalResult += result;
                         result = 0;
-                    } else if (str.equalsIgnoreCase("millions")) {
-                        result *= 1000000;
-                        finalResult += result;
-                        result = 0;
-                    } else if (str.equalsIgnoreCase("billion")) {
+                    } else if (str.equalsIgnoreCase("billion") || str.equalsIgnoreCase("bn")) {
                         if (result == 0) {
                             result = 1;
                         }
