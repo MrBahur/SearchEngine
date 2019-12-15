@@ -47,13 +47,13 @@ public class Parser {
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
             String[] splitted = d.getTitle().getPlainText().replaceAll("(-+ *)+", " - ")
-                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
             parse(splitted);
         }
         if (d.getText().getPlainText().length() > 0) {
             String[] splitted = d.getText().getPlainText().replaceAll("(-+ *)+", " - ")
-                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
             for (int i = 0; i < splitted.length; i++) {
                 if (splitted[i].length() == 0) {

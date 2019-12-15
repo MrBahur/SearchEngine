@@ -19,8 +19,8 @@ public class Stemmer {
 //        System.out.println(Stemmer.stem("Algorithm"));
         String sentence = "Example: Do you really think it is weakness that yields to temptation? I tell you that there are terrible " +
                 "temptations which it requires strength, strength and courage to yield to ~ Oscar Wilde";
-        for (String s:sentence.split(" ")) {
-            System.out.print(s+ " -> ");
+        for (String s : sentence.split(" ")) {
+            System.out.print(s + " -> ");
             System.out.println(stem(s));
         }
     }
