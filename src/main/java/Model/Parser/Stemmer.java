@@ -14,7 +14,7 @@ public class Stemmer {
         System.out.println(Stemmer.stem("Stemmer"));
         System.out.println(Stemmer.stem("implementing"));
         System.out.println(Stemmer.stem("the"));
-        System.out.println(Stemmer.stem("Porte"));
+        System.out.println(Stemmer.stem("Porter"));
         System.out.println(Stemmer.stem("Stemming"));
         System.out.println(Stemmer.stem("Algorithm"));
     }
