@@ -188,6 +188,8 @@ public class Parser {
             long multiplyValue = 1;
             int numberAfterPoint = 0;
             String sign = "#";
+            int mone = 0;
+            int mechane = 0;
             if (i + 1 < splitted.length) {
                 if (splitted[i + 1].equalsIgnoreCase("point")) {
                     if (i + 2 < splitted.length) {
@@ -284,22 +286,94 @@ public class Parser {
                 } else if (i + 2 < splitted.length && splitted[i + 1].equalsIgnoreCase("U.S.") && splitted[i + 2].equalsIgnoreCase("dollars")) {
                     sign = "$";
                     toReturn = 3;
+                } else if (isInteger(splitted[i + 1])) {
+                    if (i + 2 < splitted.length) {
+                        if (splitted[i + 2].equals("/")) {
+                            if (i + 3 < splitted.length) {
+                                if (isInteger(splitted[i + 3])) {
+                                    mone = Integer.parseInt(splitted[i+1]);
+                                    mechane = Integer.parseInt(splitted[i+3]);
+                                    if (i + 4 < splitted.length) {
+                                        if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
+                                            multiplyValue = wordsToNumber.execute(splitted[i + 4]);
+                                            if (i + 5 < splitted.length) {
+                                                if (splitted[i + 5].equalsIgnoreCase("%") ||
+                                                        splitted[i + 5].equalsIgnoreCase("%.") ||
+                                                        splitted[i + 5].equalsIgnoreCase("percent") ||
+                                                        splitted[i + 5].equalsIgnoreCase("percent.") ||
+                                                        splitted[i + 5].equalsIgnoreCase("percentage") ||
+                                                        splitted[i + 5].equalsIgnoreCase("percentage.")) {
+                                                    sign = "%";
+                                                    toReturn = 6;
+                                                } else if (splitted[i + 5].equalsIgnoreCase("dollars") ||
+                                                        splitted[i + 5].equalsIgnoreCase("$")) {
+                                                    sign = "$";
+                                                    toReturn = 6;
+                                                } else if (i + 6 < splitted.length && splitted[i + 5].equalsIgnoreCase("U.S.") && splitted[i + 6].equalsIgnoreCase("dollars")) {
+                                                    sign = "$";
+                                                    toReturn = 7;
+                                                }
+                                                else {
+                                                        toReturn = 5;
+                                                }
+                                            } else {
+                                                toReturn = 5;
+                                            }
+
+                                        }
+                                        else if (splitted[i + 4].equalsIgnoreCase("%") ||
+                                                splitted[i + 4].equalsIgnoreCase("%.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent") ||
+                                                splitted[i + 4].equalsIgnoreCase("percent.") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage") ||
+                                                splitted[i + 4].equalsIgnoreCase("percentage.")) {
+                                            sign = "%";
+                                            toReturn = 5;
+                                        } else if (splitted[i + 4].equalsIgnoreCase("dollars") ||
+                                                splitted[i + 4].equalsIgnoreCase("$")) {
+                                            sign = "$";
+                                            toReturn = 5;
+                                        } else if (i + 5 < splitted.length && splitted[i + 4].equalsIgnoreCase("U.S.") && splitted[i + 5].equalsIgnoreCase("dollars")) {
+                                            sign = "$";
+                                            toReturn = 6;
+                                        } else {
+                                            toReturn = 4;
+                                        }
+                                    }
+                                     else {
+                                        toReturn = 4;
+                                    }
+                                } else {
+                                    toReturn = 1;
+                                }
+                            } else {
+                                toReturn = 1;
+                            }
+                        } else {
+                            toReturn = 1;
+                        }
+                    } else {
+                        toReturn = 1;
+                    }
+                    //the indexer was here but i changed
                 } else {
                     toReturn = 1;
                 }
-                double valueAfterPoint = 0;
-                if (numberAfterPoint > 0) {
-                    String s = "0." + numberAfterPoint;
-                    valueAfterPoint = Double.parseDouble(s);
-                }
-                indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, sign));
-                return toReturn;
             }
-        } else if (splitted[i].charAt(0) == '$') {
+            double valueAfterPoint = 0;
+            if (numberAfterPoint > 0) {
+                String s = "0." + numberAfterPoint;
+                valueAfterPoint = Double.parseDouble(s);
+            }
+            indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, sign, mone, mechane));
+            return toReturn;
+        }else if (splitted[i].charAt(0) == '$') {
             toReturn = 0;
             double value = 0;
             long multiplyValue = 1;
             int numberAfterPoint = 0;
+            int mone = 0;
+            int mechane = 0;
             if (splitted[i].length() == 1) {
                 if (i + 1 < splitted.length) {
                     if (isNumeric(splitted[i + 1])) {
@@ -326,7 +400,43 @@ public class Parser {
                             } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 2].toLowerCase())) {
                                 multiplyValue = wordsToNumber.execute(splitted[i + 2]);
                                 toReturn = 3;
-                            } else {
+                            }else if (isInteger(splitted[i+2])) {
+                                if (i+3 < splitted.length) {
+                                    if (splitted[i+3].equals("/")) {
+                                        if (i+4 < splitted.length) {
+                                            if (isInteger(splitted[i+4])) {
+                                                mone = Integer.parseInt(splitted[i+2]);
+                                                mechane = Integer.parseInt(splitted[i+4]);
+                                                if (i+5<splitted.length) {
+                                                    if (WordsToNumber.getAllowedStrings().contains(splitted[i + 5].toLowerCase())) {
+                                                        multiplyValue = wordsToNumber.execute(splitted[i + 5]);
+                                                        toReturn = 6;
+                                                    }
+                                                    else {
+                                                        toReturn = 5;
+                                                    }
+                                                }
+                                                else {
+                                                    toReturn = 5;
+                                                }
+                                            }
+                                            else {
+                                                toReturn = 2;
+                                            }
+                                        }
+                                        else {
+                                            toReturn = 2;
+                                        }
+                                    }
+                                    else {
+                                        toReturn = 2;
+                                    }
+                                }
+                                else {
+                                    toReturn = 2;
+                                }
+                            }
+                            else {
                                 toReturn = 2;
                             }
                         } else {
@@ -337,7 +447,7 @@ public class Parser {
                             String s = "0." + numberAfterPoint;
                             valueAfterPoint = Double.parseDouble(s);
                         }
-                        indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, "$"));
+                        indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, "$", mone, mechane));
                         return toReturn;
                     } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 1].toLowerCase())) {
                         //TBD - handle very little cases
@@ -372,7 +482,43 @@ public class Parser {
                             } else {
                                 toReturn = 1;
                             }
-                        } else {
+                        } else if (isInteger(splitted[i+1])) {
+                            if (i+2<splitted.length) {
+                                if (splitted[i+2].equals("/")) {
+                                    if (i+3<splitted.length) {
+                                        if (isInteger(splitted[i+3])) {
+                                            mone = Integer.parseInt(splitted[i+1]);
+                                            mechane = Integer.parseInt(splitted[i+3]);
+                                            if (i+4<splitted.length) {
+                                                if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
+                                                    multiplyValue = wordsToNumber.execute(splitted[i + 4]);
+                                                    toReturn = 5;
+                                                }
+                                                else {
+                                                    toReturn = 4;
+                                                }
+                                            }
+                                            else {
+                                                toReturn = 4;
+                                            }
+                                        }
+                                        else {
+                                            toReturn = 1;
+                                        }
+                                    }
+                                    else {
+                                        toReturn = 1;
+                                    }
+                                }
+                                else {
+                                    toReturn = 1;
+                                }
+                            }
+                            else {
+                                toReturn = 1;
+                            }
+                        }
+                        else {
                             toReturn = 1;
                         }
                     } else {
@@ -383,7 +529,7 @@ public class Parser {
                         String s = "0." + numberAfterPoint;
                         afterPointValue = Double.parseDouble(s);
                     }
-                    indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$"));
+                    indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$", mone, mechane));
                     return toReturn;
                 } else if (WordsToNumber.getAllowedStrings().contains(splittedI.toLowerCase())) {
                     //TBD - handle very little cases
@@ -396,6 +542,8 @@ public class Parser {
             double value = wordsToNumber.execute(splitted[i]);
             long multiplyValue = 1;
             long numberAfterPoint = 0;
+            int mone = 0;
+            int mechane = 0;
             String sign = "#";
             if (i + 1 < splitted.length) {
                 if (splitted[i + 1].equalsIgnoreCase("point")) {
@@ -463,7 +611,43 @@ public class Parser {
                     } else {
                         toReturn = 1;
                     }
-                } else {
+                } else if (isInteger(splitted[i+1])) {
+                    if (i+2<splitted.length) {
+                        if(splitted[i+2].equals("/")) {
+                            if (i+3<splitted.length) {
+                                if(isInteger(splitted[i+3])) {
+                                    mone = Integer.parseInt(splitted[i+1]);
+                                    mechane = Integer.parseInt(splitted[i+3]);
+                                   if (i+4<splitted.length) {
+                                       if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
+                                           multiplyValue = wordsToNumber.execute(splitted[i + 4]);
+                                            toReturn = 5;
+                                       }
+                                       else {
+                                           toReturn = 4;
+                                       }
+                                   }
+                                   else {
+                                       toReturn = 4;
+                                   }
+                                }
+                                else{
+                                    toReturn = 1;
+                                }
+                            }
+                            else {
+                                toReturn = 1;
+                            }
+                        }
+                        else{
+                            toReturn = 1;
+                        }
+                    }
+                    else {
+                        toReturn = 1;
+                    }
+                }
+                else {
                     toReturn = 1;
                 }
             } else {

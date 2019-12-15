@@ -195,3 +195,5 @@
                     indexer.addWord(new Number(value, sign));
                     numberOfParsePhrases++;
                 }
+
+
