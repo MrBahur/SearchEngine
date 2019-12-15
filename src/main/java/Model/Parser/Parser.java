@@ -100,6 +100,8 @@ public class Parser {
             } else if ((j = isNumber(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
+            } else if ((j = isSlashPhrase(splitted, i)) != 0) {
+                i += j;
             } else if ((j = isPhrase(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
@@ -111,6 +113,11 @@ public class Parser {
                 i++;
             }
         }
+    }
+
+    private int isSlashPhrase(String[] splitted, int i) {
+
+        return 0;
     }
 
     private int isPhrase(String[] splitted, int i) {
