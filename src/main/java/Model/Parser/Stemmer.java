@@ -3,7 +3,7 @@ package Model.Parser;
 import opennlp.tools.stemmer.PorterStemmer;
 
 public class Stemmer {
-    public static PorterStemmer p = new PorterStemmer();
+    private static PorterStemmer p = new PorterStemmer();
 
     public static String stem(String s) {
         return p.stem(s.replaceAll("[^a-zA-Z]", "").toLowerCase());
