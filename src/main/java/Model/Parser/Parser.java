@@ -100,7 +100,7 @@ public class Parser {
             } else if ((j = isNumber(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
-            } else if ((j = isSlashPhrase(splitted, i)) != 0) {
+            } else if ((j = isSlashPhrase(splitted, i + 1)) != 0) {
                 i += j;
             } else if ((j = isPhrase(splitted, i)) != 0) {
                 i += j;
