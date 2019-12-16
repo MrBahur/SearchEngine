@@ -115,9 +115,28 @@ public class Parser {
         }
     }
 
-    private int isSlashPhrase(String[] splitted, int i) {
-
-        return 0;
+    private int isSlashPhrase(String[] splitted, int j) {
+        int toReturn = 0;
+        String first = null;
+        String second = null;
+        if (j + 1 < splitted.length) {
+            if (splitted[j].equals("/")) {
+                if ((isInteger(splitted[j - 1]) && isInteger(splitted[j + 1])) || (isName(splitted, j - 1) == 1 && isName(splitted, j + 1) == 1)) {
+                    first = splitted[j - 1];
+                    second = splitted[j + 1];
+                    toReturn = 3;
+                    indexer.addWord(new Selection(first, second));
+                }
+                else if (!isInteger(splitted[j-1]) && !isInteger(splitted[j+1]) && !isNumeric(splitted[j-1]) && !isNumeric(splitted[j+1])
+                        && isName(splitted, j-1) == 0 && isName(splitted, j+1) == 0) {
+                    first = splitted[j - 1];
+                    second = splitted[j + 1];
+                    toReturn = 3;
+                    indexer.addWord(new Selection(first, second));
+                }
+            }
+        }
+        return toReturn;
     }
 
     private int isPhrase(String[] splitted, int i) {
@@ -724,7 +743,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
+        Parser p = new Parser("C:\\corpus");
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
