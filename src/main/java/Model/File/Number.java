@@ -18,7 +18,7 @@ public class Number extends Term {
     }
 
     public Number(double value, String sign) {
-        this(value, sign, 0, 0);
+        this(value, sign, 0, 1);
     }
 
     public Number(double value, int numerator, int denominator) {
@@ -26,7 +26,7 @@ public class Number extends Term {
     }
 
     public Number(double value) {
-        this(value, "#", 0, 0);
+        this(value, "#", 0, 1);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Number extends Term {
                 num = num / 1000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
-                if (this.numerator != 0 && this.denominator != 0) {
+                if (this.numerator != 0 && this.denominator != 1) {
                     str = d.format(num) + " " + numerator + "/" + denominator + "k";
                 } else {
                     str = d.format(num) + "k";

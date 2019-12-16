@@ -38,7 +38,7 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 3000) {
+            if (tempNumOfDocs >= 10000) {
                 //break;
             }
         }
@@ -189,7 +189,7 @@ public class Parser {
             int numberAfterPoint = 0;
             String sign = "#";
             int mone = 0;
-            int mechane = 0;
+            int mechane = 1;
             if (i + 1 < splitted.length) {
                 if (splitted[i + 1].equalsIgnoreCase("point")) {
                     if (i + 2 < splitted.length) {
@@ -291,8 +291,8 @@ public class Parser {
                         if (splitted[i + 2].equals("/")) {
                             if (i + 3 < splitted.length) {
                                 if (isInteger(splitted[i + 3])) {
-                                    mone = Integer.parseInt(splitted[i+1]);
-                                    mechane = Integer.parseInt(splitted[i+3]);
+                                    mone = Integer.parseInt(splitted[i + 1]);
+                                    mechane = Integer.parseInt(splitted[i + 3]);
                                     if (i + 4 < splitted.length) {
                                         if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
                                             multiplyValue = wordsToNumber.execute(splitted[i + 4]);
@@ -312,16 +312,14 @@ public class Parser {
                                                 } else if (i + 6 < splitted.length && splitted[i + 5].equalsIgnoreCase("U.S.") && splitted[i + 6].equalsIgnoreCase("dollars")) {
                                                     sign = "$";
                                                     toReturn = 7;
-                                                }
-                                                else {
-                                                        toReturn = 5;
+                                                } else {
+                                                    toReturn = 5;
                                                 }
                                             } else {
                                                 toReturn = 5;
                                             }
 
-                                        }
-                                        else if (splitted[i + 4].equalsIgnoreCase("%") ||
+                                        } else if (splitted[i + 4].equalsIgnoreCase("%") ||
                                                 splitted[i + 4].equalsIgnoreCase("%.") ||
                                                 splitted[i + 4].equalsIgnoreCase("percent") ||
                                                 splitted[i + 4].equalsIgnoreCase("percent.") ||
@@ -339,8 +337,7 @@ public class Parser {
                                         } else {
                                             toReturn = 4;
                                         }
-                                    }
-                                     else {
+                                    } else {
                                         toReturn = 4;
                                     }
                                 } else {
@@ -367,7 +364,7 @@ public class Parser {
             }
             indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, sign, mone, mechane));
             return toReturn;
-        }else if (splitted[i].charAt(0) == '$') {
+        } else if (splitted[i].charAt(0) == '$') {
             toReturn = 0;
             double value = 0;
             long multiplyValue = 1;
@@ -400,43 +397,36 @@ public class Parser {
                             } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 2].toLowerCase())) {
                                 multiplyValue = wordsToNumber.execute(splitted[i + 2]);
                                 toReturn = 3;
-                            }else if (isInteger(splitted[i+2])) {
-                                if (i+3 < splitted.length) {
-                                    if (splitted[i+3].equals("/")) {
-                                        if (i+4 < splitted.length) {
-                                            if (isInteger(splitted[i+4])) {
-                                                mone = Integer.parseInt(splitted[i+2]);
-                                                mechane = Integer.parseInt(splitted[i+4]);
-                                                if (i+5<splitted.length) {
+                            } else if (isInteger(splitted[i + 2])) {
+                                if (i + 3 < splitted.length) {
+                                    if (splitted[i + 3].equals("/")) {
+                                        if (i + 4 < splitted.length) {
+                                            if (isInteger(splitted[i + 4])) {
+                                                mone = Integer.parseInt(splitted[i + 2]);
+                                                mechane = Integer.parseInt(splitted[i + 4]);
+                                                if (i + 5 < splitted.length) {
                                                     if (WordsToNumber.getAllowedStrings().contains(splitted[i + 5].toLowerCase())) {
                                                         multiplyValue = wordsToNumber.execute(splitted[i + 5]);
                                                         toReturn = 6;
-                                                    }
-                                                    else {
+                                                    } else {
                                                         toReturn = 5;
                                                     }
-                                                }
-                                                else {
+                                                } else {
                                                     toReturn = 5;
                                                 }
-                                            }
-                                            else {
+                                            } else {
                                                 toReturn = 2;
                                             }
-                                        }
-                                        else {
+                                        } else {
                                             toReturn = 2;
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         toReturn = 2;
                                     }
-                                }
-                                else {
+                                } else {
                                     toReturn = 2;
                                 }
-                            }
-                            else {
+                            } else {
                                 toReturn = 2;
                             }
                         } else {
@@ -482,43 +472,36 @@ public class Parser {
                             } else {
                                 toReturn = 1;
                             }
-                        } else if (isInteger(splitted[i+1])) {
-                            if (i+2<splitted.length) {
-                                if (splitted[i+2].equals("/")) {
-                                    if (i+3<splitted.length) {
-                                        if (isInteger(splitted[i+3])) {
-                                            mone = Integer.parseInt(splitted[i+1]);
-                                            mechane = Integer.parseInt(splitted[i+3]);
-                                            if (i+4<splitted.length) {
+                        } else if (isInteger(splitted[i + 1])) {
+                            if (i + 2 < splitted.length) {
+                                if (splitted[i + 2].equals("/")) {
+                                    if (i + 3 < splitted.length) {
+                                        if (isInteger(splitted[i + 3])) {
+                                            mone = Integer.parseInt(splitted[i + 1]);
+                                            mechane = Integer.parseInt(splitted[i + 3]);
+                                            if (i + 4 < splitted.length) {
                                                 if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
                                                     multiplyValue = wordsToNumber.execute(splitted[i + 4]);
                                                     toReturn = 5;
-                                                }
-                                                else {
+                                                } else {
                                                     toReturn = 4;
                                                 }
-                                            }
-                                            else {
+                                            } else {
                                                 toReturn = 4;
                                             }
-                                        }
-                                        else {
+                                        } else {
                                             toReturn = 1;
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         toReturn = 1;
                                     }
-                                }
-                                else {
+                                } else {
                                     toReturn = 1;
                                 }
-                            }
-                            else {
+                            } else {
                                 toReturn = 1;
                             }
-                        }
-                        else {
+                        } else {
                             toReturn = 1;
                         }
                     } else {
@@ -611,43 +594,36 @@ public class Parser {
                     } else {
                         toReturn = 1;
                     }
-                } else if (isInteger(splitted[i+1])) {
-                    if (i+2<splitted.length) {
-                        if(splitted[i+2].equals("/")) {
-                            if (i+3<splitted.length) {
-                                if(isInteger(splitted[i+3])) {
-                                    mone = Integer.parseInt(splitted[i+1]);
-                                    mechane = Integer.parseInt(splitted[i+3]);
-                                   if (i+4<splitted.length) {
-                                       if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
-                                           multiplyValue = wordsToNumber.execute(splitted[i + 4]);
+                } else if (isInteger(splitted[i + 1])) {
+                    if (i + 2 < splitted.length) {
+                        if (splitted[i + 2].equals("/")) {
+                            if (i + 3 < splitted.length) {
+                                if (isInteger(splitted[i + 3])) {
+                                    mone = Integer.parseInt(splitted[i + 1]);
+                                    mechane = Integer.parseInt(splitted[i + 3]);
+                                    if (i + 4 < splitted.length) {
+                                        if (WordsToNumber.getAllowedStrings().contains(splitted[i + 4].toLowerCase())) {
+                                            multiplyValue = wordsToNumber.execute(splitted[i + 4]);
                                             toReturn = 5;
-                                       }
-                                       else {
-                                           toReturn = 4;
-                                       }
-                                   }
-                                   else {
-                                       toReturn = 4;
-                                   }
-                                }
-                                else{
+                                        } else {
+                                            toReturn = 4;
+                                        }
+                                    } else {
+                                        toReturn = 4;
+                                    }
+                                } else {
                                     toReturn = 1;
                                 }
-                            }
-                            else {
+                            } else {
                                 toReturn = 1;
                             }
-                        }
-                        else{
+                        } else {
                             toReturn = 1;
                         }
-                    }
-                    else {
+                    } else {
                         toReturn = 1;
                     }
-                }
-                else {
+                } else {
                     toReturn = 1;
                 }
             } else {
