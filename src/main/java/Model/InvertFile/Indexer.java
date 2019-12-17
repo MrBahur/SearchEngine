@@ -17,18 +17,18 @@ public class Indexer {
     private Integer currentDoc;
     private Map<Term, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Integer>> postingFiles;
-    private HashSet<Phrase> phrases;
+    private Map<Phrase, Integer> phrasesDocs;
 
     public Indexer() {
         this(16777216, 4096);
     }
 
     public Indexer(int initialWordSize, int numOfDocsInMemory) {
-        documents = new HashMap<>(NUM_OF_DOCS,8);
+        documents = new HashMap<>(NUM_OF_DOCS, 8);
         currentDoc = 1;
-        words = new HashMap<>(initialWordSize,8);
+        words = new HashMap<>(initialWordSize, 8);
         postingFiles = new HashMap<>(numOfDocsInMemory);
-        phrases = new HashSet<>();
+        phrasesDocs = new HashMap<>();
         //currentWord = 1;
         //this.currentSizeRows = currentSizeRows;
         //this.currentSizeColumns = currentSizeColumns;
@@ -58,9 +58,7 @@ public class Indexer {
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
 //            System.gc();
-        }
-        else if(currentDoc == 472525+1)
-        {
+        } else if (currentDoc == 472525 + 1) {
             //write to disc
             System.out.println(currentDoc);
         }
