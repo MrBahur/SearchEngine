@@ -64,7 +64,6 @@ public class Parser {
         }
     }
 
-    //next thing to parse - > Numbers (regular numbers)
     private boolean isNumeric(String s) {
         boolean point = false;
         for (int i = 0; i < s.length(); i++) {
@@ -102,7 +101,7 @@ public class Parser {
                 numberOfParsePhrases++;
             } else if ((j = isSlashPhrase(splitted, i + 1)) != 0) {
                 i += j;
-            } else if ((j = isPhrase(splitted, i)) != 0) {
+            } else if ((j = isPhrase2(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
             } else if ((j = isName(splitted, i)) != 0) {
@@ -193,6 +192,29 @@ public class Parser {
         }
 
         return toReturn;
+    }
+
+    private int isPhrase2(String[] splitted, int i) {
+        int length = splitted.length;
+        String[] toAdd = {null, null, null, null};
+        int j;
+        int counter = 0;
+        for (j = i; j < length && counter < 4; j++) {
+            if (isPhrase(splitted[j])) {
+                toAdd[counter] = splitted[j];
+                counter++;
+            } else if (splitted[j].equals("-")) {
+                continue;
+            } else {
+                break;
+            }
+        }
+        if (toAdd[1] != null) {
+            indexer.addWord(new Phrase(toAdd[0], toAdd[1], toAdd[2], toAdd[3]));
+            return j - i;
+        } else {
+            return 0;
+        }
     }
 
     private boolean isPhrase(String s) {

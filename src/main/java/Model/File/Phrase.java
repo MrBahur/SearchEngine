@@ -11,6 +11,10 @@ public class Phrase extends Term {
         this.value = value1 + " " + value2 + " " + value3;
     }
 
+    public Phrase(String s, String s1, String s2, String s3) {
+        value = (s + " " + s1 + ((s2 != null) ? " " + s2 : "") + ((s3 != null) ? " " + s3 : ""));
+    }
+
     @Override
     public String toString() {
         return value;
