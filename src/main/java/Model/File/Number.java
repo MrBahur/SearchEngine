@@ -48,7 +48,7 @@ public class Number extends Term {
                 num = num / 1000000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
-                if (this.numerator != 0 && this.denominator != 0) {
+                if (this.numerator != 0 && this.denominator != 1) {
                     str = d.format(num) + " " + numerator + "/" + denominator + "M";
                 } else {
                     str = d.format(num) + "M";
@@ -60,20 +60,20 @@ public class Number extends Term {
                 d.setRoundingMode(RoundingMode.DOWN);
                 if (num / 1000000 > 999999) {
                     num = num / 1000000;
-                    if (this.numerator != 0 && this.denominator != 0) {
+                    if (this.numerator != 0 && this.denominator != 1) {
                         str = d.format(num) + " " + numerator + "/" + denominator + "M";
                     } else {
                         str = d.format(num) + "M";
                     }
                 } else if (num / 1000 > 999) {
                     num = num / 1000;
-                    if (this.numerator != 0 && this.denominator != 0) {
+                    if (this.numerator != 0 && this.denominator != 1) {
                         str = d.format(num) + " " + numerator + "/" + denominator + "k";
                     } else {
                         str = d.format(num) + "k";
                     }
                 } else {
-                    if (this.numerator != 0 && this.denominator != 0) {
+                    if (this.numerator != 0 && this.denominator != 1) {
                         str = d.format(num) + " " + numerator + "/" + denominator;
                     } else {
                         str = d.format(num);
@@ -84,13 +84,13 @@ public class Number extends Term {
         } else if (sign.equals("$")) {
             if (this.value < 1000000) {
                 if (str.charAt(str.indexOf('.') + 1) == '0' && (str.length() - 1) == (str.indexOf('.') + 1)) {
-                    if (this.numerator != 0 && this.denominator != 0) {
+                    if (this.numerator != 0 && this.denominator != 1) {
                         str = str.substring(0, str.indexOf('.')) + " " + numerator + "/" + denominator + " Dollars";
                     } else {
                         str = str.substring(0, str.indexOf('.')) + " Dollars";
                     }
                 } else {
-                    if (this.numerator != 0 && this.denominator != 0) {
+                    if (this.numerator != 0 && this.denominator != 1) {
                         str = this.value + " " + numerator + "/" + denominator + " Dollars";
                     } else {
                         str = this.value + " Dollars";
@@ -100,7 +100,7 @@ public class Number extends Term {
                 num = num / 1000000;
                 DecimalFormat d = new DecimalFormat("###.###");
                 d.setRoundingMode(RoundingMode.DOWN);
-                if (this.numerator != 0 && this.denominator != 0) {
+                if (this.numerator != 0 && this.denominator != 1) {
                     str = d.format(num) + " " + numerator + "/" + denominator + " M Dollars";
                 } else {
                     str = d.format(num) + " M Dollars";
@@ -110,13 +110,13 @@ public class Number extends Term {
         } else if (sign.equals("%")) {
             str = Double.toString(this.value);
             if (str.charAt(str.indexOf('.') + 1) == '0' && (str.length() - 1) == (str.indexOf('.') + 1)) {
-                if (this.numerator != 0 && this.denominator != 0) {
+                if (this.numerator != 0 && this.denominator != 1) {
                     str = str.substring(0, str.indexOf('.')) + " " + numerator + "/" + denominator + this.sign;
                 } else {
                     str = str.substring(0, str.indexOf('.')) + this.sign;
                 }
             } else {
-                if (this.numerator != 0 && this.denominator != 0) {
+                if (this.numerator != 0 && this.denominator != 1) {
                     str = this.value + " " + numerator + "/" + denominator + this.sign;
                 } else {
                     str = this.value + this.sign;
