@@ -2,6 +2,7 @@ package Model.InvertFile;
 
 import Model.File.Phrase;
 import Model.File.Term;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +17,7 @@ public class Indexer {
     private Map<Integer, String> documents;// doc index to doc number
     private Integer currentDoc;
     private Map<Term, Integer> words;//words to amount in corpus Map
-    private Map<Term, LinkedList<Integer>> postingFiles;
+    private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
     private Map<Phrase, Integer> phrasesDocs;
 
     public Indexer() {
@@ -25,7 +26,7 @@ public class Indexer {
 
     public Indexer(int initialWordSize, int numOfDocsInMemory) {
         documents = new HashMap<>(NUM_OF_DOCS, 8);
-        currentDoc = 1;
+        currentDoc = 0;
         words = new HashMap<>(initialWordSize, 8);
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
@@ -46,8 +47,13 @@ public class Indexer {
         }
         if (!postingFiles.containsKey(p)) {
             postingFiles.put(p, new LinkedList<>());
+            postingFiles.get(p).addLast(new Pair<>(currentDoc, 1));
+        } else {
+            Pair<Integer, Integer> pair = postingFiles.get(p).getLast();
+            postingFiles.get(p).removeLast();
+            postingFiles.get(p).addLast(new Pair<>(pair.getKey(), pair.getValue()+1));
         }
-        postingFiles.get(p).add(currentDoc);
+
     }
 
     public void addDoc(String doc) {
