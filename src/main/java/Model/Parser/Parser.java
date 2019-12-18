@@ -18,15 +18,17 @@ public class Parser {
             );
     private ReadFile<String> readFile;
     private Indexer indexer;
+    private boolean toStem;
     private WordsToNumber wordsToNumber;
     private static long numberOfParsePhrases = 0;
     private static long numberOfNotParsePhrases = 0;
     private static int tempNumOfDocs = 0;
 
-    public Parser(String path) {
+    public Parser(String path, boolean toStem) {
         readFile = new ReadFile<>(path);
         indexer = new Indexer();
         wordsToNumber = new WordsToNumber();
+        this.toStem = toStem;
     }
 
     public void parse() {
@@ -107,7 +109,13 @@ public class Parser {
                 i += j;
                 numberOfParsePhrases++;
             } else {
-                numberOfNotParsePhrases++;
+                Word w = new Word(splitted[i]);
+                if (w.isGood()) {
+                    indexer.addWord(w);
+                    numberOfParsePhrases++;
+                } else {
+                    numberOfNotParsePhrases++;
+                }
                 i++;
             }
         }
@@ -786,7 +794,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus");
+        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

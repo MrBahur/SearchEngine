@@ -36,6 +36,7 @@ public class Indexer {
         //matrix = new int[currentSizeRows][currentSizeColumns];
     }
 
+    //TBD Repair it to hold tf-idf for every doc and word
     public void addWord(Term p) {
         if (words.containsKey(p)) {
             Integer amount = words.get(p);
