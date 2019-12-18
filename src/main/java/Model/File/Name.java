@@ -4,7 +4,7 @@ public class Name extends Term {
     private String value;
 
     public Name(String value) {
-        this.value = value.toUpperCase();
+        this.value = GarbageRemove.remove(value.toUpperCase());
     }
 
     @Override
@@ -35,4 +35,7 @@ public class Name extends Term {
         System.out.println(n.toString());
     }
 
+    public boolean isGood() {
+        return this.value.length() > 2;
+    }
 }

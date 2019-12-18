@@ -4,7 +4,7 @@ public class Word extends Term {
     private String value;
 
     public Word(String value) {
-        this.value = value.toLowerCase();
+        this.value = GarbageRemove.remove(value.toLowerCase());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Word extends Term {
     }
 
     public static void main(String[] args) {
-       Word w = new Word("Hello");
+        Word w = new Word("Hello");
         System.out.println(w.toString());
     }
 

@@ -5,8 +5,8 @@ public class Selection extends Term {
     private String second;
 
     public Selection(String first, String second) {
-        this.first = first;
-        this.second = second;
+        this.first = GarbageRemove.remove(first);
+        this.second = GarbageRemove.remove(second);
     }
 
     @Override
@@ -31,5 +31,9 @@ public class Selection extends Term {
     public static void main(String[] args) {
         Selection s = new Selection("yes", "no");
         System.out.println(s.toString());
+    }
+
+    public boolean isGood() {
+        return !(this.first.equals("") || this.second.equals(""));
     }
 }

@@ -5,7 +5,6 @@ import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -129,70 +128,73 @@ public class Parser {
                         && isName(splitted, j - 1) == 0 && isName(splitted, j + 1) == 0) {
                     first = splitted[j - 1];
                     second = splitted[j + 1];
-                    toReturn = 3;
-                    indexer.addWord(new Selection(first, second));
+                    Selection s = new Selection(first, second);
+                    if (s.isGood()) {
+                        toReturn = 3;
+                        indexer.addWord(s);
+                    }
                 }
             }
         }
         return toReturn;
     }
 
-    private int isPhrase(String[] splitted, int i) {
-        int toReturn = 0;
-        if (isPhrase(splitted[i])) {
-            if (i + 1 < splitted.length) {
-                if (splitted[i + 1].equals("-")) {
-                    if (i + 2 < splitted.length) {
-                        if (isPhrase(splitted[i + 2])) {
-                            if (i + 3 < splitted.length) {
-                                if (splitted[i + 3].equals("-")) {
-                                    if (i + 4 < splitted.length) {
-                                        if (isPhrase(splitted[i + 4])) {
-                                            indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 4]));//A-A-A
-                                            toReturn = 5;
-                                        }
-                                    }
-                                } else if (isPhrase(splitted[i + 3])) {
-                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 3]));//A-AA
-                                    toReturn = 4;
-                                } else {
-                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2]));
-                                    toReturn = 3;//A-A
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (isPhrase(splitted[i + 1])) {
-                        if (i + 2 < splitted.length) {
-                            if (splitted[i + 2].equals("-")) {
-                                if (i + 3 < splitted.length) {
-                                    if (isPhrase(splitted[i + 3])) {
-                                        indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 3]));
-                                        toReturn = 4;//AA-A
-                                    }
-                                }
-                            } else if (isPhrase(splitted[i + 2])) {
-                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 2]));
-                                toReturn = 3;//AAA
-                            } else {
-                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1]));
-                                toReturn = 2;//AA
-                            }
-                        }
-                    } else {
-                        indexer.addWord(new Name(splitted[i]));
-                        toReturn = 1;
-                    }
-                }
-            } else {
-                indexer.addWord(new Name(splitted[i]));
-                toReturn = 1;
-            }
-        }
-
-        return toReturn;
-    }
+//    private int isPhrase(String[] splitted, int i) {
+//        int toReturn = 0;
+//        if (isPhrase(splitted[i])) {
+//            if (i + 1 < splitted.length) {
+//                if (splitted[i + 1].equals("-")) {
+//                    if (i + 2 < splitted.length) {
+//                        if (isPhrase(splitted[i + 2])) {
+//                            if (i + 3 < splitted.length) {
+//                                if (splitted[i + 3].equals("-")) {
+//                                    if (i + 4 < splitted.length) {
+//                                        if (isPhrase(splitted[i + 4])) {
+//                                            indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 4]));//A-A-A
+//                                            toReturn = 5;
+//                                        }
+//                                    }
+//                                } else if (isPhrase(splitted[i + 3])) {
+//                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 3]));//A-AA
+//                                    toReturn = 4;
+//                                } else {
+//                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2]));
+//                                    toReturn = 3;//A-A
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    if (isPhrase(splitted[i + 1])) {
+//                        if (i + 2 < splitted.length) {
+//                            if (splitted[i + 2].equals("-")) {
+//                                if (i + 3 < splitted.length) {
+//                                    if (isPhrase(splitted[i + 3])) {
+//                                        indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 3]));
+//                                        toReturn = 4;//AA-A
+//                                    }
+//                                }
+//                            } else if (isPhrase(splitted[i + 2])) {
+//                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 2]));
+//                                toReturn = 3;//AAA
+//                            } else {
+//                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1]));
+//                                toReturn = 2;//AA
+//                            }
+//                        }
+//                    } else {
+//                        indexer.addWord(new Name(splitted[i]));
+//                        toReturn = 1;
+//                    }
+//                }
+//            } else {
+//                indexer.addWord(new Name(splitted[i]));
+//                toReturn = 1;
+//            }
+//        }
+//
+//        return toReturn;
+//    }
 
     private int isPhrase2(String[] splitted, int i) {
         int length = splitted.length;
@@ -210,8 +212,13 @@ public class Parser {
             }
         }
         if (toAdd[1] != null) {
-            indexer.addWord(new Phrase(toAdd[0], toAdd[1], toAdd[2], toAdd[3]));
-            return j - i;
+            Phrase p = new Phrase(toAdd[0], toAdd[1], toAdd[2], toAdd[3]);
+            if (p.isGood()) {
+                indexer.addWord(p);
+                return j - i;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -696,14 +703,24 @@ public class Parser {
                         toReturn = 5;
                     }
                 }
-                indexer.addWord(new Range(first, second, third));
-                return toReturn;
+                Range r = new Range(first, second, third);
+                if (r.isGood()) {
+                    indexer.addWord(r);
+                    return toReturn;
+                } else {
+                    return 0;
+                }
             } else if (splitted[j - 1].equalsIgnoreCase("Between")) {
                 if (j + 2 < splitted.length && splitted[j + 1].equalsIgnoreCase("and")) {
                     first = splitted[j];
                     second = splitted[j + 2];
-                    indexer.addWord(new Range(first, second, third));
-                    return 4;
+                    Range r = new Range(first, second, third);
+                    if (r.isGood()) {
+                        indexer.addWord(r);
+                        return 4;
+                    } else {
+                        return 0;
+                    }
                 }
             }
         }
@@ -712,8 +729,13 @@ public class Parser {
 
     private int isName(String[] splitted, int i) {
         if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
-            indexer.addWord(new Name(splitted[i]));
-            return 1;
+            Name n = new Name(splitted[i]);
+            if (n.isGood()) {
+                indexer.addWord(new Name(splitted[i]));
+                return 1;
+            } else {
+                return 0;
+            }
         }
         return 0;
     }

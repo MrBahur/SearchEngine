@@ -13,6 +13,7 @@ public class Phrase extends Term {
 
     public Phrase(String s, String s1, String s2, String s3) {
         value = (s + " " + s1 + ((s2 != null) ? " " + s2 : "") + ((s3 != null) ? " " + s3 : ""));
+        value = GarbageRemove.removeWithoutFew(value);
     }
 
     @Override
@@ -31,5 +32,9 @@ public class Phrase extends Term {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    public boolean isGood() {
+        return !value.equals("");
     }
 }
