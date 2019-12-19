@@ -59,7 +59,7 @@ public class Range extends Term {
 
     public boolean isGood() {
         if (right == null) {
-            return !(left.equals("") || middle.equals(""));
+            return left.length() >= 2 && middle.length() >= 1 || left.length() >= 1 && middle.length() >= 2;
         } else {
             return !(left.equals("") || middle.equals("") || right.equals(""));
         }

@@ -34,6 +34,6 @@ public class Selection extends Term {
     }
 
     public boolean isGood() {
-        return !(this.first.equals("") || this.second.equals(""));
+        return this.first.length() >= 1 && this.second.length() >= 2 || this.first.length() >= 2 && this.second.length() >= 1;
     }
 }
