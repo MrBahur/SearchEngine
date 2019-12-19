@@ -40,7 +40,7 @@ public class Parser {
                 tempNumOfDocs += 1;
             }
             if (tempNumOfDocs >= 10000) {
-                //break;
+                break;
             }
         }
     }

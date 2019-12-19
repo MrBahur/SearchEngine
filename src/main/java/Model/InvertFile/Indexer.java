@@ -16,7 +16,7 @@ public class Indexer {
     private static final int NUM_OF_DOCS = 472527;
     private Map<Integer, String> documents;// doc index to doc number
     private Integer currentDoc;
-    private Map<Term, Integer> words;//words to amount in corpus Map
+    private Map<String, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
     private Map<Phrase, Integer> phrasesDocs;
 
@@ -39,11 +39,11 @@ public class Indexer {
 
     //TBD Repair it to hold tf-idf for every doc and word
     public void addWord(Term p) {
-        if (words.containsKey(p)) {
-            Integer amount = words.get(p);
-            words.replace(p, amount + 1);
+        if (words.containsKey(p.toString())) {
+            Integer amount = words.get(p.toString());
+            words.replace(p.toString(), amount + 1);
         } else {
-            words.put(p, 1);
+            words.put(p.toString(), 1);
         }
         if (!postingFiles.containsKey(p)) {
             postingFiles.put(p, new LinkedList<>());
