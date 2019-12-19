@@ -34,6 +34,9 @@ public class Number extends Term {
         String str = Double.toString(this.value);
         double num = this.value;
         if (sign.equals("#")) {
+            if (this.value == 0 && this.numerator != 0 && this.denominator != 1) {
+                str = numerator + "/" + denominator;
+            }
             if (this.value > 999 && this.value < 1000000) {
                 num = num / 1000;
                 DecimalFormat d = new DecimalFormat("###.###");

@@ -25,9 +25,9 @@ public class Indexer {
     }
 
     public Indexer(int initialWordSize, int numOfDocsInMemory) {
-        documents = new HashMap<>(NUM_OF_DOCS, 8);
+        documents = new HashMap<>(NUM_OF_DOCS, 1);
         currentDoc = 0;
-        words = new HashMap<>(initialWordSize, 8);
+        words = new HashMap<>(initialWordSize, 4);
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
         //currentWord = 1;

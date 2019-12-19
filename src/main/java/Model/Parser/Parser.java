@@ -97,12 +97,13 @@ public class Parser {
             } else if ((j = isDate(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
+            } else if ((j = isSelection(splitted, i + 1)) != 0) {
+                i += j;
+                numberOfParsePhrases++;
             } else if ((j = isNumber(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
-            } else if ((j = isSlashPhrase(splitted, i + 1)) != 0) {
-                i += j;
-            } else if ((j = isPhrase2(splitted, i)) != 0) {
+            } else if ((j = isPhrase(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
             } else if ((j = isName(splitted, i)) != 0) {
@@ -121,7 +122,7 @@ public class Parser {
         }
     }
 
-    private int isSlashPhrase(String[] splitted, int j) {
+    private int isSelection(String[] splitted, int j) {
         int toReturn = 0;
         String first = null;
         String second = null;
@@ -147,64 +148,7 @@ public class Parser {
         return toReturn;
     }
 
-//    private int isPhrase(String[] splitted, int i) {
-//        int toReturn = 0;
-//        if (isPhrase(splitted[i])) {
-//            if (i + 1 < splitted.length) {
-//                if (splitted[i + 1].equals("-")) {
-//                    if (i + 2 < splitted.length) {
-//                        if (isPhrase(splitted[i + 2])) {
-//                            if (i + 3 < splitted.length) {
-//                                if (splitted[i + 3].equals("-")) {
-//                                    if (i + 4 < splitted.length) {
-//                                        if (isPhrase(splitted[i + 4])) {
-//                                            indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 4]));//A-A-A
-//                                            toReturn = 5;
-//                                        }
-//                                    }
-//                                } else if (isPhrase(splitted[i + 3])) {
-//                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2], splitted[i + 3]));//A-AA
-//                                    toReturn = 4;
-//                                } else {
-//                                    indexer.addWord(new Phrase(splitted[i], splitted[i + 2]));
-//                                    toReturn = 3;//A-A
-//                                }
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    if (isPhrase(splitted[i + 1])) {
-//                        if (i + 2 < splitted.length) {
-//                            if (splitted[i + 2].equals("-")) {
-//                                if (i + 3 < splitted.length) {
-//                                    if (isPhrase(splitted[i + 3])) {
-//                                        indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 3]));
-//                                        toReturn = 4;//AA-A
-//                                    }
-//                                }
-//                            } else if (isPhrase(splitted[i + 2])) {
-//                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1], splitted[i + 2]));
-//                                toReturn = 3;//AAA
-//                            } else {
-//                                indexer.addWord(new Phrase(splitted[i], splitted[i + 1]));
-//                                toReturn = 2;//AA
-//                            }
-//                        }
-//                    } else {
-//                        indexer.addWord(new Name(splitted[i]));
-//                        toReturn = 1;
-//                    }
-//                }
-//            } else {
-//                indexer.addWord(new Name(splitted[i]));
-//                toReturn = 1;
-//            }
-//        }
-//
-//        return toReturn;
-//    }
-
-    private int isPhrase2(String[] splitted, int i) {
+    private int isPhrase(String[] splitted, int i) {
         int length = splitted.length;
         String[] toAdd = {null, null, null, null};
         int j;
