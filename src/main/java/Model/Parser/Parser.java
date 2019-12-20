@@ -774,6 +774,7 @@ public class Parser {
         long start = System.currentTimeMillis();
         Parser p = new Parser("F:\\Study\\SearchEngine", true);
         p.parse();
+        p.indexer.removeSinglePhrases();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         Map<Integer, String> documents = p.indexer.getDocuments();

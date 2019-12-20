@@ -2,18 +2,22 @@ package Model.File;
 
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Scanner;
 
+/**
+ * they way we represent a doc in the memory
+ */
 public class MyDocument {
     private String docNumber;
-    private ArrayList<Node> children;
     private Text title;
     private Text text;
 
+    /**
+     * constructor for docs that gets the text from <Doc> to</Doc>
+     * and creates Text and title
+     * @param plainText
+     */
     public MyDocument(String plainText) {
         BufferedReader bufferedReader = new BufferedReader(new StringReader(plainText));
         boolean foundText = false;
@@ -69,18 +73,32 @@ public class MyDocument {
         }
     }
 
+    /**
+     * getter for doc number
+     * @return docNumber
+     */
     public String getDocNumber() {
         return docNumber;
     }
 
+    /**
+     * getter for text
+     * @return text as Text object
+     */
     public Text getText() {
         return this.text;
     }
-
+    /**
+     * getter for title
+     * @return title as Text object
+     */
     public Text getTitle() {
         return title;
     }
 
+    /**
+     * debug function that helps us dind
+     */
     public void printDoc() {
         System.out.println("Number: " + this.docNumber);
         System.out.println("Title:");

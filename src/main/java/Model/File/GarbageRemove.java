@@ -25,6 +25,11 @@ public class GarbageRemove {
             return s.replaceAll("[^a-zA-Z\\- ]", "");
         } else return null;
     }
+    /**
+     * remove all chars that aren't a-z,A-Z,1-9
+     * @param s the string to remove chars from
+     * @return string without the chars that above
+     */
     public static String removeWithoutNumbers(String s) {
         if (s != null) {
             return s.replaceAll("[^a-zA-Z1-9]", "");

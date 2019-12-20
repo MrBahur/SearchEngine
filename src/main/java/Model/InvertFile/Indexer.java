@@ -20,7 +20,7 @@ public class Indexer {
     private Integer currentDoc;
     private Map<String, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
-    private Map<Phrase, Integer> phrasesDocs;
+    private Map<String, Integer> phrasesDocs;
     private boolean toStem;
 
     public Indexer(boolean toStem) {
@@ -34,15 +34,26 @@ public class Indexer {
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
         this.toStem = toStem;
-        //currentWord = 1;
-        //this.currentSizeRows = currentSizeRows;
-        //this.currentSizeColumns = currentSizeColumns;
-        //words = new MyDictionary();
-        //matrix = new int[currentSizeRows][currentSizeColumns];
     }
 
-    //TBD Repair it to hold tf-idf for every doc and word
+    public void removeSinglePhrases() {
+        for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
+            words.remove(entry.getKey());
+        }
+    }
+
     public void addWord(Term p) {
+        if (p instanceof Phrase) {
+            if (words.containsKey(p.toString())) {
+                if (phrasesDocs.containsKey(p.toString())) {
+                    if (!phrasesDocs.get(p.toString()).equals(currentDoc)) {
+                        phrasesDocs.remove(p.toString());
+                    }
+                }
+            } else {
+                phrasesDocs.put(p.toString(), currentDoc);
+            }
+        }
         if (p instanceof Word) {
             if (words.containsKey(p.toString().toUpperCase())) {
                 Integer num = words.get(p.toString().toUpperCase());
@@ -52,7 +63,7 @@ public class Indexer {
         }
         if (p instanceof Name) {
             if (words.containsKey(p.toString().toLowerCase())) {
-                p = new Word(p.toString(),toStem);
+                p = new Word(p.toString(), toStem);
             }
         }
         if (words.containsKey(p.toString())) {
