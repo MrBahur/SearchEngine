@@ -1,13 +1,15 @@
 package Model.Parser;
 
 import Model.File.*;
+import Model.File.Date;
 import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 public class Parser {
     private static final List<String> MONTHS = Arrays.asList
@@ -23,12 +25,24 @@ public class Parser {
     private static long numberOfParsePhrases = 0;
     private static long numberOfNotParsePhrases = 0;
     private static int tempNumOfDocs = 0;
+    private static Set<String> stopWords = new HashSet<>();
 
     public Parser(String path, boolean toStem) {
         readFile = new ReadFile<>(path + "\\corpus");
         indexer = new Indexer();
         wordsToNumber = new WordsToNumber();
         this.toStem = toStem;
+        BufferedReader reader;
+        String line = null;
+        try {
+            reader = new BufferedReader(new FileReader(path + "\\05 stop_words.txt"));
+            do {
+                line = reader.readLine();
+                stopWords.add(line);
+            } while (line != null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void parse() {
@@ -121,17 +135,19 @@ public class Parser {
                 i += j;
                 numberOfParsePhrases++;
             } else {
-                Word w;
-                if (toStem) {
-                    w = new Word(splitted[i], true);
-                } else {
-                    w = new Word(splitted[i], false);
-                }
-                if (w.isGood()) {
-                    indexer.addWord(w);
-                    numberOfParsePhrases++;
-                } else {
-                    numberOfNotParsePhrases++;
+                if (!stopWords.contains(splitted[i].toLowerCase())) {
+                    Word w;
+                    if (toStem) {
+                        w = new Word(splitted[i], true);
+                    } else {
+                        w = new Word(splitted[i], false);
+                    }
+                    if (w.isGood()) {
+                        indexer.addWord(w);
+                        numberOfParsePhrases++;
+                    } else {
+                        numberOfNotParsePhrases++;
+                    }
                 }
                 i++;
             }
@@ -695,6 +711,9 @@ public class Parser {
     }
 
     private int isName(String[] splitted, int i) {
+        if (stopWords.contains(splitted[i].toLowerCase())) {
+            return 0;
+        }
         if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
             Name n = new Name(splitted[i]);
             if (n.isGood()) {
@@ -718,7 +737,7 @@ public class Parser {
                     }
                 }
             }
-        } else if (splitted.length > i + 1 && isMonth(splitted[i])) {//MM-DD OR MM-YYY
+        } else if (splitted.length > i + 1 && isMonth(splitted[i])) {//MM-DD OR MM-YYYY
             if (isInteger(splitted[i + 1]) || isIntegerEndWithPoint(splitted[i + 1])) {
                 if (splitted[i + 1].length() < 3) {
                     int yearOrDay = (int) Double.parseDouble(splitted[i + 1]);
