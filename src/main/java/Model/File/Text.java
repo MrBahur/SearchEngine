@@ -2,7 +2,7 @@ package Model.File;
 
 import java.util.ArrayList;
 
-public class Text extends Node {
+public class Text {
     private ArrayList<Term> terms;
     private String plainText;
 

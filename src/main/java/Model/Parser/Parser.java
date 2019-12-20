@@ -57,6 +57,7 @@ public class Parser {
                 //break;
             }
         }
+        this.indexer.markEnd();
     }
 
     private void parse(MyDocument d) {
@@ -778,7 +779,7 @@ public class Parser {
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         System.out.println("Number of documents in the corpus:" + Indexer.NUM_OF_DOCS);
-        System.out.println("Number of types of word in the corpus:" + p.indexer.getWords().size());
+        System.out.println("Number of types of word in the corpus:" + p.indexer.getDictionary().size());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
         System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));
