@@ -25,7 +25,7 @@ public class Parser {
     private static int tempNumOfDocs = 0;
 
     public Parser(String path, boolean toStem) {
-        readFile = new ReadFile<>(path);
+        readFile = new ReadFile<>(path + "\\corpus");
         indexer = new Indexer();
         wordsToNumber = new WordsToNumber();
         this.toStem = toStem;
@@ -40,7 +40,7 @@ public class Parser {
                 tempNumOfDocs += 1;
             }
             if (tempNumOfDocs >= 10000) {
-                break;
+                //break;
             }
         }
     }
@@ -88,6 +88,17 @@ public class Parser {
         return true;
     }
 
+    private boolean isIntegerEndWithPoint(String s) {
+        int i = 0;
+        for (; i < s.length() - 1; i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                return false;
+            }
+        }
+        return s.charAt(i) == '.' && i != 0;
+
+    }
+
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; ) {
             int j = 0;
@@ -110,7 +121,12 @@ public class Parser {
                 i += j;
                 numberOfParsePhrases++;
             } else {
-                Word w = new Word(splitted[i]);
+                Word w;
+                if (toStem) {
+                    w = new Word(splitted[i], true);
+                } else {
+                    w = new Word(splitted[i], false);
+                }
                 if (w.isGood()) {
                     indexer.addWord(w);
                     numberOfParsePhrases++;
@@ -133,8 +149,7 @@ public class Parser {
                     second = splitted[j + 1];
                     toReturn = 3;
                     indexer.addWord(new Number(0, "#", Integer.parseInt(first), Integer.parseInt(second)));
-                } else if (!isInteger(splitted[j - 1]) && !isInteger(splitted[j + 1]) && !isNumeric(splitted[j - 1]) && !isNumeric(splitted[j + 1])
-                        && isName(splitted, j - 1) == 0 && isName(splitted, j + 1) == 0) {
+                } else {
                     first = splitted[j - 1];
                     second = splitted[j + 1];
                     Selection s = new Selection(first, second);
@@ -694,9 +709,9 @@ public class Parser {
 
     private int isDate(String[] splitted, int i) {
         if (splitted[i].length() < 3) {//DD-MM
-            if (isInteger(splitted[i])) {
+            if (isInteger(splitted[i]) || isIntegerEndWithPoint(splitted[i])) {
                 if (splitted.length > i + 1 && isMonth(splitted[i + 1])) {
-                    int day = Integer.parseInt(splitted[i]);
+                    int day = (int) Double.parseDouble(splitted[i]);
                     if (day <= 31 && day >= 1) {
                         indexer.addWord(new Date(day, MONTHS.indexOf(splitted[i + 1].toUpperCase()) % 12 + 1, -1));
                         return 2;
@@ -704,9 +719,9 @@ public class Parser {
                 }
             }
         } else if (splitted.length > i + 1 && isMonth(splitted[i])) {//MM-DD OR MM-YYY
-            if (isInteger(splitted[i + 1])) {
+            if (isInteger(splitted[i + 1]) || isIntegerEndWithPoint(splitted[i + 1])) {
                 if (splitted[i + 1].length() < 3) {
-                    int yearOrDay = Integer.parseInt(splitted[i + 1]);
+                    int yearOrDay = (int) Double.parseDouble(splitted[i + 1]);
                     if (yearOrDay > 31) {
                         indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, yearOrDay));
                         return 2;
@@ -714,8 +729,8 @@ public class Parser {
                         indexer.addWord(new Date(yearOrDay, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, -1));
                         return 2;
                     }
-                } else if (splitted[i + 1].length() == 4) {
-                    int year = Integer.parseInt(splitted[i + 1]);
+                } else if (splitted[i + 1].length() == 4 || splitted[i + 1].length() == 5) {
+                    int year = (int) Double.parseDouble(splitted[i + 1]);
                     if (year < 2500) {
                         indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, year));
                         return 2;
@@ -738,7 +753,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine\\corpus", false);
+        Parser p = new Parser("F:\\Study\\SearchEngine", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

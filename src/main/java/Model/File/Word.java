@@ -1,10 +1,23 @@
 package Model.File;
 
+import Model.Parser.Stemmer;
+import sun.plugin.services.WPlatformService;
+
 public class Word extends Term {
     private String value;
+    private boolean stemmed;
 
     public Word(String value) {
         this.value = GarbageRemove.remove(value.toLowerCase());
+    }
+
+    public Word(String value, boolean stem) {
+        if (stem) {
+            this.value = Stemmer.stem(value);
+        } else {
+            this.value = GarbageRemove.remove(value.toLowerCase());
+        }
+        this.stemmed = stem;
     }
 
     @Override
@@ -31,7 +44,7 @@ public class Word extends Term {
     }
 
     public boolean isGood() {
-        return value.length() > 2;
+        return value.length() > 1;
     }
 
     public static void main(String[] args) {

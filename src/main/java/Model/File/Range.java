@@ -6,9 +6,9 @@ public class Range extends Term {
     private String right;
 
     public Range(String left, String middle, String right) {
-        this.left = GarbageRemove.remove(left);
-        this.middle = GarbageRemove.remove(middle);
-        this.right = GarbageRemove.remove(right);
+        this.left = GarbageRemove.removeWithoutNumbers(left);
+        this.middle = GarbageRemove.removeWithoutNumbers(middle);
+        this.right = GarbageRemove.removeWithoutNumbers(right);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Range extends Term {
 
     public boolean isGood() {
         if (right == null) {
-            return left.length() >= 2 && middle.length() >= 1 || left.length() >= 1 && middle.length() >= 2;
+            return left.length() >= 1 && middle.length() >= 1;
         } else {
             return !(left.equals("") || middle.equals("") || right.equals(""));
         }

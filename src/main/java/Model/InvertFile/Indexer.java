@@ -65,9 +65,9 @@ public class Indexer {
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
 //            System.gc();
-        } else if (currentDoc == 472525 + 1) {
+        } else if (currentDoc == 472525) {
             //write to disc
-            System.out.println(currentDoc);
+            System.out.println("Wrote to disc, doc number:" + currentDoc);
         }
     }
 //    private void extendColumn() {
