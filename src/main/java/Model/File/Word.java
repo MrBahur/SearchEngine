@@ -5,7 +5,6 @@ import sun.plugin.services.WPlatformService;
 
 public class Word extends Term {
     private String value;
-    private boolean stemmed;
 
     public Word(String value) {
         this.value = GarbageRemove.remove(value.toLowerCase());
@@ -17,7 +16,6 @@ public class Word extends Term {
         } else {
             this.value = GarbageRemove.remove(value.toLowerCase());
         }
-        this.stemmed = stem;
     }
 
     @Override

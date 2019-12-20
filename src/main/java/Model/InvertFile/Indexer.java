@@ -1,7 +1,9 @@
 package Model.InvertFile;
 
+import Model.File.Name;
 import Model.File.Phrase;
 import Model.File.Term;
+import Model.File.Word;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -19,17 +21,19 @@ public class Indexer {
     private Map<String, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
     private Map<Phrase, Integer> phrasesDocs;
+    private boolean toStem;
 
-    public Indexer() {
-        this(16777216, 4096);
+    public Indexer(boolean toStem) {
+        this(16777216, 4096, toStem);
     }
 
-    public Indexer(int initialWordSize, int numOfDocsInMemory) {
+    public Indexer(int initialWordSize, int numOfDocsInMemory, boolean toStem) {
         documents = new HashMap<>(NUM_OF_DOCS, 1);
         currentDoc = 0;
         words = new HashMap<>(initialWordSize, 4);
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
+        this.toStem = toStem;
         //currentWord = 1;
         //this.currentSizeRows = currentSizeRows;
         //this.currentSizeColumns = currentSizeColumns;
@@ -39,6 +43,18 @@ public class Indexer {
 
     //TBD Repair it to hold tf-idf for every doc and word
     public void addWord(Term p) {
+        if (p instanceof Word) {
+            if (words.containsKey(p.toString().toUpperCase())) {
+                Integer num = words.get(p.toString().toUpperCase());
+                words.remove(p.toString().toUpperCase());
+                words.put(p.toString(), num);
+            }
+        }
+        if (p instanceof Name) {
+            if (words.containsKey(p.toString().toLowerCase())) {
+                p = new Word(p.toString(),toStem);
+            }
+        }
         if (words.containsKey(p.toString())) {
             Integer amount = words.get(p.toString());
             words.replace(p.toString(), amount + 1);
@@ -51,7 +67,7 @@ public class Indexer {
         } else {
             Pair<Integer, Integer> pair = postingFiles.get(p).getLast();
             postingFiles.get(p).removeLast();
-            postingFiles.get(p).addLast(new Pair<>(pair.getKey(), pair.getValue()+1));
+            postingFiles.get(p).addLast(new Pair<>(pair.getKey(), pair.getValue() + 1));
         }
 
     }

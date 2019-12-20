@@ -5,6 +5,12 @@ public class Date extends Term {
     private int month;
     private int year;
 
+    /**
+     * Constructor dor date
+     * @param day the day in the month
+     * @param month the month in the year
+     * @param year the year
+     */
     public Date(int day, int month, int year) {
         this.day = day;
         this.month = month;
@@ -14,6 +20,10 @@ public class Date extends Term {
         }
     }
 
+    /**
+     * to String
+     * @return String that represent date
+     */
     @Override
     public String toString() {
         String str = "";
@@ -37,6 +47,11 @@ public class Date extends Term {
         return str;
     }
 
+    /**
+     * equals for date
+     * @param other other date
+     * @return true if those are the same dates
+     */
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof Date)) {
@@ -46,11 +61,19 @@ public class Date extends Term {
         return this.day==d.day && this.month==d.month && this.year==d.year;
     }
 
+    /**
+     * hashcode for date
+     * @return hase that represent date
+     */
     @Override
     public int hashCode() {
         return Integer.hashCode(day)*Integer.hashCode(month)*Integer.hashCode(year);
     }
 
+    /**
+     * short main for tests
+     * @param args not using this
+     */
     public static void main(String[] args) {
         Date d1 = new Date(-1,5,94);
         System.out.println(d1.toString());

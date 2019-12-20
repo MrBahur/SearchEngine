@@ -1,10 +1,16 @@
 package Model.File;
 
+import Model.Parser.Stemmer;
+
 public class Name extends Term {
     private String value;
 
-    public Name(String value) {
-        this.value = GarbageRemove.remove(value.toUpperCase());
+    public Name(String value, boolean toStem) {
+        if (toStem) {
+            this.value = Stemmer.stem(value).toUpperCase();
+        } else {
+            this.value = GarbageRemove.remove(value.toUpperCase());
+        }
     }
 
     @Override
@@ -31,7 +37,7 @@ public class Name extends Term {
     }
 
     public static void main(String[] args) {
-        Name n = new Name("Shahar");
+        Name n = new Name("Shahar",false);
         System.out.println(n.toString());
     }
 

@@ -29,7 +29,7 @@ public class Parser {
 
     public Parser(String path, boolean toStem) {
         readFile = new ReadFile<>(path + "\\corpus");
-        indexer = new Indexer();
+        indexer = new Indexer(toStem);
         wordsToNumber = new WordsToNumber();
         this.toStem = toStem;
         BufferedReader reader;
@@ -715,9 +715,9 @@ public class Parser {
             return 0;
         }
         if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
-            Name n = new Name(splitted[i]);
+            Name n = new Name(splitted[i],toStem);
             if (n.isGood()) {
-                indexer.addWord(new Name(splitted[i]));
+                indexer.addWord(new Name(splitted[i],toStem));
                 return 1;
             } else {
                 return 0;
@@ -772,7 +772,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine", false);
+        Parser p = new Parser("F:\\Study\\SearchEngine", true);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
