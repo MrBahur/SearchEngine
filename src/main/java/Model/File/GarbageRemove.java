@@ -6,6 +6,7 @@ package Model.File;
 public class GarbageRemove {
     /**
      * remove all chars that aren't a-z,A-Z
+     *
      * @param s the string to remove chars from
      * @return string without the chars that above
      */
@@ -17,6 +18,7 @@ public class GarbageRemove {
 
     /**
      * remove all chars that aren't a-z,A-Z - and space
+     *
      * @param s the string to remove chars from
      * @return string without the chars that above
      */
@@ -25,8 +27,10 @@ public class GarbageRemove {
             return s.replaceAll("[^a-zA-Z\\- ]", "");
         } else return null;
     }
+
     /**
      * remove all chars that aren't a-z,A-Z,1-9
+     *
      * @param s the string to remove chars from
      * @return string without the chars that above
      */

@@ -3,12 +3,23 @@ package Model.File;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
+/**
+ * the way we represent Number in Memory
+ */
 public class Number extends Term {
     private double value;
     private String sign;
     private int numerator;
     private int denominator;
 
+    /**
+     * Constructor for number
+     *
+     * @param value       the numeric value of the number
+     * @param sign        the sign of the number (# for num, % for percentage, $ for price)
+     * @param numerator   the numerator of a fraction, if not exist, default value is 0
+     * @param denominator the denominator of a fraction, if not exist, default value is 1
+     */
     public Number(double value, String sign, int numerator, int denominator) {
         this.value = value;
         this.sign = sign;

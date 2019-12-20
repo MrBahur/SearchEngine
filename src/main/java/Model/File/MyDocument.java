@@ -16,6 +16,7 @@ public class MyDocument {
     /**
      * constructor for docs that gets the text from <Doc> to</Doc>
      * and creates Text and title
+     *
      * @param plainText
      */
     public MyDocument(String plainText) {
@@ -75,6 +76,7 @@ public class MyDocument {
 
     /**
      * getter for doc number
+     *
      * @return docNumber
      */
     public String getDocNumber() {
@@ -83,13 +85,16 @@ public class MyDocument {
 
     /**
      * getter for text
+     *
      * @return text as Text object
      */
     public Text getText() {
         return this.text;
     }
+
     /**
      * getter for title
+     *
      * @return title as Text object
      */
     public Text getTitle() {

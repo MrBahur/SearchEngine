@@ -20,6 +20,7 @@ public class MyFile implements Iterable<MyDocument> {
     /**
      * Constructor for files
      * used only by FileReader
+     *
      * @param path path for the file
      */
 
@@ -43,6 +44,7 @@ public class MyFile implements Iterable<MyDocument> {
 
     /**
      * create the Docs array to iterrate over
+     *
      * @param path path for file
      */
     private void fillDocsFromFile(String path) {
@@ -70,6 +72,7 @@ public class MyFile implements Iterable<MyDocument> {
 
     /**
      * iterator getter for java interface
+     *
      * @return Iterator of docs
      */
     @Override
@@ -79,6 +82,7 @@ public class MyFile implements Iterable<MyDocument> {
 
     /**
      * a class for inside iterator
+     *
      * @param <T> must be String i think
      */
     private class FileIterator<T> implements Iterator<T> {
@@ -98,6 +102,7 @@ public class MyFile implements Iterable<MyDocument> {
 
     /**
      * main test for MyFile
+     *
      * @param args none
      */
     public static void main(String[] args) {
