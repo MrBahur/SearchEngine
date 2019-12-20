@@ -69,14 +69,18 @@ public class MyFile implements Iterable<MyDocument> {
     }
 
     /**
-     *
-     * @return
+     * iterator getter for java interface
+     * @return Iterator of docs
      */
     @Override
     public Iterator<MyDocument> iterator() {
         return iterator;
     }
 
+    /**
+     * a class for inside iterator
+     * @param <T> must be String i think
+     */
     private class FileIterator<T> implements Iterator<T> {
         ArrayList<T> list;
 
@@ -91,8 +95,11 @@ public class MyFile implements Iterable<MyDocument> {
         }
     }
 
-    //TODO Implement Test for File.
-    //test for File
+
+    /**
+     * main test for MyFile
+     * @param args none
+     */
     public static void main(String[] args) {
         MyFile m = new MyFile("F:\\Study\\SearchEngine\\corpus\\FB396001\\FB396001");
         for (MyDocument x : m.documents) {

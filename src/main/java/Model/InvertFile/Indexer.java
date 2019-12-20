@@ -4,13 +4,14 @@ import Model.File.Name;
 import Model.File.Phrase;
 import Model.File.Term;
 import Model.File.Word;
+
+
+import Model.File.Number;
 import javafx.util.Pair;
 
-import Model.File.Date;
-import Model.File.Number;
-import Model.File.Range;
-import Model.File.Selection;
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Indexer {
@@ -106,19 +107,58 @@ public class Indexer {
     }
 
     public void addDoc(String doc) {
+        int numOfDocsPerPosting = 5000;
         documents.put(doc, new Pair<>(0, 0));
         currentDocID = doc;
         currentDoc++;
-        if (currentDoc % 4000 == 0) {
-            //write to disc
+        if (currentDoc % numOfDocsPerPosting == 0) {
+            writeToDisc(postingFiles, currentDoc / numOfDocsPerPosting);
             System.out.println("Wrote to disc, doc number:" + currentDoc);
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
 //            System.gc();
         } else if (currentDoc == NUM_OF_DOCS) {
-            //write to disc
+            writeToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
             System.out.println("Wrote to disc, doc number:" + currentDoc);
         }
+    }
+
+    private void writeToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
+        try {
+            BufferedWriter[] writers = new BufferedWriter[53];
+            int i = 0;
+            for (char letter = 'a'; letter <= 'z'; letter++, i++) {
+                writers[i] = new BufferedWriter(new FileWriter("PostingFiles\\" + letter + iteration + ".txt"));
+            }
+            for (char letter = 'A'; letter <= 'Z'; letter++, i++) {
+                writers[i] = new BufferedWriter(new FileWriter("PostingFiles\\" + letter + "@" + iteration + ".txt"));
+            }
+            writers[i] = new BufferedWriter(new FileWriter("PostingFiles\\" + "0" + iteration + ".txt"));
+            for (Map.Entry<Term, LinkedList<Pair<String, Integer>>> entry : postingFiles.entrySet()) {
+                if (entry.getKey().toString().charAt(0) >= 'a' && entry.getKey().toString().charAt(0) <= 'z') {
+                    writeToFile(entry, writers[entry.getKey().toString().charAt(0) - 'a']);
+                } else if (entry.getKey().toString().charAt(0) >= 'A' && entry.getKey().toString().charAt(0) <= 'Z') {
+                    writeToFile(entry, writers[entry.getKey().toString().charAt(0) - 'A' + 26]);
+                } else {
+                    writeToFile(entry, writers[52]);
+                }
+            }
+            for (int j = 0; j < writers.length; j++) {
+                writers[j].flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToFile(Map.Entry<Term, LinkedList<Pair<String, Integer>>> entry, BufferedWriter writer) throws IOException {
+        writer.write(entry.getKey().toString());
+        writer.write("->");
+        for (Pair<String, Integer> p : entry.getValue()) {
+            writer.write(p.toString());
+            writer.write(';');
+        }
+        writer.write('\n');
     }
 
     public Map getWords() {
