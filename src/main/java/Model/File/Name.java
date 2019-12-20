@@ -42,6 +42,6 @@ public class Name extends Term {
     }
 
     public boolean isGood() {
-        return this.value.length() > 2;
+        return this.value.length() > 1;
     }
 }

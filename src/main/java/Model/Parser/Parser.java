@@ -62,13 +62,13 @@ public class Parser {
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
             String[] splitted = d.getTitle().getPlainText().replaceAll("(-+ *)+", " - ")
-                    .replaceAll("[,\"\\[\\]:();<>~*&{}]", " ").replaceAll("[/\\\\]", " / ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
             parse(splitted);
         }
         if (d.getText().getPlainText().length() > 0) {
             String[] splitted = d.getText().getPlainText().replaceAll("(-+ *)+", " - ")
-                    .replaceAll("[,\"\\[\\]:();<>~*&{}]", " ").replaceAll("[/\\\\]", " / ")
+                    .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
             for (int i = 0; i < splitted.length; i++) {
                 if (splitted[i].length() == 0) {
@@ -715,9 +715,9 @@ public class Parser {
             return 0;
         }
         if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
-            Name n = new Name(splitted[i],toStem);
+            Name n = new Name(splitted[i], toStem);
             if (n.isGood()) {
-                indexer.addWord(new Name(splitted[i],toStem));
+                indexer.addWord(new Name(splitted[i], toStem));
                 return 1;
             } else {
                 return 0;
@@ -772,7 +772,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine", true);
+        Parser p = new Parser("F:\\Study\\SearchEngine", false);
         p.parse();
         p.indexer.removeSinglePhrases();
         long finish = System.currentTimeMillis();
@@ -783,5 +783,13 @@ public class Parser {
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
         System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));
+        System.out.println("Date:" + Indexer.dateCounter);
+        System.out.println("Name:" + Indexer.nameCounter);
+        System.out.println("Number:" + Indexer.numberCounter);
+        System.out.println("Phrase:" + Indexer.phraseCounter);
+        System.out.println("Range:" + Indexer.rangeCounter);
+        System.out.println("Selection:" + Indexer.selectCounter);
+        System.out.println("Words:" + Indexer.wordCounter);
+
     }
 }

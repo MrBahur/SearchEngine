@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 /**
- * they way we represent a doc in the memory
+ * the way we represent a doc in the memory
  */
 public class MyDocument {
     private String docNumber;
@@ -97,7 +97,7 @@ public class MyDocument {
     }
 
     /**
-     * debug function that helps us dind
+     * debug function that helps us
      */
     public void printDoc() {
         System.out.println("Number: " + this.docNumber);

@@ -6,11 +6,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * the way we represent a file in the memory
+ * iterate over Docs in each file
+ */
+
 public class MyFile implements Iterable<MyDocument> {
     private String path;
     private FileIterator<MyDocument> iterator;
     private ArrayList<MyDocument> documents;
     private int currentIndex;
+
+    /**
+     * Constructor for files
+     * used only by FileReader
+     * @param path path for the file
+     */
 
     public MyFile(String path) {
         this.path = path;
@@ -21,12 +32,19 @@ public class MyFile implements Iterable<MyDocument> {
         currentIndex = 0;
     }
 
+    /**
+     * debug method
+     */
     public void printFile() {
         for (MyDocument x : this.documents) {
             x.printDoc();
         }
     }
 
+    /**
+     * create the Docs array to iterrate over
+     * @param path path for file
+     */
     private void fillDocsFromFile(String path) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -50,6 +68,10 @@ public class MyFile implements Iterable<MyDocument> {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Iterator<MyDocument> iterator() {
         return iterator;

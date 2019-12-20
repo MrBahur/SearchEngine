@@ -6,8 +6,12 @@ import Model.File.Term;
 import Model.File.Word;
 import javafx.util.Pair;
 
+import Model.File.Date;
+import Model.File.Number;
+import Model.File.Range;
+import Model.File.Selection;
+
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Indexer {
     //private int[][] matrix;
@@ -15,13 +19,20 @@ public class Indexer {
     //private int currentSizeRows;
     //private int currentSizeColumns;
     //private Integer currentWord;
-    private static final int NUM_OF_DOCS = 472527;
+    private static final int NUM_OF_DOCS = 472525;
     private Map<Integer, String> documents;// doc index to doc number
     private Integer currentDoc;
     private Map<String, Integer> words;//words to amount in corpus Map
     private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
     private Map<String, Integer> phrasesDocs;
     private boolean toStem;
+    public static int dateCounter = 0;//
+    public static int nameCounter = 0;//
+    public static int numberCounter = 0;
+    public static int phraseCounter = 0;//
+    public static int rangeCounter = 0;//
+    public static int selectCounter = 0;//
+    public static int wordCounter = 0;//
 
     public Indexer(boolean toStem) {
         this(16777216, 4096, toStem);
@@ -39,6 +50,17 @@ public class Indexer {
     public void removeSinglePhrases() {
         for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
             words.remove(entry.getKey());
+            phraseCounter--;//
+        }
+        Set<String> set = new HashSet<>();
+        for (Map.Entry<String, Integer> entry : words.entrySet()) {
+            if (entry.getValue() == 1) {
+                set.add(entry.getKey());
+            }
+        }
+        for (String s : set) {
+            words.remove(s);
+            System.out.println(s);
         }
     }
 
@@ -69,8 +91,29 @@ public class Indexer {
         if (words.containsKey(p.toString())) {
             Integer amount = words.get(p.toString());
             words.replace(p.toString(), amount + 1);
-        } else {
+        } else {//
             words.put(p.toString(), 1);
+            if (p instanceof Date) {
+                dateCounter++;
+            }
+            if (p instanceof Name) {
+                nameCounter++;
+            }
+            if (p instanceof Number) {
+                numberCounter++;
+            }
+            if (p instanceof Phrase) {
+                phraseCounter++;
+            }
+            if (p instanceof Range) {
+                rangeCounter++;
+            }
+            if (p instanceof Selection) {
+                selectCounter++;
+            }
+            if (p instanceof Word) {
+                wordCounter++;
+            }//
         }
         if (!postingFiles.containsKey(p)) {
             postingFiles.put(p, new LinkedList<>());
@@ -92,35 +135,11 @@ public class Indexer {
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
 //            System.gc();
-        } else if (currentDoc == 472525) {
+        } else if (currentDoc == NUM_OF_DOCS) {
             //write to disc
             System.out.println("Wrote to disc, doc number:" + currentDoc);
         }
     }
-//    private void extendColumn() {
-//        int[][] tmpMatrix = new int[currentSizeRows][currentSizeColumns * 2];
-//        for (int i = 0; i < currentSizeRows; i++) {
-//            for (int j = 0; j < currentSizeColumns; j++) {
-//                tmpMatrix[i][j] = matrix[i][j];
-//            }
-//        }
-//        matrix = tmpMatrix;
-
-//        currentSizeColumns = currentSizeColumns * 2;
-//    }
-//    private void extendRow() {
-//        int[][] tmpMatrix = new int[currentSizeRows * 2][currentSizeColumns];
-//        for (int i = 0; i < currentSizeRows; i++) {
-//            for (int j = 0; j < currentSizeColumns; j++) {
-//                tmpMatrix[i][j] = matrix[i][j];
-//            }
-//        }
-//        matrix = tmpMatrix;
-//        currentSizeRows = currentSizeRows * 2;
-
-//
-
-//    }
 
     public Map getWords() {
         return words;
