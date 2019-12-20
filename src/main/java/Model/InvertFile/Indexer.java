@@ -14,25 +14,15 @@ import Model.File.Selection;
 import java.util.*;
 
 public class Indexer {
-    //private int[][] matrix;
-    //private MyDictionary words;
-    //private int currentSizeRows;
-    //private int currentSizeColumns;
-    //private Integer currentWord;
-    private static final int NUM_OF_DOCS = 472525;
-    private Map<Integer, String> documents;// doc index to doc number
+    public static final int NUM_OF_DOCS = 472525;
+    private Map<String, Pair<Integer, Integer>> documents;// doc ID to <max_tf,Number of unique words>
     private Integer currentDoc;
+    private String currentDocID;
     private Map<String, Integer> words;//words to amount in corpus Map
-    private Map<Term, LinkedList<Pair<Integer, Integer>>> postingFiles;
+    private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles;
     private Map<String, Integer> phrasesDocs;
     private boolean toStem;
-    public static int dateCounter = 0;//
-    public static int nameCounter = 0;//
     public static int numberCounter = 0;
-    public static int phraseCounter = 0;//
-    public static int rangeCounter = 0;//
-    public static int selectCounter = 0;//
-    public static int wordCounter = 0;//
 
     public Indexer(boolean toStem) {
         this(16777216, 4096, toStem);
@@ -50,7 +40,6 @@ public class Indexer {
     public void removeSinglePhrases() {
         for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
             words.remove(entry.getKey());
-            phraseCounter--;//
         }
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, Integer> entry : words.entrySet()) {
@@ -60,7 +49,6 @@ public class Indexer {
         }
         for (String s : set) {
             words.remove(s);
-            System.out.println(s);
         }
     }
 
@@ -91,43 +79,35 @@ public class Indexer {
         if (words.containsKey(p.toString())) {
             Integer amount = words.get(p.toString());
             words.replace(p.toString(), amount + 1);
-        } else {//
+        } else {
             words.put(p.toString(), 1);
-            if (p instanceof Date) {
-                dateCounter++;
-            }
-            if (p instanceof Name) {
-                nameCounter++;
-            }
             if (p instanceof Number) {
                 numberCounter++;
             }
-            if (p instanceof Phrase) {
-                phraseCounter++;
-            }
-            if (p instanceof Range) {
-                rangeCounter++;
-            }
-            if (p instanceof Selection) {
-                selectCounter++;
-            }
-            if (p instanceof Word) {
-                wordCounter++;
-            }//
         }
         if (!postingFiles.containsKey(p)) {
             postingFiles.put(p, new LinkedList<>());
-            postingFiles.get(p).addLast(new Pair<>(currentDoc, 1));
+            postingFiles.get(p).addLast(new Pair<>(currentDocID, 1));
+        }
+        if (!postingFiles.get(p).getLast().getKey().equals(currentDocID)) {
+            postingFiles.get(p).addLast(new Pair<>(currentDocID, 1));
         } else {
-            Pair<Integer, Integer> pair = postingFiles.get(p).getLast();
+            Pair<String, Integer> pair = postingFiles.get(p).getLast();
             postingFiles.get(p).removeLast();
             postingFiles.get(p).addLast(new Pair<>(pair.getKey(), pair.getValue() + 1));
-        }
 
+        }
+        Pair<Integer, Integer> pair = documents.get(currentDocID);
+        if (postingFiles.get(p).getLast().getValue() == 1) {
+            documents.replace(currentDocID, new Pair<>(pair.getKey(), pair.getValue() + 1));
+        } else if (postingFiles.get(p).getLast().getValue() > pair.getKey()) {
+            documents.replace(currentDocID, new Pair<>(pair.getKey() + 1, pair.getValue()));
+        }
     }
 
     public void addDoc(String doc) {
-        documents.put(currentDoc, doc);
+        documents.put(doc, new Pair<>(0, 0));
+        currentDocID = doc;
         currentDoc++;
         if (currentDoc % 4000 == 0) {
             //write to disc
@@ -145,16 +125,7 @@ public class Indexer {
         return words;
     }
 
-    public Map<Integer, String> getDocuments() {
-        return documents;
-    }
-
     public static void main(String[] args) {
-//        Indexer indexer = new Indexer(2, 2);
-//        indexer.extendRow();
-//        System.out.println(indexer.currentSizeRows);
-//        indexer.extendColumn();
-//        System.out.println(indexer.currentSizeColumns);
 
     }
 }

@@ -772,24 +772,17 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine", false);
+        Parser p = new Parser("F:\\Study\\SearchEngine", true);
         p.parse();
         p.indexer.removeSinglePhrases();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
-        Map<Integer, String> documents = p.indexer.getDocuments();
-        System.out.println("Number of documents in the corpus:" + documents.size());
+        System.out.println("Number of documents in the corpus:" + Indexer.NUM_OF_DOCS);
         System.out.println("Number of types of word in the corpus:" + p.indexer.getWords().size());
         System.out.println("Phrases already parsed: " + numberOfParsePhrases);
         System.out.println("Phrases left to parse: " + numberOfNotParsePhrases);
         System.out.println("finished " + (100.0 * ((double) numberOfParsePhrases / (numberOfNotParsePhrases + numberOfParsePhrases)) + "%"));
-        System.out.println("Date:" + Indexer.dateCounter);
-        System.out.println("Name:" + Indexer.nameCounter);
         System.out.println("Number:" + Indexer.numberCounter);
-        System.out.println("Phrase:" + Indexer.phraseCounter);
-        System.out.println("Range:" + Indexer.rangeCounter);
-        System.out.println("Selection:" + Indexer.selectCounter);
-        System.out.println("Words:" + Indexer.wordCounter);
 
     }
 }
