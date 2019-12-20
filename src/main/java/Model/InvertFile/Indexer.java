@@ -117,7 +117,7 @@ public class Indexer {
         currentDocID = doc;
         currentDoc++;
         if (currentDoc % numOfDocsPerPosting == 0) {
-            writeToDisc(postingFiles, currentDoc / numOfDocsPerPosting);
+            writePostingFileToDisc(postingFiles, currentDoc / numOfDocsPerPosting);
             System.out.println("Wrote to disc, doc number:" + currentDoc);
             postingFiles = new HashMap<>(postingFiles.size());
 //            System.gc();
@@ -184,7 +184,7 @@ public class Indexer {
         }
     }
 
-    private void writeToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
+    private void writePostingFileToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
         try {
             new File("PostingFiles").mkdir();
             BufferedWriter[] writers = getBufferedWriters(iteration, "PostingFiles");
@@ -233,9 +233,32 @@ public class Indexer {
     }
 
     public void markEnd() {
-        writeToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
+        writePostingFileToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
         mergePostingFiles();
+        writeDictionaryToDisc();
         System.out.println("Wrote to disc, doc number:" + currentDoc);
+    }
+
+    private void writeDictionaryToDisc() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile\\Dictionary.txt"));
+            writeMapToFile(writer, dictionary);
+            writer.flush();
+            writer = new BufferedWriter(new FileWriter("PostingFile\\DocumentsInfo.txt"));
+            writeMapToFile(writer, documents);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeMapToFile(BufferedWriter writer, Map<String, Pair<Integer, Integer>> documents) throws IOException {
+        for (Map.Entry<String, Pair<Integer, Integer>> entry : documents.entrySet()) {
+            writer.write(entry.getKey());
+            writer.write("->");
+            writer.write(entry.getValue().toString());
+            writer.write('\n');
+        }
     }
 
     public static void main(String[] args) {

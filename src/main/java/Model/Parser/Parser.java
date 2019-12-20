@@ -773,7 +773,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine", true);
+        Parser p = new Parser("F:\\Study\\SearchEngine", false);
         p.parse();
         p.indexer.removeSinglePhrases();
         long finish = System.currentTimeMillis();
