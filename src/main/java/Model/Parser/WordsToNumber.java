@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * took from: https://stackoverflow.com/questions/26948858/converting-words-to-numbers-in-java
+ * all of the documentation can be found in that link
  */
 public class WordsToNumber {
     private final static List<String> allowedStrings = Arrays.asList

@@ -2,9 +2,18 @@ package Model.Parser;
 
 import opennlp.tools.stemmer.PorterStemmer;
 
+/**
+ * a Stemmer we are using
+ */
 public class Stemmer {
     private static PorterStemmer p = new PorterStemmer();
 
+    /**
+     * static function that stem word for us
+     *
+     * @param s the word ed need to stem
+     * @return stemmed word in lower case with only a-zA-Z letters
+     */
     public static String stem(String s) {
         return p.stem(s.replaceAll("[^a-zA-Z]", "").toLowerCase());
     }
