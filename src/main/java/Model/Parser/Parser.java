@@ -53,7 +53,7 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 10000) {
+            if (tempNumOfDocs >= 10) {
                 //break;
             }
         }
@@ -773,9 +773,8 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("F:\\Study\\SearchEngine", false);
+        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", false);
         p.parse();
-        p.indexer.removeSinglePhrases();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
         System.out.println("Number of documents in the corpus:" + Indexer.NUM_OF_DOCS);

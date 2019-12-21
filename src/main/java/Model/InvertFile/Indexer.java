@@ -84,7 +84,8 @@ public class Indexer {
         }
         if (dictionary.containsKey(term.toString())) {
             Integer amount = dictionary.get(term.toString()).getKey();
-            dictionary.replace(term.toString(), new Pair<>(amount + 1, 0));
+            dictionary.remove(term.toString());
+            dictionary.put(term.toString(), new Pair<>(amount + 1, 0));
         } else {
             dictionary.put(term.toString(), new Pair<>(1, 0));
             if (term instanceof Number) {
@@ -95,7 +96,7 @@ public class Indexer {
             postingFiles.put(term, new LinkedList<>());
             postingFiles.get(term).addLast(new Pair<>(currentDocID, 1));
         }
-        if (!postingFiles.get(term).getLast().getKey().equals(currentDocID)) {
+        else if (!postingFiles.get(term).getLast().getKey().equals(currentDocID)) {
             postingFiles.get(term).addLast(new Pair<>(currentDocID, 1));
         } else {
             Pair<String, Integer> pair = postingFiles.get(term).getLast();
@@ -105,9 +106,11 @@ public class Indexer {
         }
         Pair<Integer, Integer> pair = documents.get(currentDocID);
         if (postingFiles.get(term).getLast().getValue() == 1) {
-            documents.replace(currentDocID, new Pair<>(pair.getKey(), pair.getValue() + 1));
+            documents.remove(currentDocID);
+            documents.put(currentDocID, new Pair<>(pair.getKey(), pair.getValue() + 1));
         } else if (postingFiles.get(term).getLast().getValue() > pair.getKey()) {
-            documents.replace(currentDocID, new Pair<>(pair.getKey() + 1, pair.getValue()));
+            documents.remove(currentDocID);
+            documents.put(currentDocID, new Pair<>(pair.getKey() + 1, pair.getValue()));
         }
     }
 
@@ -179,7 +182,8 @@ public class Indexer {
             }
             writer.write('\n');
             int amount = dictionary.get(entry.getKey()).getKey();
-            dictionary.replace(entry.getKey(), new Pair<>(amount, counter));
+            dictionary.remove(entry.getKey());
+            dictionary.put(entry.getKey(), new Pair<>(amount, counter));
             counter++;
         }
     }
@@ -233,6 +237,7 @@ public class Indexer {
     }
 
     public void markEnd() {
+        removeSinglePhrases();
         writePostingFileToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
         mergePostingFiles();
         writeDictionaryToDisc();
