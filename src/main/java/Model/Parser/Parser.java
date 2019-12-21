@@ -65,9 +65,9 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 10000) {//here for debugging
-                //break;
-            }
+//            if (tempNumOfDocs >= 10000) {//here for debugging
+//                break;
+//            }
         }
         this.indexer.markEnd();
     }
@@ -868,7 +868,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", true);
+        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

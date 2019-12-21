@@ -178,9 +178,9 @@ public class Indexer {
      */
     private void mergePostingFiles() {
         try {
-            new File("PostingFile" + ((toStem) ? "Stemed" : "")).mkdir();
-            BufferedWriter[] writers = getBufferedWriters(0, "PostingFile" + ((toStem) ? "Stemed" : ""));
-            Stream<Path> walk = Files.walk(Paths.get("PostingFiles" + ((toStem) ? "Stemed" : "")));
+            new File(((toStem) ? "S" : "") + "PostingFile").mkdir();
+            BufferedWriter[] writers = getBufferedWriters(0, ((toStem) ? "S" : "") + "PostingFile");
+            Stream<Path> walk = Files.walk(Paths.get(((toStem) ? "S" : "") + "PostingFiles"));
             List<String> files = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
             int counter = 0;
             for (char character = 'a'; character <= 'z'; character++, counter++) {
@@ -210,7 +210,7 @@ public class Indexer {
     private void mergePostingFile(char character, List<String> files, BufferedWriter writer) throws IOException {
         HashMap<String, LinkedList<Pair<String, Integer>>> postingFile = new HashMap<>();
         for (String file : files) {
-            if (file.charAt(13) != character) {
+            if (file.charAt(file.indexOf('\\') + 1) != character) {
                 continue;
             }
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -252,8 +252,8 @@ public class Indexer {
      */
     private void writePostingFileToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
         try {
-            new File("PostingFiles" + ((toStem) ? "Stemed" : "")).mkdir();
-            BufferedWriter[] writers = getBufferedWriters(iteration, "PostingFiles" + ((toStem) ? "Stemed" : ""));
+            new File(((toStem) ? "S" : "") + "PostingFiles").mkdir();
+            BufferedWriter[] writers = getBufferedWriters(iteration, ((toStem) ? "S" : "") + "PostingFiles");
             for (Map.Entry<Term, LinkedList<Pair<String, Integer>>> entry : postingFiles.entrySet()) {
                 if (entry.getKey().toString().charAt(0) >= 'a' && entry.getKey().toString().charAt(0) <= 'z') {
                     writeToFile(entry, writers[entry.getKey().toString().charAt(0) - 'a']);
@@ -314,9 +314,9 @@ public class Indexer {
      */
     private void writeDictionaryToDisc() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile" + ((toStem) ? "Stemed" : "") + "\\Dictionary.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\Dictionary.txt"));
             writeMapToFile(writer, dictionary);
-            writer = new BufferedWriter(new FileWriter("PostingFile" + ((toStem) ? "Stemed" : "") + "\\DocumentsInfo.txt"));
+            writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\DocumentsInfo.txt"));
             writeMapToFile(writer, documents);
         } catch (IOException e) {
             e.printStackTrace();
