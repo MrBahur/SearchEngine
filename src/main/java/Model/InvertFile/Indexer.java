@@ -43,21 +43,6 @@ public class Indexer {
         this.toStem = toStem;
     }
 
-    public void removeSinglePhrases() {
-        for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
-            dictionary.remove(entry.getKey());
-        }
-        Set<String> set = new HashSet<>();
-        for (Map.Entry<String, Pair<Integer, Integer>> entry : dictionary.entrySet()) {
-            if (entry.getValue().getKey() == 1) {
-                set.add(entry.getKey());
-            }
-        }
-        for (String s : set) {
-            dictionary.remove(s);
-        }
-    }
-
     public void addWord(Term term) {
         if (term instanceof Phrase) {
             if (dictionary.containsKey(term.toString())) {
@@ -123,8 +108,33 @@ public class Indexer {
             writePostingFileToDisc(postingFiles, currentDoc / numOfDocsPerPosting);
             System.out.println("Wrote to disc, doc number:" + currentDoc);
             postingFiles = new HashMap<>(postingFiles.size());
-//            System.gc();
-//            System.gc();
+        }
+    }
+
+    public void markEnd() {
+        removeSinglePhrases();
+        writePostingFileToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
+        mergePostingFiles();
+        writeDictionaryToDisc();
+        System.out.println("Wrote to disc, doc number:" + currentDoc);
+    }
+
+    public Map getDictionary() {
+        return dictionary;
+    }
+
+    private void removeSinglePhrases() {
+        for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
+            dictionary.remove(entry.getKey());
+        }
+        Set<String> set = new HashSet<>();
+        for (Map.Entry<String, Pair<Integer, Integer>> entry : dictionary.entrySet()) {
+            if (entry.getValue().getKey() == 1) {
+                set.add(entry.getKey());
+            }
+        }
+        for (String s : set) {
+            dictionary.remove(s);
         }
     }
 
@@ -232,18 +242,6 @@ public class Indexer {
         writer.write('\n');
     }
 
-    public Map getDictionary() {
-        return dictionary;
-    }
-
-    public void markEnd() {
-        removeSinglePhrases();
-        writePostingFileToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
-        mergePostingFiles();
-        writeDictionaryToDisc();
-        System.out.println("Wrote to disc, doc number:" + currentDoc);
-    }
-
     private void writeDictionaryToDisc() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile\\Dictionary.txt"));
@@ -263,9 +261,5 @@ public class Indexer {
             writer.write('\n');
         }
         writer.flush();
-    }
-
-    public static void main(String[] args) {
-
     }
 }

@@ -80,40 +80,6 @@ public class Parser {
         }
     }
 
-    private boolean isNumeric(String s) {
-        boolean point = false;
-        for (int i = 0; i < s.length(); i++) {
-            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
-                if (i < s.length() - 1 && s.charAt(i) == '.' && !point) {
-                    point = true;
-                    continue;
-                }
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isInteger(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isIntegerEndWithPoint(String s) {
-        int i = 0;
-        for (; i < s.length() - 1; i++) {
-            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
-                return false;
-            }
-        }
-        return s.charAt(i) == '.' && i != 0;
-
-    }
-
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; ) {
             int j = 0;
@@ -153,6 +119,40 @@ public class Parser {
                 i++;
             }
         }
+    }
+
+    private boolean isNumeric(String s) {
+        boolean point = false;
+        for (int i = 0; i < s.length(); i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                if (i < s.length() - 1 && s.charAt(i) == '.' && !point) {
+                    point = true;
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isInteger(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isIntegerEndWithPoint(String s) {
+        int i = 0;
+        for (; i < s.length() - 1; i++) {
+            if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
+                return false;
+            }
+        }
+        return s.charAt(i) == '.' && i != 0;
+
     }
 
     private int isSelection(String[] splitted, int j) {
@@ -671,7 +671,7 @@ public class Parser {
         return toReturn;
     }
 
-    private int isRange(String[] splitted, int j) {//TBD = Repair
+    private int isRange(String[] splitted, int j) {
         String first = null;
         String second = null;
         String third = null;
