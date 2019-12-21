@@ -1,16 +1,31 @@
 package Model.File;
 
+/**
+ * they way we represent Range in memory
+ */
 public class Range extends Term {
     private String left;
     private String middle;
     private String right;
 
+    /**
+     * Constructor for Range looking like thar : A-B-C
+     *
+     * @param left   A
+     * @param middle B
+     * @param right  B
+     */
     public Range(String left, String middle, String right) {
         this.left = GarbageRemove.removeWithoutNumbers(left);
         this.middle = GarbageRemove.removeWithoutNumbers(middle);
         this.right = GarbageRemove.removeWithoutNumbers(right);
     }
 
+    /**
+     * java to String
+     *
+     * @return string representing Range
+     */
     @Override
     public String toString() {
         String str = "";
@@ -22,6 +37,12 @@ public class Range extends Term {
         return str;
     }
 
+    /**
+     * java equals
+     *
+     * @param other other object we want to check if the same as Range
+     * @return true if both objects are Ranges that are the same
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Range) {
@@ -37,6 +58,11 @@ public class Range extends Term {
         return false;
     }
 
+    /**
+     * java hashCode
+     *
+     * @return int representing the Range
+     */
     @Override
     public int hashCode() {
         if (right != null) {
@@ -46,6 +72,11 @@ public class Range extends Term {
         }
     }
 
+    /**
+     * main test for Range
+     *
+     * @param args none
+     */
     public static void main(String[] args) {
         Range r1 = new Range("Value", null, "added");
         System.out.println(r1.toString());

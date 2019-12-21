@@ -28,18 +28,41 @@ public class Number extends Term {
 
     }
 
+    /**
+     * constructor with default values for numerator and denominator
+     *
+     * @param value the numeric value of the number
+     * @param sign  the sign of the number (# for num, % for percentage, $ for price)
+     */
     public Number(double value, String sign) {
         this(value, sign, 0, 1);
     }
 
+    /**
+     * constructor for number with fraction
+     *
+     * @param value       the numeric value of the number
+     * @param numerator   the numerator of a fraction, if not exist, default value is 0
+     * @param denominator the denominator of a fraction, if not exist, default value is 1
+     */
     public Number(double value, int numerator, int denominator) {
         this(value, "#", numerator, denominator);
     }
 
+    /**
+     * constructor for just a number
+     *
+     * @param value the numeric value of the number
+     */
     public Number(double value) {
         this(value, "#", 0, 1);
     }
 
+    /**
+     * java to string
+     *
+     * @return String that represent number
+     */
     @Override
     public String toString() {
         String str = Double.toString(this.value);
@@ -140,6 +163,12 @@ public class Number extends Term {
         return str;
     }
 
+    /**
+     * java equals
+     *
+     * @param other other object to test if the same as number
+     * @return true if both object are numbers and have the same value and sign
+     */
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof Number)) {
@@ -151,6 +180,11 @@ public class Number extends Term {
                 this.denominator == x.denominator && this.numerator == x.numerator;
     }
 
+    /**
+     * java hashcode
+     *
+     * @return int representing the number
+     */
     @Override
     public int hashCode() {
         return Double.hashCode(this.value + (double) numerator / denominator);
