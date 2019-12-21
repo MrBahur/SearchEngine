@@ -11,6 +11,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * the well known cursed Parser
+ */
 public class Parser {
     private static final List<String> MONTHS = Arrays.asList
             (
@@ -18,15 +21,21 @@ public class Parser {
                     "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER",
                     "OCTOBER", "NOVEMBER", "DECEMBER"
             );
-    private ReadFile<String> readFile;
-    private Indexer indexer;
-    private boolean toStem;
-    private WordsToNumber wordsToNumber;
-    private static long numberOfParsePhrases = 0;
-    private static long numberOfNotParsePhrases = 0;
+    private ReadFile<String> readFile; //ReadFile that give the parser the next String
+    private Indexer indexer; //an indexer
+    private boolean toStem; //to stem or not
+    private WordsToNumber wordsToNumber; //a words to number class
+    private static long numberOfParsePhrases = 0; //indicator for how much are we parsing
+    private static long numberOfNotParsePhrases = 0; //indicator for how much are we not parsing
     private static int tempNumOfDocs = 0;
-    private static Set<String> stopWords = new HashSet<>();
+    private static Set<String> stopWords = new HashSet<>(); //set of the stop words
 
+    /**
+     * Constructor for Parser that gets String and boolean
+     *
+     * @param path   the location of the corpus folder and the stop words file
+     * @param toStem to stem ot not to stem
+     */
     public Parser(String path, boolean toStem) {
         readFile = new ReadFile<>(path + "\\corpus");
         indexer = new Indexer(toStem);
@@ -45,6 +54,9 @@ public class Parser {
         }
     }
 
+    /**
+     * parse method that parse the whole Corpus
+     */
     public void parse() {
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
@@ -53,13 +65,20 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 10) {
+            if (tempNumOfDocs >= 10000) {//here for debugging
                 //break;
             }
         }
         this.indexer.markEnd();
     }
 
+    /**
+     * parse method that parse a document
+     * it also split the text on " " and remove all un necessary chars and also make the whole
+     * strings easyer to work with
+     *
+     * @param d the documents to parse
+     */
     private void parse(MyDocument d) {
         if (d.getTitle().getPlainText().length() > 0) {
             String[] splitted = d.getTitle().getPlainText().replaceAll("(-+ *)+", " - ")
@@ -80,6 +99,15 @@ public class Parser {
         }
     }
 
+    /**
+     * parse method that parse array of strings
+     * <p>
+     * the way it works is that it only checks every word once and knows what it is
+     * and while it checks it basically add it to the indexer and return the amount
+     * of words that the loops can skip.
+     *
+     * @param splitted the array of strings
+     */
     private void parse(String[] splitted) {
         for (int i = 0; i < splitted.length; ) {
             int j = 0;
@@ -101,7 +129,7 @@ public class Parser {
             } else if ((j = isName(splitted, i)) != 0) {
                 i += j;
                 numberOfParsePhrases++;
-            } else {
+            } else {            //the only place we adding terms to the indexer from this function, and only regular words get in from here
                 if (!stopWords.contains(splitted[i].toLowerCase())) {
                     Word w;
                     if (toStem) {
@@ -121,6 +149,12 @@ public class Parser {
         }
     }
 
+    /**
+     * return true if the input string is Double or Integer
+     *
+     * @param s the input string
+     * @return ...
+     */
     private boolean isNumeric(String s) {
         boolean point = false;
         for (int i = 0; i < s.length(); i++) {
@@ -135,6 +169,12 @@ public class Parser {
         return true;
     }
 
+    /**
+     * return true if the input string is Integer
+     *
+     * @param s the input string
+     * @return ...
+     */
     private boolean isInteger(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (!(s.charAt(i) <= '9' && s.charAt(i) >= '0')) {
@@ -144,6 +184,12 @@ public class Parser {
         return true;
     }
 
+    /**
+     * return true if the input string is Integer that ends with "point" (.)
+     *
+     * @param s the input string
+     * @return ...
+     */
     private boolean isIntegerEndWithPoint(String s) {
         int i = 0;
         for (; i < s.length() - 1; i++) {
@@ -155,6 +201,13 @@ public class Parser {
 
     }
 
+    /**
+     * check if j is '/' if it is, it insert it as Fraction or Selection term
+     *
+     * @param splitted the splitted string that we are parsing
+     * @param j        the "i+1" locaition in the splitted string
+     * @return 0 if this isn't selection term, 3 if it is (inorder to skip 3 words in splitted)
+     */
     private int isSelection(String[] splitted, int j) {
         int toReturn = 0;
         String first = null;
@@ -180,6 +233,13 @@ public class Parser {
         return toReturn;
     }
 
+    /**
+     * check if splitted[i] - splitted[i+4] is Phrase, and if it is it insert it and return how much words need to skip
+     *
+     * @param splitted the splitted string that we are parsing
+     * @param i        index we are currently in on splitted in parse function
+     * @return how many words to skip in parse function
+     */
     private int isPhrase(String[] splitted, int i) {
         int length = splitted.length;
         String[] toAdd = {null, null, null, null};
@@ -208,10 +268,25 @@ public class Parser {
         }
     }
 
+    /**
+     * check if the first letter of String is big
+     *
+     * @param s the string
+     * @return ...
+     */
     private boolean isPhrase(String s) {
         return s.charAt(0) >= 'A' && s.charAt(0) <= 'Z';
     }
 
+    /**
+     * the most annoying function in the whole world.
+     * basically plaster on plaster on plaster on... on plaster until it worked.
+     * don't ask and we won't tell
+     *
+     * @param splitted the splitted string that we are parsing
+     * @param i        index we are currently in on splitted in parse function
+     * @return the size of the inserted Number in words (0 to 7)
+     */
     private int isNumber(String[] splitted, int i) {//TBD handle fractions
         int toReturn = 0;
         if (isNumeric(splitted[i])) {
@@ -671,6 +746,13 @@ public class Parser {
         return toReturn;
     }
 
+    /**
+     * check if splitted[i] - splitted[i+5] is Range, and if it is it insert it and return how much words need to skip
+     *
+     * @param splitted the splitted string that we are parsing
+     * @param j        index we are currently in on splitted in parse function
+     * @return how many words to skip in parse function
+     */
     private int isRange(String[] splitted, int j) {
         String first = null;
         String second = null;
@@ -711,6 +793,13 @@ public class Parser {
         return 0;
     }
 
+    /**
+     * check if splitted[i] is Name and insert it if it is
+     *
+     * @param splitted the splitted array from the parse function
+     * @param i        the i we are currently working on
+     * @return 0 if found name 1 else
+     */
     private int isName(String[] splitted, int i) {
         if (stopWords.contains(splitted[i].toLowerCase())) {
             return 0;
@@ -762,6 +851,12 @@ public class Parser {
         return 0;
     }
 
+    /**
+     * return true if the string is one of the string in MONTHS array
+     *
+     * @param s the input string
+     * @return ...
+     */
     private boolean isMonth(String s) {
         for (String m : MONTHS) {
             if (m.equalsIgnoreCase(s)) {
@@ -773,7 +868,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", false);
+        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", true);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

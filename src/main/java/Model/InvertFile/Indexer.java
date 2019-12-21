@@ -178,9 +178,9 @@ public class Indexer {
      */
     private void mergePostingFiles() {
         try {
-            new File("PostingFile").mkdir();
-            BufferedWriter[] writers = getBufferedWriters(0, "PostingFile");
-            Stream<Path> walk = Files.walk(Paths.get("PostingFiles"));
+            new File("PostingFile" + ((toStem) ? "Stemed" : "")).mkdir();
+            BufferedWriter[] writers = getBufferedWriters(0, "PostingFile" + ((toStem) ? "Stemed" : ""));
+            Stream<Path> walk = Files.walk(Paths.get("PostingFiles" + ((toStem) ? "Stemed" : "")));
             List<String> files = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
             int counter = 0;
             for (char character = 'a'; character <= 'z'; character++, counter++) {
@@ -252,8 +252,8 @@ public class Indexer {
      */
     private void writePostingFileToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
         try {
-            new File("PostingFiles").mkdir();
-            BufferedWriter[] writers = getBufferedWriters(iteration, "PostingFiles");
+            new File("PostingFiles" + ((toStem) ? "Stemed" : "")).mkdir();
+            BufferedWriter[] writers = getBufferedWriters(iteration, "PostingFiles" + ((toStem) ? "Stemed" : ""));
             for (Map.Entry<Term, LinkedList<Pair<String, Integer>>> entry : postingFiles.entrySet()) {
                 if (entry.getKey().toString().charAt(0) >= 'a' && entry.getKey().toString().charAt(0) <= 'z') {
                     writeToFile(entry, writers[entry.getKey().toString().charAt(0) - 'a']);
@@ -314,9 +314,9 @@ public class Indexer {
      */
     private void writeDictionaryToDisc() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile\\Dictionary.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile" + ((toStem) ? "Stemed" : "") + "\\Dictionary.txt"));
             writeMapToFile(writer, dictionary);
-            writer = new BufferedWriter(new FileWriter("PostingFile\\DocumentsInfo.txt"));
+            writer = new BufferedWriter(new FileWriter("PostingFile" + ((toStem) ? "Stemed" : "") + "\\DocumentsInfo.txt"));
             writeMapToFile(writer, documents);
         } catch (IOException e) {
             e.printStackTrace();
