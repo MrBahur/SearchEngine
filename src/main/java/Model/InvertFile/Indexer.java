@@ -17,23 +17,35 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * an Indexer for the Corpus.
+ */
 public class Indexer {
-    public static final int NUM_OF_DOCS = 472525;
-    private static final int numOfDocsPerPosting = 5000;
+    public static final int NUM_OF_DOCS = 472525; //the number of docs in our original corpus, checked offline
+    private static final int NUM_OF_DOCS_PER_POSTING = 5000; //the amount of docs we analise every time before writing to disc
+    private Map<String, Pair<Integer, Integer>> documents;// doc ID -> <max_tf,Number of unique words>
+    private Integer currentDoc;//current doc number
+    private String currentDocID;// current doc ID
+    private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
+    private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles; //map of posting files for each term
+    private Map<String, Integer> phrasesDocs;// DS to hold Phrases that we only saw in one Document
+    private boolean toStem; //is the data we get stemmed or not
+    public static int numberCounter = 0;// counter for how much unique number there are in the corpus
 
-    private Map<String, Pair<Integer, Integer>> documents;// doc ID to <max_tf,Number of unique words>
-    private Integer currentDoc;
-    private String currentDocID;
-    private Map<String, Pair<Integer, Integer>> dictionary;//words to amount in corpus Map first Integer is amount in corpus, second Integer is pointer to posting file
-    private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles;
-    private Map<String, Integer> phrasesDocs;
-    private boolean toStem;
-    public static int numberCounter = 0;
-
+    /**
+     * the constructor we are exposing to user
+     *
+     * @param toStem is the data we get stemmed or not
+     */
     public Indexer(boolean toStem) {
-        this(16777216, 4096, toStem);
+        this(16777216, NUM_OF_DOCS_PER_POSTING, toStem);
     }
 
+    /**
+     * @param initialWordSize   the init number of words we found that the engine performance was best (2^24)
+     * @param numOfDocsInMemory the number of docs that we are holding in memory every time, after allot of interactions we found that 5000 is the number
+     * @param toStem            is the data we get stemmed or not
+     */
     public Indexer(int initialWordSize, int numOfDocsInMemory, boolean toStem) {
         documents = new HashMap<>(NUM_OF_DOCS, 1);
         currentDoc = 0;
@@ -43,8 +55,16 @@ public class Indexer {
         this.toStem = toStem;
     }
 
-    public void addWord(Term term) {
-        if (term instanceof Phrase) {
+    /**
+     * the function get Term and adding it to the dictionary and posting files,
+     * it also checks all the constrains that we need to enforce
+     * it also converts it to String for the dictionary (again, performance was better that way
+     * probably because Java implementation of HashCode and Equals are very efficient for String)
+     *
+     * @param term the term to add
+     */
+    public void addTerm(Term term) {
+        if (term instanceof Phrase) { //check if the Phrase already appeared in another doc
             if (dictionary.containsKey(term.toString())) {
                 if (phrasesDocs.containsKey(term.toString())) {
                     if (!phrasesDocs.get(term.toString()).equals(currentDoc)) {
@@ -55,33 +75,32 @@ public class Indexer {
                 phrasesDocs.put(term.toString(), currentDoc);
             }
         }
-        if (term instanceof Word) {
+        if (term instanceof Word) { //check if there was a Name that look like this word
             if (dictionary.containsKey(term.toString().toUpperCase())) {
                 Integer num = dictionary.get(term.toString().toUpperCase()).getKey();
                 dictionary.remove(term.toString().toUpperCase());
                 dictionary.put(term.toString(), new Pair<>(num, 0));
             }
         }
-        if (term instanceof Name) {
+        if (term instanceof Name) { //check if there a Word that look like this Name
             if (dictionary.containsKey(term.toString().toLowerCase())) {
                 term = new Word(term.toString(), toStem);
             }
         }
-        if (dictionary.containsKey(term.toString())) {
+        if (dictionary.containsKey(term.toString())) {//check if we need to add new word to dictionary or just sum it
             Integer amount = dictionary.get(term.toString()).getKey();
             dictionary.remove(term.toString());
             dictionary.put(term.toString(), new Pair<>(amount + 1, 0));
         } else {
             dictionary.put(term.toString(), new Pair<>(1, 0));
-            if (term instanceof Number) {
+            if (term instanceof Number) {//to answer the number question
                 numberCounter++;
             }
         }
-        if (!postingFiles.containsKey(term)) {
+        if (!postingFiles.containsKey(term)) {// adding everything we want to save in the posting file
             postingFiles.put(term, new LinkedList<>());
             postingFiles.get(term).addLast(new Pair<>(currentDocID, 1));
-        }
-        else if (!postingFiles.get(term).getLast().getKey().equals(currentDocID)) {
+        } else if (!postingFiles.get(term).getLast().getKey().equals(currentDocID)) {
             postingFiles.get(term).addLast(new Pair<>(currentDocID, 1));
         } else {
             Pair<String, Integer> pair = postingFiles.get(term).getLast();
@@ -90,7 +109,7 @@ public class Indexer {
 
         }
         Pair<Integer, Integer> pair = documents.get(currentDocID);
-        if (postingFiles.get(term).getLast().getValue() == 1) {
+        if (postingFiles.get(term).getLast().getValue() == 1) {// calculating max_tf and Number of unique words
             documents.remove(currentDocID);
             documents.put(currentDocID, new Pair<>(pair.getKey(), pair.getValue() + 1));
         } else if (postingFiles.get(term).getLast().getValue() > pair.getKey()) {
@@ -99,30 +118,46 @@ public class Indexer {
         }
     }
 
+    /**
+     * adding a new doc to the indexer
+     *
+     * @param doc the doc ID of the documents we insert
+     */
     public void addDoc(String doc) {
-
         documents.put(doc, new Pair<>(0, 0));
         currentDocID = doc;
         currentDoc++;
-        if (currentDoc % numOfDocsPerPosting == 0) {
-            writePostingFileToDisc(postingFiles, currentDoc / numOfDocsPerPosting);
+        if (currentDoc % NUM_OF_DOCS_PER_POSTING == 0) {
+            writePostingFileToDisc(postingFiles, currentDoc / NUM_OF_DOCS_PER_POSTING);
             System.out.println("Wrote to disc, doc number:" + currentDoc);
             postingFiles = new HashMap<>(postingFiles.size());
         }
     }
 
+    /**
+     * mark the indexer that the Parser end it's work
+     * and calling every thing that need to happen in the end
+     */
     public void markEnd() {
         removeSinglePhrases();
-        writePostingFileToDisc(postingFiles, (currentDoc / numOfDocsPerPosting) + 1);
+        writePostingFileToDisc(postingFiles, (currentDoc / NUM_OF_DOCS_PER_POSTING) + 1);
         mergePostingFiles();
         writeDictionaryToDisc();
         System.out.println("Wrote to disc, doc number:" + currentDoc);
     }
 
+    /**
+     * return the dictionary
+     *
+     * @return map that is dictionary
+     */
     public Map getDictionary() {
         return dictionary;
     }
 
+    /**
+     * remove every Phrase that only was in one document
+     */
     private void removeSinglePhrases() {
         for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
             dictionary.remove(entry.getKey());
@@ -138,6 +173,9 @@ public class Indexer {
         }
     }
 
+    /**
+     * merge all the small posting files we create to one posting file
+     */
     private void mergePostingFiles() {
         try {
             new File("PostingFile").mkdir();
@@ -161,6 +199,14 @@ public class Indexer {
         }
     }
 
+    /**
+     * merge single posting file type to it's posting file for example: (a1,a2,...,an) -> a
+     *
+     * @param character the char that show what posting files we want to merge
+     * @param files     the list of all the files in the PostingFiles dir
+     * @param writer    a writer that write to the correct file
+     * @throws IOException handled in mergePostingFiles
+     */
     private void mergePostingFile(char character, List<String> files, BufferedWriter writer) throws IOException {
         HashMap<String, LinkedList<Pair<String, Integer>>> postingFile = new HashMap<>();
         for (String file : files) {
@@ -198,6 +244,12 @@ public class Indexer {
         }
     }
 
+    /**
+     * write the postinfFiles to disc
+     *
+     * @param postingFiles the posting file we need to write
+     * @param iteration    what iteration is it? (0 mark the final iteration)
+     */
     private void writePostingFileToDisc(Map<Term, LinkedList<Pair<String, Integer>>> postingFiles, int iteration) {
         try {
             new File("PostingFiles").mkdir();
@@ -219,6 +271,14 @@ public class Indexer {
         }
     }
 
+    /**
+     * init all the writers
+     *
+     * @param iteration what iteration is it? (0 mark the final iteration)
+     * @param path      path to write to
+     * @return array of writers in size of 53 (a-z, A-Z, 0)
+     * @throws IOException handled in the calling function
+     */
     private BufferedWriter[] getBufferedWriters(int iteration, String path) throws IOException {
         BufferedWriter[] writers = new BufferedWriter[53];
         int i = 0;
@@ -232,6 +292,13 @@ public class Indexer {
         return writers;
     }
 
+    /**
+     * write single list to file
+     *
+     * @param entry  a term and he's list
+     * @param writer the relevant writer
+     * @throws IOException handled in the calling function
+     */
     private void writeToFile(Map.Entry<Term, LinkedList<Pair<String, Integer>>> entry, BufferedWriter writer) throws IOException {
         writer.write(entry.getKey().toString());
         writer.write("->");
@@ -242,6 +309,9 @@ public class Indexer {
         writer.write('\n');
     }
 
+    /**
+     * write the dictionary and the DocumentsInfo to the file
+     */
     private void writeDictionaryToDisc() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile\\Dictionary.txt"));
@@ -253,6 +323,13 @@ public class Indexer {
         }
     }
 
+    /**
+     * write a map to file
+     *
+     * @param writer relevant writer
+     * @param map    a map to write
+     * @throws IOException handled in the calling function
+     */
     private void writeMapToFile(BufferedWriter writer, Map<String, Pair<Integer, Integer>> map) throws IOException {
         for (Map.Entry<String, Pair<Integer, Integer>> entry : map.entrySet()) {
             writer.write(entry.getKey());

@@ -110,7 +110,7 @@ public class Parser {
                         w = new Word(splitted[i], false);
                     }
                     if (w.isGood()) {
-                        indexer.addWord(w);
+                        indexer.addTerm(w);
                         numberOfParsePhrases++;
                     } else {
                         numberOfNotParsePhrases++;
@@ -165,14 +165,14 @@ public class Parser {
                     first = splitted[j - 1];
                     second = splitted[j + 1];
                     toReturn = 3;
-                    indexer.addWord(new Number(0, "#", Integer.parseInt(first), Integer.parseInt(second)));
+                    indexer.addTerm(new Number(0, "#", Integer.parseInt(first), Integer.parseInt(second)));
                 } else {
                     first = splitted[j - 1];
                     second = splitted[j + 1];
                     Selection s = new Selection(first, second);
                     if (s.isGood()) {
                         toReturn = 3;
-                        indexer.addWord(s);
+                        indexer.addTerm(s);
                     }
                 }
             }
@@ -198,7 +198,7 @@ public class Parser {
         if (toAdd[1] != null) {
             Phrase p = new Phrase(toAdd[0], toAdd[1], toAdd[2], toAdd[3]);
             if (p.isGood()) {
-                indexer.addWord(p);
+                indexer.addTerm(p);
                 return j - i;
             } else {
                 return 0;
@@ -393,7 +393,7 @@ public class Parser {
                 String s = "0." + numberAfterPoint;
                 valueAfterPoint = Double.parseDouble(s);
             }
-            indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, sign, mone, mechane));
+            indexer.addTerm(new Number((value + valueAfterPoint) * multiplyValue, sign, mone, mechane));
             return toReturn;
         } else if (splitted[i].charAt(0) == '$') {
             toReturn = 0;
@@ -468,7 +468,7 @@ public class Parser {
                             String s = "0." + numberAfterPoint;
                             valueAfterPoint = Double.parseDouble(s);
                         }
-                        indexer.addWord(new Number((value + valueAfterPoint) * multiplyValue, "$", mone, mechane));
+                        indexer.addTerm(new Number((value + valueAfterPoint) * multiplyValue, "$", mone, mechane));
                         return toReturn;
                     } else if (WordsToNumber.getAllowedStrings().contains(splitted[i + 1].toLowerCase())) {
                         //TBD - handle very little cases
@@ -543,7 +543,7 @@ public class Parser {
                         String s = "0." + numberAfterPoint;
                         afterPointValue = Double.parseDouble(s);
                     }
-                    indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$", mone, mechane));
+                    indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, "$", mone, mechane));
                     return toReturn;
                 } else if (WordsToNumber.getAllowedStrings().contains(splittedI.toLowerCase())) {
                     //TBD - handle very little cases
@@ -665,7 +665,7 @@ public class Parser {
                 String s = "0." + numberAfterPoint;
                 afterPointValue = Double.parseDouble(s);
             }
-            indexer.addWord(new Number((value + afterPointValue) * multiplyValue, "$"));
+            indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, "$"));
             return toReturn;
         }
         return toReturn;
@@ -689,7 +689,7 @@ public class Parser {
                 }
                 Range r = new Range(first, second, third);
                 if (r.isGood()) {
-                    indexer.addWord(r);
+                    indexer.addTerm(r);
                     return toReturn;
                 } else {
                     return 0;
@@ -700,7 +700,7 @@ public class Parser {
                     second = splitted[j + 2];
                     Range r = new Range(first, second, third);
                     if (r.isGood()) {
-                        indexer.addWord(r);
+                        indexer.addTerm(r);
                         return 4;
                     } else {
                         return 0;
@@ -718,7 +718,7 @@ public class Parser {
         if (splitted[i].charAt(0) >= 'A' && splitted[i].charAt(0) <= 'Z') {
             Name n = new Name(splitted[i], toStem);
             if (n.isGood()) {
-                indexer.addWord(new Name(splitted[i], toStem));
+                indexer.addTerm(new Name(splitted[i], toStem));
                 return 1;
             } else {
                 return 0;
@@ -733,7 +733,7 @@ public class Parser {
                 if (splitted.length > i + 1 && isMonth(splitted[i + 1])) {
                     int day = (int) Double.parseDouble(splitted[i]);
                     if (day <= 31 && day >= 1) {
-                        indexer.addWord(new Date(day, MONTHS.indexOf(splitted[i + 1].toUpperCase()) % 12 + 1, -1));
+                        indexer.addTerm(new Date(day, MONTHS.indexOf(splitted[i + 1].toUpperCase()) % 12 + 1, -1));
                         return 2;
                     }
                 }
@@ -743,16 +743,16 @@ public class Parser {
                 if (splitted[i + 1].length() < 3) {
                     int yearOrDay = (int) Double.parseDouble(splitted[i + 1]);
                     if (yearOrDay > 31) {
-                        indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, yearOrDay));
+                        indexer.addTerm(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, yearOrDay));
                         return 2;
                     } else if (yearOrDay >= 1) {
-                        indexer.addWord(new Date(yearOrDay, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, -1));
+                        indexer.addTerm(new Date(yearOrDay, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, -1));
                         return 2;
                     }
                 } else if (splitted[i + 1].length() == 4 || splitted[i + 1].length() == 5) {
                     int year = (int) Double.parseDouble(splitted[i + 1]);
                     if (year < 2500) {
-                        indexer.addWord(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, year));
+                        indexer.addTerm(new Date(-1, MONTHS.indexOf(splitted[i].toUpperCase()) % 12 + 1, year));
                         return 2;
                     }
                 }
