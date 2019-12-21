@@ -243,22 +243,21 @@ public class Indexer {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("PostingFile\\Dictionary.txt"));
             writeMapToFile(writer, dictionary);
-            writer.flush();
             writer = new BufferedWriter(new FileWriter("PostingFile\\DocumentsInfo.txt"));
             writeMapToFile(writer, documents);
-            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeMapToFile(BufferedWriter writer, Map<String, Pair<Integer, Integer>> documents) throws IOException {
-        for (Map.Entry<String, Pair<Integer, Integer>> entry : documents.entrySet()) {
+    private void writeMapToFile(BufferedWriter writer, Map<String, Pair<Integer, Integer>> map) throws IOException {
+        for (Map.Entry<String, Pair<Integer, Integer>> entry : map.entrySet()) {
             writer.write(entry.getKey());
             writer.write("->");
             writer.write(entry.getValue().toString());
             writer.write('\n');
         }
+        writer.flush();
     }
 
     public static void main(String[] args) {
