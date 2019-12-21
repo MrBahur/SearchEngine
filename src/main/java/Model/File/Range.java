@@ -88,6 +88,12 @@ public class Range extends Term {
         System.out.println(r4.toString());
     }
 
+    /**
+     * check if the Range is valid
+     * might add allot of changes to this function in the feature
+     *
+     * @return boolean if the phrase satisfy our condition for being "good"
+     */
     public boolean isGood() {
         if (right == null) {
             return left.length() >= 1 && middle.length() >= 1;
