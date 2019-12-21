@@ -58,7 +58,7 @@ public class Name extends Term {
     }
 
     /**
-     * basicly toString just with other name
+     * baily toString just with other name
      *
      * @return the name
      */
