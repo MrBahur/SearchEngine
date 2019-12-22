@@ -151,8 +151,12 @@ public class Indexer {
      *
      * @return map that is dictionary
      */
-    public Map getDictionary() {
+    public Map<String, Pair<Integer, Integer>> getDictionary() {
         return dictionary;
+    }
+
+    public Map<String, Pair<Integer, Integer>> getDocuments() {
+        return documents;
     }
 
     /**

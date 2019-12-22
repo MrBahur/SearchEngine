@@ -5,6 +5,7 @@ import Model.File.Date;
 import Model.File.Number;
 import Model.InvertFile.Indexer;
 import Model.ReadFile.ReadFile;
+import javafx.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -52,6 +53,14 @@ public class Parser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Map<String, Pair<Integer, Integer>> getDictionary() {
+        return indexer.getDictionary();
+    }
+
+    public Map<String, Pair<Integer, Integer>> getDocuments() {
+        return indexer.getDocuments();
     }
 
     /**
