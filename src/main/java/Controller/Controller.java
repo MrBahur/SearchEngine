@@ -104,6 +104,7 @@ public class Controller {
             for (Map.Entry<String, Pair<Integer, Integer>> entry : Main.model.getDictionary().entrySet()) {
                 tableView.getItems().add(new MyTableEntry(entry.getKey(), entry.getValue().getKey()));
             }
+            tableView.sort();
             VBox vBox = new VBox(tableView);
 
             Scene scene = new Scene(vBox);
@@ -111,7 +112,7 @@ public class Controller {
             Stage secondaryStage = new Stage();
 
             secondaryStage.setScene(scene);
-
+            secondaryStage.setAlwaysOnTop(true);
             secondaryStage.show();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
