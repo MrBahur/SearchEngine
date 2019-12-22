@@ -17,22 +17,56 @@
             <artifactId>opennlp-tools</artifactId>
             <version>1.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>11</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>com.zenjava</groupId>-->
+    <!--<artifactId>javafx-maven-plugin</artifactId>-->
+    <!--<version>8.8.3</version>-->
+    <!--<configuration>-->
+    <!--<mainClass>View.Main</mainClass>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--<plugin>-->
+    <!--<artifactId>maven-jar-plugin</artifactId>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<phase>package</phase>-->
+    <!---->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--<addClasspath>true</addClasspath>-->
+    <!--<mainClass>View.Main</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--<descriptorRefs>-->
+    <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+    <!--</descriptorRefs>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
     <build>
         <plugins>
             <plugin>
-                <groupId>com.zenjava</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.8.3</version>
-                <configuration>
-                    <mainClass>View.Main</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
                         <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
@@ -42,9 +76,9 @@
                             <mainClass>View.Main</mainClass>
                         </manifest>
                     </archive>
-<!--                    <descriptorRefs>-->
-<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
-<!--                    </descriptorRefs>-->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
         </plugins>
