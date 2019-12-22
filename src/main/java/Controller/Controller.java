@@ -153,7 +153,7 @@ public class Controller {
                 File currentFile = new File(f1.getPath(), s);
                 currentFile.delete();
             }
-            f1.delete();
+            while (!f1.delete()) ;
         }
     }
 

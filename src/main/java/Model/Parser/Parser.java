@@ -28,7 +28,7 @@ public class Parser {
     private WordsToNumber wordsToNumber; //a words to number class
     private static long numberOfParsePhrases = 0; //indicator for how much are we parsing
     private static long numberOfNotParsePhrases = 0; //indicator for how much are we not parsing
-    private static int tempNumOfDocs = 0;
+    private int tempNumOfDocs = 0;
     private static Set<String> stopWords = new HashSet<>(); //set of the stop words
 
     /**
