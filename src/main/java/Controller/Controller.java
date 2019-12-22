@@ -104,7 +104,7 @@ public class Controller {
             for (Map.Entry<String, Pair<Integer, Integer>> entry : Main.model.getDictionary().entrySet()) {
                 tableView.getItems().add(new MyTableEntry(entry.getKey(), entry.getValue().getKey()));
             }
-            tableView.sort();
+            tableView.getSortOrder().add(column1);
             VBox vBox = new VBox(tableView);
 
             Scene scene = new Scene(vBox);
