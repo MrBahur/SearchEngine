@@ -97,12 +97,17 @@ public class Controller {
             column1.setCellValueFactory(new PropertyValueFactory<>("term"));
             TableColumn<String, MyTableEntry> column2 = new TableColumn<>("Amount");
             column2.setCellValueFactory(new PropertyValueFactory<>("amount"));
+            //TableColumn<String, MyTableEntry> column3 = new TableColumn<>("Pointer");
+            //column3.setCellValueFactory(new PropertyValueFactory<>("pointer"));
+
 
             tableView.getColumns().add(column1);
             tableView.getColumns().add(column2);
+            //tableView.getColumns().add(column3);
+
 
             for (Map.Entry<String, Pair<Integer, Integer>> entry : Main.model.getDictionary().entrySet()) {
-                tableView.getItems().add(new MyTableEntry(entry.getKey(), entry.getValue().getKey()));
+                tableView.getItems().add(new MyTableEntry(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue()));
             }
             tableView.getSortOrder().add(column1);
             VBox vBox = new VBox(tableView);
@@ -131,9 +136,25 @@ public class Controller {
         loaded = false;
         clickedCorpusBrowse = false;
         clickedDicBrowse = false;
+        deleteFilesInDir("PostingFile");
+        deleteFilesInDir("PostingFiles");
+        deleteFilesInDir("SPostingFile");
+        deleteFilesInDir("SPostingFiles");
         corpusDir.setText("Corpus Directory Path");
         dicDir.setText("Dictionary Directory Path");
 
+    }
+
+    private void deleteFilesInDir(String path) {
+        File f1 = new File(path);
+        if (f1.exists() && f1.isDirectory()) {
+            String[] entries = f1.list();
+            for (String s : entries) {
+                File currentFile = new File(f1.getPath(), s);
+                currentFile.delete();
+            }
+            f1.delete();
+        }
     }
 
     public void run(ActionEvent actionEvent) {
@@ -168,15 +189,25 @@ public class Controller {
     public class MyTableEntry {
         private String term;
         private Integer amount;
+        //private Integer pointer;
+
+//        public Integer getPointer() {
+//            return pointer;
+//        }
 
         public MyTableEntry() {
 
         }
 
-        public MyTableEntry(String term, Integer amount) {
+        public MyTableEntry(String term, Integer amount, Integer pointer) {
             this.term = term;
             this.amount = amount;
+            //this.pointer = pointer;
         }
+
+//        public void setPointer(Integer pointer) {
+//            this.pointer = pointer;
+//        }
 
         public String getTerm() {
             return term;
