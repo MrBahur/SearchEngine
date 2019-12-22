@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<Pane fx:controller="Controller.Controller"
+      xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml">
+    <VBox alignment="CENTER" spacing="10">
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="corpusDir" text="Corpus Directory Path"/>
+            <Button text="Browse" fx:id="browseCorpusDirBTN" onAction="#handleBrowseClick"/>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="dicDir" text="Dictionary Directory Path"/>
+            <Button text="Browse" fx:id="browseDicDirBTN" onAction="#handleBrowseClick"/>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT" spacing="10">
+            <Text text="ToStem"/>
+            <CheckBox fx:id="toStem"/>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <Button text="Show Dictionary" fx:id="showDicBTN" onAction="#showDictionary"/>
+            <Button text="Load Dictionary" fx:id="loadDicBTN" onAction="#loadDictionaryFromPostingFile"/>
+            <Button text="Reset" fx:id="resetBTN" onAction="#reset"/>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT">
+            <Button text="Run" fx:id="runBTN" onAction="#run"/>
+        </HBox>
+    </VBox>
+</Pane>
