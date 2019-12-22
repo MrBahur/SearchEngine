@@ -868,7 +868,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", false);
+        Parser p = new Parser("F:\\Study\\SearchEngine", true);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
