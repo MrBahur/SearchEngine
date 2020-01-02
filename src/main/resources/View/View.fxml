@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<Pane fx:controller="Controller.Controller"
-      xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml">
+
+<Pane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.Controller">
     <VBox alignment="CENTER" spacing="10">
         <HBox alignment="CENTER" spacing="10">
             <TextField fx:id="corpusDir" text="Corpus Directory Path"/>
-            <Button text="Browse" fx:id="browseCorpusDirBTN" onAction="#handleBrowseClick"/>
+            <Button fx:id="browseCorpusDirBTN" onAction="#handleBrowseClick" text="Browse"/>
         </HBox>
         <HBox alignment="CENTER" spacing="10">
             <TextField fx:id="dicDir" text="Dictionary Directory Path"/>
-            <Button text="Browse" fx:id="browseDicDirBTN" onAction="#handleBrowseClick"/>
-        </HBox>
-        <HBox alignment="BASELINE_LEFT" spacing="10">
-            <Text text="ToStem"/>
-            <CheckBox fx:id="toStem"/>
+            <Button fx:id="browseDicDirBTN" onAction="#handleBrowseClick" text="Browse"/>
         </HBox>
         <HBox alignment="CENTER" spacing="10">
-            <Button text="Show Dictionary" fx:id="showDicBTN" onAction="#showDictionary"/>
-            <Button text="Load Dictionary" fx:id="loadDicBTN" onAction="#loadDictionaryFromPostingFile"/>
-            <Button text="Reset" fx:id="resetBTN" onAction="#reset"/>
+            <Text text="ToStem"/>
+            <CheckBox fx:id="toStem"/>
+
+            <Text text="SemanticHandle"/>
+            <CheckBox fx:id="toSemantic"/>
         </HBox>
-        <HBox alignment="BASELINE_LEFT">
-            <Button text="Run" fx:id="runBTN" onAction="#run"/>
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="showDicBTN" onAction="#showDictionary" text="Show Dictionary"/>
+            <Button fx:id="loadDicBTN" onAction="#loadDictionaryFromPostingFile" text="Load Dictionary"/>
+            <Button fx:id="resetBTN" onAction="#reset" text="Reset"/>
         </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="runBTN" onAction="#run" text="Run"/>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="query" text="Insert Query"/>
+            <Button fx:id="runQuery" onAction="#handleRunQueryClick" text="Run"/>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="queryFile" text="Insert Path For Query File"/>
+            <Button fx:id="browseQueryFile" onAction="#handleBrowseClick" text="Run"/>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="docID" text="Insert Doc ID"/>
+            <Button fx:id="searchDocID" onAction="#handleSearchDocIDClick" text="Search Entities"/>
+        </HBox>
+
     </VBox>
 </Pane>

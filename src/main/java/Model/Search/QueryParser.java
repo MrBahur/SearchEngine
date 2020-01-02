@@ -1,11 +1,14 @@
-package Model.Parser;
+package Model.Search;
 
 import Model.File.*;
 import Model.File.Date;
 import Model.File.Number;
-import Model.InvertFile.QueryIndexer;
+import Model.Parser.WordsToNumber;
 import javafx.util.Pair;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class QueryParser {
@@ -18,10 +21,30 @@ public class QueryParser {
     private boolean toStem;
     private static Set<String> stopWords = new HashSet<>(); //set of the stop words
     private WordsToNumber wordsToNumber; //a words to number class
-
     private QueryIndexer indexer;
 
+    public QueryParser(boolean toStem, String path, Map<String, Pair<Integer, Integer>> dictionary) {
+        this.toStem = toStem;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path + "\\05 stop_words.txt"));
+            String line;
+            do {
+                line = reader.readLine();
+                stopWords.add(line);
+            } while (line != null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wordsToNumber = new WordsToNumber();
+        indexer = new QueryIndexer(dictionary);
+    }
+
+    public Map<Term, Integer> getQuery() {
+        return indexer.getQuery();
+    }
+
     public void parse(String s) {
+        indexer.clean();
         String[] splitted = s.replaceAll("(-+ *)+", " - ")
                 .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                 .replaceAll("%", " % ").trim().split(" +");

@@ -39,6 +39,20 @@ public class Controller {
     public Button loadDicBTN;
     @FXML
     public Button runBTN;
+    @FXML
+    public TextField query;
+    @FXML
+    public Button runQuery;
+    @FXML
+    public TextField queryFile;
+    @FXML
+    public Button browseQueryFile;
+    @FXML
+    public TextField docID;
+    @FXML
+    public Button searchDocID;
+    @FXML
+    public CheckBox toSemantic;
 
 
     private boolean clickedCorpusBrowse = false;
@@ -56,6 +70,8 @@ public class Controller {
         } else if (actionEvent.getSource().equals(browseDicDirBTN)) {
             clickedDicBrowse = true;
             dicDir.setText(s);
+        } else if (actionEvent.getSource().equals(browseCorpusDirBTN)) {
+            ////asdklfaksjdf
         }
     }
 
@@ -184,6 +200,12 @@ public class Controller {
             alert.setHeaderText("You didn't entered path");
             alert.showAndWait();
         }
+    }
+
+    public void handleRunQueryClick(ActionEvent actionEvent) {
+    }
+
+    public void handleSearchDocIDClick(ActionEvent actionEvent) {
     }
 
     public class MyTableEntry {
