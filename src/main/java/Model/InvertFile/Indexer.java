@@ -28,10 +28,11 @@ public class Indexer {
     private String currentDocID;// current doc ID
     private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
     private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles; //map of posting files for each term
-    private Map<String, Integer> phrasesDocs;// DS to hold Phrases that we only saw in one Document
+    private Map<String, String> phrasesDocs;// DS to hold Phrases that we only saw in one Document from phrase to DocID @todo changed
+    private Map<String, LinkedList<String>> docsPhrase; // DS to hold map from doc to list of its phrases @todo changed
     private boolean toStem; //is the data we get stemmed or not
     public static int numberCounter = 0;// counter for how much unique number there are in the corpus
-    //
+
 
     /**
      * the constructor we are exposing to user
@@ -53,6 +54,7 @@ public class Indexer {
         dictionary = new HashMap<>(initialWordSize, 4);
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
+        docsPhrase = new HashMap<>();
         this.toStem = toStem;
     }
 
@@ -66,6 +68,7 @@ public class Indexer {
      */
     public void addTerm(Term term) {
         if (term instanceof Phrase) { //check if the Phrase already appeared in another doc
+            docsPhrase.get(currentDocID).addLast(term.toString());
             if (dictionary.containsKey(term.toString())) {
                 if (phrasesDocs.containsKey(term.toString())) {
                     if (!phrasesDocs.get(term.toString()).equals(currentDoc)) {
@@ -73,7 +76,7 @@ public class Indexer {
                     }
                 }
             } else {
-                phrasesDocs.put(term.toString(), currentDoc);
+                phrasesDocs.put(term.toString(), currentDocID);
             }
         }
         if (term instanceof Word) { //check if there was a Name that look like this word
@@ -127,6 +130,7 @@ public class Indexer {
     public void addDoc(String doc) {
         documents.put(doc, new Pair<>(0, 0));
         currentDocID = doc;
+        docsPhrase.put(currentDocID, new LinkedList<>());
         currentDoc++;
         if (currentDoc % NUM_OF_DOCS_PER_POSTING == 0) {
             writePostingFileToDisc(postingFiles, currentDoc / NUM_OF_DOCS_PER_POSTING);
@@ -164,8 +168,17 @@ public class Indexer {
      * remove every Phrase that only was in one document
      */
     private void removeSinglePhrases() {
-        for (Map.Entry<String, Integer> entry : phrasesDocs.entrySet()) {
-            dictionary.remove(entry.getKey());
+        for (Map.Entry<String, String> entry : phrasesDocs.entrySet()) {
+            LinkedList<String> newLinkedList = new LinkedList<>();
+            if (docsPhrase.get(entry.getValue()) != null) {
+                for (String s : docsPhrase.get(entry.getValue())) {
+                    if (!s.equals(entry.getKey())) {
+                        newLinkedList.addLast(s);
+                    }
+                }
+                docsPhrase.replace(entry.getValue(), newLinkedList);
+                dictionary.remove(entry.getKey());
+            }
         }
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, Pair<Integer, Integer>> entry : dictionary.entrySet()) {
@@ -323,6 +336,17 @@ public class Indexer {
             writeMapToFile(writer, dictionary);
             writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\DocumentsInfo.txt"));
             writeMapToFile(writer, documents);
+            writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\DocsToPhrases.txt"));
+            for (Map.Entry<String, LinkedList<String>> entry : docsPhrase.entrySet()) {
+                writer.write(entry.getKey());
+                writer.write("->");
+                for (String s : entry.getValue()) {
+                    writer.write(s);
+                    writer.write(";");
+                }
+                writer.write('\n');
+            }
+            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
