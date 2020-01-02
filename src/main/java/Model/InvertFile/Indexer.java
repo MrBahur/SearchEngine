@@ -31,6 +31,7 @@ public class Indexer {
     private Map<String, Integer> phrasesDocs;// DS to hold Phrases that we only saw in one Document
     private boolean toStem; //is the data we get stemmed or not
     public static int numberCounter = 0;// counter for how much unique number there are in the corpus
+    //
 
     /**
      * the constructor we are exposing to user
