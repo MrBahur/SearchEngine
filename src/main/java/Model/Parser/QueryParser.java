@@ -18,7 +18,7 @@ public class QueryParser {
     private boolean toStem;
     private static Set<String> stopWords = new HashSet<>(); //set of the stop words
     private WordsToNumber wordsToNumber; //a words to number class
-    
+
     private QueryIndexer indexer;
 
     public void parse(String s) {
