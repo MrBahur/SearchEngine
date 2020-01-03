@@ -1,6 +1,7 @@
 package Model;
 
 import Model.Parser.Parser;
+import Model.Search.Searcher;
 import javafx.util.Pair;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ public class Model {
     private Parser parser;
     private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
     private Map<String, Pair<Integer, Integer>> documents;// doc ID -> <max_tf,Number of unique words>
+    private Searcher searcher;
 
     public Model() {
         dictionary = new HashMap<>();
@@ -32,6 +34,13 @@ public class Model {
         this.documents = documents;
     }
 
+    public void setSearcher(Searcher searcher) {
+        this.searcher = searcher;
+    }
+
+    public Searcher getSearcher() {
+        return this.searcher;
+    }
 
     public Parser getParser() {
         return parser;

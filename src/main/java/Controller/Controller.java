@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Model;
+import Model.Search.Searcher;
 import View.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,13 +71,13 @@ public class Controller {
         } else if (actionEvent.getSource().equals(browseDicDirBTN)) {
             clickedDicBrowse = true;
             dicDir.setText(s);
-        } else if (actionEvent.getSource().equals(browseCorpusDirBTN)) {
-            ////asdklfaksjdf
+        } else if (actionEvent.getSource().equals(browseQueryFile)) {
+            queryFile.setText(s);
         }
     }
 
     public void loadDictionaryFromPostingFile(ActionEvent actionEvent) {
-        if (clickedDicBrowse) {
+        if (clickedDicBrowse && clickedCorpusBrowse) {
             try {
                 BufferedReader f = new BufferedReader(new FileReader(dicDir.getText() + "\\Dictionary.txt"));
                 Main.model.setDictionary(new HashMap<>());
@@ -86,6 +87,7 @@ public class Controller {
                             new Pair<>(Integer.parseInt(line.substring(line.indexOf("->") + 2, line.indexOf("="))),
                                     Integer.parseInt(line.substring(line.indexOf("=") + 1))));
                 }
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), corpusDir.getText(), Main.model.getDictionary()));
                 loaded = true;
             } catch (IOException e) {
                 clickedCorpusBrowse = false;
@@ -93,7 +95,7 @@ public class Controller {
                 alert.setTitle("Wrong Path Message");
                 alert.setHeaderText("You entered Wrong path");
                 alert.setContentText("Please click the browse button and insert path that contains\n" +
-                        "the Posting Files for this project" +
+                        "the Posting Files and corpus for this project" +
                         "thanks!");
                 alert.showAndWait();
             }
@@ -203,6 +205,18 @@ public class Controller {
     }
 
     public void handleRunQueryClick(ActionEvent actionEvent) {
+        if (loaded) {
+            for (Pair<String, Double> p : Main.model.getSearcher().search(query.getText())) {
+                System.out.println("Doc = " + p.getKey() + " Rank = " + p.getValue());
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("no dictionary loaded");
+            alert.setHeaderText("Please click Load to load dictionary from Posting files\n" +
+                    "or run to run the Parser on the corpus\n" +
+                    "no need to load the dictionary if you run it on the corpus");
+            alert.showAndWait();
+        }
     }
 
     public void handleSearchDocIDClick(ActionEvent actionEvent) {

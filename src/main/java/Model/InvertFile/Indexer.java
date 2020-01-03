@@ -30,6 +30,7 @@ public class Indexer {
     private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles; //map of posting files for each term
     private Map<String, String> phrasesDocs;// DS to hold Phrases that we only saw in one Document from phrase to DocID @todo changed
     private Map<String, LinkedList<String>> docsPhrase; // DS to hold map from doc to list of its phrases @todo changed
+    private Map<String, Integer> docToNumOfTerms; //@todo changed
     private boolean toStem; //is the data we get stemmed or not
     public static int numberCounter = 0;// counter for how much unique number there are in the corpus
 
@@ -55,6 +56,7 @@ public class Indexer {
         postingFiles = new HashMap<>(numOfDocsInMemory);
         phrasesDocs = new HashMap<>();
         docsPhrase = new HashMap<>();
+        docToNumOfTerms = new HashMap<>();
         this.toStem = toStem;
     }
 
@@ -71,7 +73,7 @@ public class Indexer {
             docsPhrase.get(currentDocID).addLast(term.toString());
             if (dictionary.containsKey(term.toString())) {
                 if (phrasesDocs.containsKey(term.toString())) {
-                    if (!phrasesDocs.get(term.toString()).equals(currentDoc)) {
+                    if (!phrasesDocs.get(term.toString()).equals(currentDocID)) {
                         phrasesDocs.remove(term.toString());
                     }
                 }
@@ -120,6 +122,7 @@ public class Indexer {
             documents.remove(currentDocID);
             documents.put(currentDocID, new Pair<>(pair.getKey() + 1, pair.getValue()));
         }
+        docToNumOfTerms.replace(currentDocID, docToNumOfTerms.get(currentDocID) + 1);
     }
 
     /**
@@ -131,6 +134,7 @@ public class Indexer {
         documents.put(doc, new Pair<>(0, 0));
         currentDocID = doc;
         docsPhrase.put(currentDocID, new LinkedList<>());
+        docToNumOfTerms.put(doc, 0);
         currentDoc++;
         if (currentDoc % NUM_OF_DOCS_PER_POSTING == 0) {
             writePostingFileToDisc(postingFiles, currentDoc / NUM_OF_DOCS_PER_POSTING);
@@ -344,6 +348,15 @@ public class Indexer {
                     writer.write(s);
                     writer.write(";");
                 }
+                writer.write('\n');
+            }
+            writer.flush();
+            writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\docsToNumOfTerms.txt"));
+            int sum = 0;
+            for (Map.Entry<String, Integer> entry : docToNumOfTerms.entrySet()) {
+                writer.write(entry.getKey());
+                writer.write("->");
+                writer.write(entry.getValue().toString());
                 writer.write('\n');
             }
             writer.flush();

@@ -877,7 +877,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("D:\\documents\\users\\matanana\\Downloads", true);
+        Parser p = new Parser("C:\\Users\\matanana.BGU-USERS.000\\Downloads", true);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
