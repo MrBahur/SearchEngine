@@ -77,8 +77,8 @@ public class QueryParser {
                     if (w.isGood()) {
                         indexer.addTerm(w);
                     }
-                    i++;
                 }
+                i++;
             }
         }
     }

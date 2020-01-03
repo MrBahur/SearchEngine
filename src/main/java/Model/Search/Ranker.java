@@ -48,12 +48,38 @@ public class Ranker {
         double numOfTerms = getNumOfTerms(docID);
         double numOfDocs = 472525;
         for (Map.Entry<Term, Integer> entry : query.entrySet()) {
+            int numOfATimesInDoc = getNumOfTimesInDoc(entry.getKey().toString(), docID);
             int numOfDocsForTerm = getNumOfDocs(entry.getKey().toString());
             double idf = Math.log((numOfDocs - numOfDocsForTerm + 0.5) / numOfDocsForTerm + 0.5);
-            double BM25 = ((numOfTerms / maxTf) * (k + 1) / ((numOfTerms / maxTf) + k * (1 - b + b * (numOfTerms / avgdl))));
+            double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgdl))));
             rank += (idf * BM25);
         }
         return rank;
+    }
+
+    private int getNumOfTimesInDoc(String term, String docID) {
+        int numOfTerms = 0;
+        try {
+
+            String postingFileName = getPostingFileName(term);
+            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
+            String line;
+            do {
+                line = reader.readLine();
+                if (line == null) {
+                    return 0;
+                }
+            } while (!line.startsWith(term));
+            line = line.substring(line.indexOf("->") + 2);
+            for (String s : line.split(";")) {
+                if (s.startsWith(docID)) {
+                    return Integer.parseInt(s.split("=")[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return numOfTerms;
     }
 
     private double getNumOfTerms(String docID) {
@@ -87,7 +113,7 @@ public class Ranker {
     private String getPostingFileName(String term) {
         char c = term.charAt(0);
         if (c >= 'a' && c <= 'z') {
-            return "" + c+".txt";
+            return "" + c + ".txt";
         } else if (c >= 'A' && c <= 'Z') {
             return c + "@.txt";
         } else return "0.txt";

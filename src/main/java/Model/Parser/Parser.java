@@ -70,13 +70,13 @@ public class Parser {
         for (String filePath : readFile) {
             MyFile myFile = new MyFile(readFile.getPath() + "\\" + filePath + "\\" + filePath);
             for (MyDocument doc : myFile) {
-                indexer.addDoc(doc.getDocNumber());
+                indexer.addDoc(doc.getDocNumber().trim());
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-//            if (tempNumOfDocs >= 10000) {//here for debugging
-//                break;
-//            }
+            if (tempNumOfDocs >= 10000) {//here for debugging
+                break;
+            }
         }
         this.indexer.markEnd();
     }
@@ -99,11 +99,7 @@ public class Parser {
             String[] splitted = d.getText().getPlainText().replaceAll("(-+ *)+", " - ")
                     .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
-            for (int i = 0; i < splitted.length; i++) {
-                if (splitted[i].length() == 0) {
-                    System.out.println(d.getDocNumber());
-                }
-            }
+            
             parse(splitted);
         }
     }
@@ -877,7 +873,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("C:\\Users\\matanana.BGU-USERS.000\\Downloads", true);
+        Parser p = new Parser("C:\\Users\\matanana.BGU-USERS.000\\Downloads", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
