@@ -74,9 +74,9 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-            if (tempNumOfDocs >= 10000) {//here for debugging
+          /*  if (tempNumOfDocs >= 10000) {//here for debugging
                 break;
-            }
+            }*/
         }
         this.indexer.markEnd();
     }
@@ -380,7 +380,8 @@ public class Parser {
                             toReturn = 2;
                         }
                     } else {
-                        toReturn = 1;
+                        toReturn = 2;
+                        //toReturn = 1;
                     }
                 } else if (splitted[i + 1].equalsIgnoreCase("%") ||
                         splitted[i + 1].equalsIgnoreCase("%.") ||
@@ -467,6 +468,8 @@ public class Parser {
                 } else {
                     toReturn = 1;
                 }
+            } else {
+                toReturn = 1;
             }
             double valueAfterPoint = 0;
             if (numberAfterPoint > 0) {
@@ -664,16 +667,20 @@ public class Parser {
                                             sign = "$";
                                             toReturn = 6;
                                         } else {
-                                            toReturn = 3;
+                                            toReturn = 4;
+                                            //toReturn = 3;
                                         }
                                     } else {
-                                        toReturn = 3;
+                                        toReturn = 4;
+                                        //toReturn = 3;
                                     }
                                 } else {
-                                    toReturn = 2;
+                                    toReturn = 3;
+                                    //toReturn = 2;
                                 }
                             } else {
-                                toReturn = 2;
+                                toReturn = 3;
+                                //toReturn = 2;
                             }
                         } else {
                             toReturn = 1;
@@ -703,7 +710,8 @@ public class Parser {
                             toReturn = 2;
                         }
                     } else {
-                        toReturn = 1;
+                        toReturn = 2;
+                        //toReturn = 1;
                     }
                 } else if (isInteger(splitted[i + 1])) {
                     if (i + 2 < splitted.length) {
@@ -734,6 +742,21 @@ public class Parser {
                     } else {
                         toReturn = 1;
                     }
+                } else if (splitted[i + 1].equalsIgnoreCase("%") ||
+                        splitted[i + 1].equalsIgnoreCase("%.") ||
+                        splitted[i + 1].equalsIgnoreCase("percent") ||
+                        splitted[i + 1].equalsIgnoreCase("percent.") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage.")) {
+                    sign = "%";
+                    toReturn = 2;
+                } else if (splitted[i + 1].equalsIgnoreCase("dollars") ||
+                        splitted[i + 1].equalsIgnoreCase("$")) {
+                    sign = "$";
+                    toReturn = 2;
+                } else if (i + 2 < splitted.length && splitted[i + 1].equalsIgnoreCase("U.S.") && splitted[i + 2].equalsIgnoreCase("dollars")) {
+                    sign = "$";
+                    toReturn = 3;
                 } else {
                     toReturn = 1;
                 }
@@ -745,7 +768,7 @@ public class Parser {
                 String s = "0." + numberAfterPoint;
                 afterPointValue = Double.parseDouble(s);
             }
-            indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, "$"));
+            indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, sign, mone, mechane));
             return toReturn;
         }
         return toReturn;
@@ -873,7 +896,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("C:\\Users\\matanana.BGU-USERS.000\\Downloads", false);
+        Parser p = new Parser("C:\\", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");
