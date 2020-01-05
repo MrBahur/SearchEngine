@@ -54,7 +54,7 @@ public class Searcher {
             String postingFileName = getPostingFileName(entry.getKey());
             BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
             String sRow = "";
-            for (int i = 0; i < row; i++) {
+            for (int i = 0; i <= row; i++) {
                 sRow = reader.readLine();
             }
             String[] splitted = sRow.substring(sRow.indexOf("->") + 2).split(";");

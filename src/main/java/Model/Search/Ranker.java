@@ -60,7 +60,6 @@ public class Ranker {
     private int getNumOfTimesInDoc(String term, String docID) {
         int numOfTerms = 0;
         try {
-
             String postingFileName = getPostingFileName(term);
             BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
             String line;
@@ -69,7 +68,7 @@ public class Ranker {
                 if (line == null) {
                     return 0;
                 }
-            } while (!line.startsWith(term));
+            } while (!line.startsWith(term+"->"));
             line = line.substring(line.indexOf("->") + 2);
             for (String s : line.split(";")) {
                 if (s.startsWith(docID)) {
