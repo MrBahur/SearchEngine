@@ -4,6 +4,7 @@ import Model.File.*;
 import Model.File.Date;
 import Model.File.Number;
 import Model.Parser.WordsToNumber;
+
 import javafx.util.Pair;
 
 import java.io.BufferedReader;
@@ -309,7 +310,8 @@ public class QueryParser {
                             toReturn = 2;
                         }
                     } else {
-                        toReturn = 1;
+                        toReturn = 2;
+                        //toReturn = 1;
                     }
                 } else if (splitted[i + 1].equalsIgnoreCase("%") ||
                         splitted[i + 1].equalsIgnoreCase("%.") ||
@@ -396,6 +398,8 @@ public class QueryParser {
                 } else {
                     toReturn = 1;
                 }
+            } else {
+                toReturn = 1;
             }
             double valueAfterPoint = 0;
             if (numberAfterPoint > 0) {
@@ -593,16 +597,20 @@ public class QueryParser {
                                             sign = "$";
                                             toReturn = 6;
                                         } else {
-                                            toReturn = 3;
+                                            toReturn = 4;
+                                            //toReturn = 3;
                                         }
                                     } else {
-                                        toReturn = 3;
+                                        toReturn = 4;
+                                        //toReturn = 3;
                                     }
                                 } else {
-                                    toReturn = 2;
+                                    toReturn = 3;
+                                    //toReturn = 2;
                                 }
                             } else {
-                                toReturn = 2;
+                                toReturn = 3;
+                                //toReturn = 2;
                             }
                         } else {
                             toReturn = 1;
@@ -632,7 +640,8 @@ public class QueryParser {
                             toReturn = 2;
                         }
                     } else {
-                        toReturn = 1;
+                        toReturn = 2;
+                        //toReturn = 1;
                     }
                 } else if (isInteger(splitted[i + 1])) {
                     if (i + 2 < splitted.length) {
@@ -663,6 +672,21 @@ public class QueryParser {
                     } else {
                         toReturn = 1;
                     }
+                } else if (splitted[i + 1].equalsIgnoreCase("%") ||
+                        splitted[i + 1].equalsIgnoreCase("%.") ||
+                        splitted[i + 1].equalsIgnoreCase("percent") ||
+                        splitted[i + 1].equalsIgnoreCase("percent.") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage") ||
+                        splitted[i + 1].equalsIgnoreCase("percentage.")) {
+                    sign = "%";
+                    toReturn = 2;
+                } else if (splitted[i + 1].equalsIgnoreCase("dollars") ||
+                        splitted[i + 1].equalsIgnoreCase("$")) {
+                    sign = "$";
+                    toReturn = 2;
+                } else if (i + 2 < splitted.length && splitted[i + 1].equalsIgnoreCase("U.S.") && splitted[i + 2].equalsIgnoreCase("dollars")) {
+                    sign = "$";
+                    toReturn = 3;
                 } else {
                     toReturn = 1;
                 }
@@ -674,7 +698,7 @@ public class QueryParser {
                 String s = "0." + numberAfterPoint;
                 afterPointValue = Double.parseDouble(s);
             }
-            indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, "$"));
+            indexer.addTerm(new Number((value + afterPointValue) * multiplyValue, sign, mone, mechane));
             return toReturn;
         }
         return toReturn;

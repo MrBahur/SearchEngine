@@ -13,7 +13,7 @@ public class Range extends Term {
      *
      * @param left   A
      * @param middle B
-     * @param right  B
+     * @param right  c
      */
     public Range(String left, String middle, String right) {
         this.left = GarbageRemove.removeWithoutNumbers(left);
