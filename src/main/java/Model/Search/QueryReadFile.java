@@ -1,4 +1,4 @@
-package Model.File;
+package Model.Search;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -11,56 +11,55 @@ import java.util.Iterator;
  * iterate over Docs in each file
  */
 
-public class MyFile implements Iterable<MyDocument> {
+public class QueryReadFile implements Iterable<String> {
     private String path;
-    private FileIterator<MyDocument> iterator;
-    private ArrayList<MyDocument> documents;
+    private FileIterator<String> iterator;
+    private ArrayList<String> queries;
     private int currentIndex;
 
     /**
-     * Constructor for files
-     * used only by FileReader
+     * Constructor for QueryReadFile
      *
      * @param path path for the file
      */
 
-    public MyFile(String path) {
+    public QueryReadFile(String path) {
         this.path = path;
-        documents = new ArrayList<>();
-        fillDocsFromFile(path);
+        queries = new ArrayList<>();
+        fillQueriesFromFile(path);
         iterator = new FileIterator<>();
-        iterator.list = this.documents;
+        iterator.list = this.queries;
         currentIndex = 0;
     }
 
     /**
      * debug method
      */
-    public void printFile() {
-        for (MyDocument x : this.documents) {
-            x.printDoc();
+    public void printQuery() {
+        for (String x : this.queries) {
+            System.out.println(x);
         }
     }
 
     /**
-     * create the Docs array to iterrate over
+     * create the Queries array to iterrate over
      *
      * @param path path for file
      */
-    private void fillDocsFromFile(String path) {
+    private void fillQueriesFromFile(String path) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             StringBuilder stringBuilder = new StringBuilder();
             String line;
-            boolean inFile = false;
+            boolean inQuery = false;
             while ((line = reader.readLine()) != null) {
-                if (line.equals("<DOC>")) {
-                    inFile = true;
-                } else if (line.equals("</DOC>")) {
-                    this.documents.add(new MyDocument(stringBuilder.toString()));
+                if (line.equals("<desc> Description: ")) {
+                    inQuery = true;
+                } else if (line.equals("<narr> Narrative: ")) {
+                    this.queries.add(stringBuilder.toString());
                     stringBuilder.delete(0, stringBuilder.length());
-                    inFile = false;
-                } else if (inFile) {
+                    inQuery = false;
+                } else if (inQuery) {
                     stringBuilder.append(line);
                     stringBuilder.append("\n");
                 }
@@ -76,7 +75,7 @@ public class MyFile implements Iterable<MyDocument> {
      * @return Iterator of docs
      */
     @Override
-    public Iterator<MyDocument> iterator() {
+    public Iterator<String> iterator() {
         return iterator;
     }
 
@@ -106,9 +105,7 @@ public class MyFile implements Iterable<MyDocument> {
      * @param args none
      */
     public static void main(String[] args) {
-        MyFile m = new MyFile("C:\\corpus\\FB396001\\FB396001");
-        for (MyDocument x : m.documents) {
-            System.out.println(x.getDocNumber());
-        }
+        QueryReadFile q = new QueryReadFile("C:\\03 queries.txt");
+        q.printQuery();
     }
 }
