@@ -12,12 +12,14 @@ import java.util.Map;
 public class Ranker {
     private Map<String, Integer> docToNumOfTerms;
     private Map<String, Pair<Integer, Integer>> documents;// doc ID -> <max_tf,Number of unique words>
+    private Map<String, Double> termToIDF;// Term -> IDF
     private boolean toStem;
 
     public Ranker(boolean toStem) {
         this.toStem = toStem;
         docToNumOfTerms = new HashMap<>();
         documents = new HashMap<>();
+        termToIDF = new HashMap<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + "docsToNumOfTerms.txt"));
             String line = reader.readLine();
@@ -34,9 +36,17 @@ public class Ranker {
                 documents.put(tmp1[0], new Pair<>(Integer.parseInt(tmp2[0]), Integer.parseInt(tmp2[1])));
                 line = reader.readLine();
             } while (line != null);
+            reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + "termToIDF.txt"));
+            line = reader.readLine();
+            do {
+                String[] tmp = line.split("->");
+                termToIDF.put(tmp[0], Double.parseDouble(tmp[1]));
+                line = reader.readLine();
+            } while (line != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public double getRank(Map<Term, Integer> query, String docID) {
@@ -44,14 +54,12 @@ public class Ranker {
         int maxTf = getMaxTF(docID);
         double k = 1.2;
         double b = 0.75;
-        double avgdl = 214;
+        double avgDocLength = 214;
         double numOfTerms = getNumOfTerms(docID);
-        double numOfDocs = 472525;
         for (Map.Entry<Term, Integer> entry : query.entrySet()) {
             int numOfATimesInDoc = getNumOfTimesInDoc(entry.getKey().toString(), docID);
-            int numOfDocsForTerm = getNumOfDocs(entry.getKey().toString());
-            double idf = Math.log((numOfDocs - numOfDocsForTerm + 0.5) / numOfDocsForTerm + 0.5);
-            double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgdl))));
+            double idf = termToIDF.get(entry.getKey().toString());
+            double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgDocLength))));
             rank += (idf * BM25);
         }
         return rank;
@@ -68,7 +76,7 @@ public class Ranker {
                 if (line == null) {
                     return 0;
                 }
-            } while (!line.startsWith(term+"->"));
+            } while (!line.startsWith(term + "->"));
             line = line.substring(line.indexOf("->") + 2);
             for (String s : line.split(";")) {
                 if (s.startsWith(docID)) {

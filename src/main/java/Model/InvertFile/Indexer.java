@@ -370,6 +370,7 @@ public class Indexer {
                 writer.write(entry.getValue().toString());
                 writer.write('\n');
             }
+            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
