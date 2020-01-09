@@ -63,6 +63,7 @@ public class Searcher {
         }
         for (Pair<String, Integer> p : lineInPostingFile) {
             double rank = ranker.getRank(p.getKey(), p.getValue(), entry.getKey());
+            //need to see how we add the entry.getValue() to the rank somehow
             if (!docsRanks.containsKey(p.getKey())) {
                 docsRanks.put(p.getKey(), rank);
             } else {
