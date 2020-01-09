@@ -97,25 +97,6 @@ public class Ranker {
         return documents.get(docID).getKey();
     }
 
-    private int getNumOfDocs(String term) {
-        int numOfDocs = 0;
-        try {
-
-            String postingFileName = getPostingFileName(term);
-            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
-            String line;
-            do {
-                line = reader.readLine();
-                if (line == null) {
-                    return 0;
-                }
-            } while (!line.startsWith(term));
-            numOfDocs = line.split(";").length;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return numOfDocs;
-    }
 
     private String getPostingFileName(String term) {
         char c = term.charAt(0);
@@ -124,5 +105,16 @@ public class Ranker {
         } else if (c >= 'A' && c <= 'Z') {
             return c + "@.txt";
         } else return "0.txt";
+    }
+
+    public double getRank(String docID, int numOfATimesInDoc, Term term) {
+        int maxTf = getMaxTF(docID);
+        double k = 1.2;
+        double b = 0.75;
+        double avgDocLength = 214;
+        double numOfTerms = getNumOfTerms(docID);
+        double idf = termToIDF.get(term.toString());
+        double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgDocLength))));
+        return idf * BM25;
     }
 }

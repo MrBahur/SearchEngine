@@ -2,6 +2,7 @@ package Model.Search;
 
 
 import Model.File.Term;
+import javafx.scene.control.Alert;
 import javafx.util.Pair;
 
 import java.io.BufferedReader;
@@ -26,43 +27,49 @@ public class Searcher {
 
 
     public ArrayList<Pair<String, Double>> search(String s) {
+        Map<String, Double> docsToRankMap = new HashMap<>();
         try {
             queryParser.parse(s);
             Map<Term, Integer> query = queryParser.getQuery();
-            Set<String> docs = getDocsFromQuery(query);
-            return rank(query, docs);
+            for (Map.Entry<Term, Integer> entry : query.entrySet()) {
+                rank(entry, docsToRankMap);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+        ArrayList<Map.Entry<String, Double>> tmpArrayList = new ArrayList<>(docsToRankMap.entrySet());
+        tmpArrayList.sort(Comparator.comparingDouble(p -> -1 * p.getValue()));
+        ArrayList<Pair<String, Double>> docsToReturn = new ArrayList<>();
+        for (int i = 0; i < 50 && i < tmpArrayList.size(); i++) {
+            docsToReturn.add(new Pair<>(tmpArrayList.get(i).getKey(), tmpArrayList.get(i).getValue()));
+        }
+        return docsToReturn;
     }
 
-    private ArrayList<Pair<String, Double>> rank(Map<Term, Integer> query, Set<String> unRankedDocs) {
-        ArrayList<Pair<String, Double>> arrayList = new ArrayList<>();
-        for (String docID : unRankedDocs) {
-            Double rank = ranker.getRank(query, docID);
-            arrayList.add(new Pair<>(docID, rank));
+    private void rank(Map.Entry<Term, Integer> entry, Map<String, Double> docsRanks) throws IOException {
+        List<Pair<String, Integer>> lineInPostingFile = new LinkedList<>();
+        String postingFileName = getPostingFileName(entry.getKey());
+        BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
+        int row = dictionary.get(entry.getKey().toString()).getValue();
+        String sRow = "";
+        for (int i = 0; i <= row; i++) {
+            sRow = reader.readLine();
         }
-        arrayList.sort(Comparator.comparingDouble(p -> -1 * p.getValue()));
-        return arrayList;
-    }
-
-    private Set<String> getDocsFromQuery(Map<Term, Integer> query) throws IOException {
-        Set<String> docs = new HashSet<>();
-        for (Map.Entry<Term, Integer> entry : query.entrySet()) {
-            int row = dictionary.get(entry.getKey().toString()).getValue();
-            String postingFileName = getPostingFileName(entry.getKey());
-            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
-            String sRow = "";
-            for (int i = 0; i <= row; i++) {
-                sRow = reader.readLine();
-            }
-            String[] splitted = sRow.substring(sRow.indexOf("->") + 2).split(";");
-            for (String s1 : splitted) {
-                docs.add(s1.substring(0, s1.indexOf("=")));
+        String[] docs = sRow.split("->")[1].split(";");
+        for (String s : docs) {
+            String[] tmp = s.split("=");
+            lineInPostingFile.add(new Pair<>(tmp[0], Integer.parseInt(tmp[1])));
+        }
+        for (Pair<String, Integer> p : lineInPostingFile) {
+            double rank = ranker.getRank(p.getKey(), p.getValue(), entry.getKey());
+            if (!docsRanks.containsKey(p.getKey())) {
+                docsRanks.put(p.getKey(), rank);
+            } else {
+                double oldRank = docsRanks.get(p.getKey());
+                docsRanks.replace(p.getKey(), oldRank + rank);
             }
         }
-        return docs;
     }
 
 
