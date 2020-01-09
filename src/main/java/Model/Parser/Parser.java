@@ -99,7 +99,7 @@ public class Parser {
             String[] splitted = d.getText().getPlainText().replaceAll("(-+ *)+", " - ")
                     .replaceAll("[,\"\\[\\]:();<>~*&{}|]", " ").replaceAll("[/\\\\]", " / ")
                     .replaceAll("%", " % ").trim().split(" +");
-            
+
             parse(splitted);
         }
     }
@@ -896,7 +896,7 @@ public class Parser {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Parser p = new Parser("C:\\", false);
+        Parser p = new Parser("F:\\Study\\SearchEngine\\", false);
         p.parse();
         long finish = System.currentTimeMillis();
         System.out.println("Time Elapsed =" + ((finish - start) / 1000.0) + "seconds");

@@ -26,7 +26,8 @@ public class Indexer {
     private Map<String, Pair<Integer, Integer>> documents;// doc ID -> <max_tf,Number of unique words>
     private Integer currentDoc;//current doc number
     private String currentDocID;// current doc ID
-    private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
+    private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>\\
+    private Map<String, Double> termToIDF;// Term -> IDF
     private Map<Term, LinkedList<Pair<String, Integer>>> postingFiles; //map of posting files for each term
     private Map<String, String> phrasesDocs;// DS to hold Phrases that we only saw in one Document from phrase to DocID @todo changed
     private Map<String, LinkedList<String>> docsPhrase; // DS to hold map from doc to list of its phrases @todo changed
@@ -57,6 +58,7 @@ public class Indexer {
         phrasesDocs = new HashMap<>();
         docsPhrase = new HashMap<>();
         docToNumOfTerms = new HashMap<>();
+        termToIDF = new HashMap<>();
         this.toStem = toStem;
     }
 
@@ -262,6 +264,7 @@ public class Indexer {
             int amount = dictionary.get(entry.getKey()).getKey();
             dictionary.remove(entry.getKey());
             dictionary.put(entry.getKey(), new Pair<>(amount, counter));
+            termToIDF.put(entry.getKey(), Math.log((NUM_OF_DOCS - entry.getValue().size() + 0.5) / (entry.getValue().size() + 0.5)));
             counter++;
         }
     }
@@ -360,6 +363,13 @@ public class Indexer {
                 writer.write('\n');
             }
             writer.flush();
+            writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\termToIDF.txt"));
+            for (Map.Entry<String, Double> entry : termToIDF.entrySet()) {
+                writer.write(entry.getKey());
+                writer.write("->");
+                writer.write(entry.getValue().toString());
+                writer.write('\n');
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
