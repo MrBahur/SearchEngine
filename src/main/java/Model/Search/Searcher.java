@@ -29,7 +29,11 @@ public class Searcher {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
-            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery())));
+            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+
+                    q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
+                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
+                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
+                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getDesc())));
         }
         return results;
     }

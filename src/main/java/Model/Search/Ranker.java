@@ -1,5 +1,7 @@
 package Model.Search;
 
+import Model.File.Name;
+import Model.File.Phrase;
 import Model.File.Term;
 import javafx.util.Pair;
 
@@ -58,13 +60,19 @@ public class Ranker {
     }
 
     public double getRank(String docID, int numOfATimesInDoc, Term term) {
+        int isPhrase = 0;
+        if (term instanceof Phrase || term instanceof Name) {
+            isPhrase = 1;
+        }
         int maxTf = 1;
         double k = 0.01;
         double b = 0.1;
-        double avgDocLength = 214;
+        double avgDocLength = 250;
         double numOfTerms = getNumOfTerms(docID);
         double idf = termToIDF.get(term.toString());
-        double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgDocLength))));
+        double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k *
+                (1 - b + b * (numOfTerms / avgDocLength))));
+        BM25 = 0.85 * BM25 + 0.15 * isPhrase;
         return idf * BM25;
     }
 }

@@ -213,6 +213,7 @@ public class Controller {
                 Main.model.getParser().parse();
                 Main.model.setDictionary(Main.model.getParser().getDictionary());
                 Main.model.setDocuments(Main.model.getParser().getDocuments());
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), corpusDir.getText(), Main.model.getDictionary()));
                 loaded = true;
             } else {
                 clickedCorpusBrowse = false;
