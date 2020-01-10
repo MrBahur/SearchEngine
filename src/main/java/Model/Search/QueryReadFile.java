@@ -72,7 +72,7 @@ public class QueryReadFile implements Iterable<MyQuery> {
     /**
      * iterator getter for java interface
      *
-     * @return Iterator of docs
+     * @return Iterator of queries
      */
     @Override
     public Iterator<MyQuery> iterator() {
@@ -100,7 +100,7 @@ public class QueryReadFile implements Iterable<MyQuery> {
 
 
     /**
-     * main test for MyFile
+     * main test for this class
      *
      * @param args none
      */

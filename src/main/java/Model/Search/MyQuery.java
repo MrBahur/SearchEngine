@@ -35,15 +35,28 @@ public class MyQuery {
         }
     }
 
+    /**
+     * debug function that helps us
+     */
     public void printQuery() {
         System.out.println("Number: " + this.queryNum);
         System.out.println(query);
     }
 
+    /**
+     * getter for query number
+     *
+     * @return queryNumber
+     */
     public int getQueryNum() {
         return queryNum;
     }
 
+    /**
+     * getter for query
+     *
+     * @return query
+     */
     public String getQuery() {
         return query;
     }

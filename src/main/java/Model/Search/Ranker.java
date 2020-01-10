@@ -49,62 +49,12 @@ public class Ranker {
 
     }
 
-    public double getRank(Map<Term, Integer> query, String docID) {
-        double rank = 0.0;
-        int maxTf = getMaxTF(docID);
-        double k = 1.2;
-        double b = 0.75;
-        double avgDocLength = 214;
-        double numOfTerms = getNumOfTerms(docID);
-        for (Map.Entry<Term, Integer> entry : query.entrySet()) {
-            int numOfATimesInDoc = getNumOfTimesInDoc(entry.getKey().toString(), docID);
-            double idf = termToIDF.get(entry.getKey().toString());
-            double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k * (1 - b + b * (numOfTerms / avgDocLength))));
-            rank += (idf * BM25);
-        }
-        return rank;
-    }
-
-    private int getNumOfTimesInDoc(String term, String docID) {
-        int numOfTerms = 0;
-        try {
-            String postingFileName = getPostingFileName(term);
-            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
-            String line;
-            do {
-                line = reader.readLine();
-                if (line == null) {
-                    return 0;
-                }
-            } while (!line.startsWith(term + "->"));
-            line = line.substring(line.indexOf("->") + 2);
-            for (String s : line.split(";")) {
-                if (s.startsWith(docID)) {
-                    return Integer.parseInt(s.split("=")[1]);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return numOfTerms;
-    }
-
     private double getNumOfTerms(String docID) {
         return docToNumOfTerms.get(docID);
     }
 
     private int getMaxTF(String docID) {
         return documents.get(docID).getKey();
-    }
-
-
-    private String getPostingFileName(String term) {
-        char c = term.charAt(0);
-        if (c >= 'a' && c <= 'z') {
-            return "" + c + ".txt";
-        } else if (c >= 'A' && c <= 'Z') {
-            return c + "@.txt";
-        } else return "0.txt";
     }
 
     public double getRank(String docID, int numOfATimesInDoc, Term term) {
