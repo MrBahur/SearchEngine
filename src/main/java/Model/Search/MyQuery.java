@@ -10,7 +10,7 @@ public class MyQuery {
     private String query;
 
     /**
-     * constructor for queries that gets the text from <desc> to<narr>
+     * constructor for queries that gets the text in <title> and from <desc> to<narr>
      *
      * @param plainText
      */
@@ -70,6 +70,11 @@ public class MyQuery {
         return desc;
     }
 
+    /**
+     * getter for query
+     *
+     * @return query
+     */
     public String getQuery() {
         return query;
     }

@@ -17,6 +17,11 @@ public class Ranker {
     private Map<String, Double> termToIDF;// Term -> IDF
     private boolean toStem;
 
+    /**
+     * constructor for ranker that fill the fields
+     *
+     * @param toStem
+     */
     public Ranker(boolean toStem) {
         this.toStem = toStem;
         docToNumOfTerms = new HashMap<>();
@@ -51,14 +56,32 @@ public class Ranker {
 
     }
 
+    /**
+     * getter for number of terms in doc
+     *
+     * @param docID
+     * @return desc
+     */
     private double getNumOfTerms(String docID) {
         return docToNumOfTerms.get(docID);
     }
 
+    /**
+     * getter for max TF in doc
+     *
+     * @param docID
+     * @return maxTF
+     */
     private int getMaxTF(String docID) {
         return documents.get(docID).getKey();
     }
 
+    /**
+     * calculate the rank according to the BM25 formula for each doc separate
+     *
+     * @param docID, numOfATimesInDoc, term
+     * @return rank
+     */
     public double getRank(String docID, int numOfATimesInDoc, Term term) {
         int isPhrase = 0;
         if (term instanceof Phrase || term instanceof Name) {
