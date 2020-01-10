@@ -29,7 +29,7 @@ public class Searcher {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
-            results.add(new Pair<>(q.getQueryNum(), search(q.getDesc())));
+            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery())));
         }
         return results;
     }
@@ -71,7 +71,7 @@ public class Searcher {
         }
         for (Pair<String, Integer> p : lineInPostingFile) {
             double rank = ranker.getRank(p.getKey(), p.getValue(), entry.getKey());
-            //need to see how we add the entry.getValue() to the rank somehow
+            rank *= Math.sqrt(entry.getValue());
             if (!docsRanks.containsKey(p.getKey())) {
                 docsRanks.put(p.getKey(), rank);
             } else {

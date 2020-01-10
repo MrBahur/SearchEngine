@@ -58,9 +58,9 @@ public class Ranker {
     }
 
     public double getRank(String docID, int numOfATimesInDoc, Term term) {
-        int maxTf = getMaxTF(docID);
-        double k = 1.2;
-        double b = 0.75;
+        int maxTf = 1;
+        double k = 0.01;
+        double b = 0.1;
         double avgDocLength = 214;
         double numOfTerms = getNumOfTerms(docID);
         double idf = termToIDF.get(term.toString());

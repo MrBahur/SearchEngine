@@ -325,7 +325,7 @@ public class Controller {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(s + "\\results.txt"));
                 for (Pair<Integer, ArrayList<Pair<String, Double>>> p1 : queriesResults) {
                     for (Pair<String, Double> p2 : p1.getValue()) {
-                        String line = "" + p1.getKey() + ", " + iter + ", " + p2.getKey() + ", " + p2.getValue().intValue() + ", " + sim + ", " + runID + '\n';
+                        String line = "" + p1.getKey() + " " + iter + " " + p2.getKey() + " " + p2.getValue().intValue() + " " + sim + " " + runID + '\n';
                         writer.write(line);
                     }
                 }
