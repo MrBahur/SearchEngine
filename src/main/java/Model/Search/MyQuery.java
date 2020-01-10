@@ -8,6 +8,11 @@ public class MyQuery {
     private int queryNum;
     private String query;
 
+    /**
+     * constructor for queries that gets the text from <desc> to<narr>
+     *
+     * @param plainText
+     */
     public MyQuery(String plainText) {
         BufferedReader bufferedReader = new BufferedReader(new StringReader(plainText));
         String line;
