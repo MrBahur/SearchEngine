@@ -5,26 +5,46 @@ import java.io.IOException;
 import java.io.StringReader;
 
 public class MyQuery {
-    private String queryNum;
+    private int queryNum;
+    private String query;
 
     public MyQuery(String plainText) {
         BufferedReader bufferedReader = new BufferedReader(new StringReader(plainText));
         String line;
+        String queryNumber;
+        boolean inQuery = false;
+        StringBuilder stringBuilder = new StringBuilder();
         try {
             line = bufferedReader.readLine();
             line = bufferedReader.readLine();
-            queryNum = line.substring(line.indexOf("<num> Number: ") + 13);
+            queryNumber = line.substring(line.indexOf("<num> Number: ") + 14).trim();
+            queryNum = Integer.parseInt(queryNumber);
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals("<desc> Description: ")) {
+                    inQuery = true;
+                } else if (line.equals("<narr> Narrative: ")) {
+                    inQuery = false;
+                } else if (inQuery) {
+                   stringBuilder.append(line);
+                   stringBuilder.append('\n');
+                }
+            }
+            query = stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void printQuery() {
-        System.out.println("Number: " + this.queryNum);
+        System.out.println(query);
     }
 
-    public String getQueryNum() {
+    public int getQueryNum() {
         return queryNum;
+    }
+
+    public String getQuery() {
+        return query;
     }
 }
 
