@@ -11,10 +11,10 @@ import java.util.Iterator;
  * iterate over Docs in each file
  */
 
-public class QueryReadFile implements Iterable<String> {
+public class QueryReadFile implements Iterable<MyQuery> {
     private String path;
-    private FileIterator<String> iterator;
-    private ArrayList<String> queries;
+    private FileIterator<MyQuery> iterator;
+    private ArrayList<MyQuery> queries;
     private int currentIndex;
 
     /**
@@ -36,8 +36,8 @@ public class QueryReadFile implements Iterable<String> {
      * debug method
      */
     public void printQuery() {
-        for (String x : this.queries) {
-            System.out.println(x);
+        for (MyQuery x : this.queries) {
+            x.printQuery();
         }
     }
 
@@ -53,10 +53,10 @@ public class QueryReadFile implements Iterable<String> {
             String line;
             boolean inQuery = false;
             while ((line = reader.readLine()) != null) {
-                if (line.equals("<desc> Description: ")) {
+                if (line.equals("<top>")) {
                     inQuery = true;
-                } else if (line.equals("<narr> Narrative: ")) {
-                    this.queries.add(stringBuilder.toString());
+                } else if (line.equals("</top>")) {
+                    this.queries.add(new MyQuery(stringBuilder.toString()));
                     stringBuilder.delete(0, stringBuilder.length());
                     inQuery = false;
                 } else if (inQuery) {
@@ -75,7 +75,7 @@ public class QueryReadFile implements Iterable<String> {
      * @return Iterator of docs
      */
     @Override
-    public Iterator<String> iterator() {
+    public Iterator<MyQuery> iterator() {
         return iterator;
     }
 
@@ -105,7 +105,7 @@ public class QueryReadFile implements Iterable<String> {
      * @param args none
      */
     public static void main(String[] args) {
-        QueryReadFile q = new QueryReadFile("C:\\03 queries.txt");
+        QueryReadFile q = new QueryReadFile("d:\\documents\\users\\matanana\\Downloads\\03 queries.txt");
         q.printQuery();
     }
 }
