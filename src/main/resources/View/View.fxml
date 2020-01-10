@@ -40,7 +40,8 @@
         </HBox>
         <HBox alignment="CENTER" spacing="10">
             <TextField fx:id="queryFile" text="Insert Path For Query File"/>
-            <Button fx:id="browseQueryFile" onAction="#handleBrowseClick" text="Run"/>
+            <Button fx:id="browseQueryFile" onAction="#handleBrowseClick" text="Browse"/>
+            <Button fx:id="runQueryFile" onAction="#handleRunQueryFileButton" text="Run"/>
         </HBox>
         <HBox alignment="CENTER" spacing="10">
             <TextField fx:id="docID" text="Insert Doc ID"/>

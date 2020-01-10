@@ -13,13 +13,14 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import javax.jws.WebParam;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Controller {
     @FXML
@@ -54,10 +55,13 @@ public class Controller {
     public Button searchDocID;
     @FXML
     public CheckBox toSemantic;
+    @FXML
+    public Button runQueryFile;
 
 
     private boolean clickedCorpusBrowse = false;
     private boolean clickedDicBrowse = false;
+    private boolean clickedQueryBrowse = false;
     private boolean loaded = false;
 
     @FXML
@@ -72,6 +76,7 @@ public class Controller {
             clickedDicBrowse = true;
             dicDir.setText(s);
         } else if (actionEvent.getSource().equals(browseQueryFile)) {
+            clickedQueryBrowse = true;
             queryFile.setText(s);
         }
     }
@@ -111,11 +116,11 @@ public class Controller {
         if (loaded) {
             TableView tableView = new TableView();
 
-            TableColumn<String, MyTableEntry> column1 = new TableColumn<>("Term");
+            TableColumn<String, DictionaryTableEntry> column1 = new TableColumn<>("Term");
             column1.setCellValueFactory(new PropertyValueFactory<>("term"));
-            TableColumn<String, MyTableEntry> column2 = new TableColumn<>("Amount");
+            TableColumn<String, DictionaryTableEntry> column2 = new TableColumn<>("Amount");
             column2.setCellValueFactory(new PropertyValueFactory<>("amount"));
-            //TableColumn<String, MyTableEntry> column3 = new TableColumn<>("Pointer");
+            //TableColumn<String, DictionaryTableEntry> column3 = new TableColumn<>("Pointer");
             //column3.setCellValueFactory(new PropertyValueFactory<>("pointer"));
 
 
@@ -125,7 +130,7 @@ public class Controller {
 
 
             for (Map.Entry<String, Pair<Integer, Integer>> entry : Main.model.getDictionary().entrySet()) {
-                tableView.getItems().add(new MyTableEntry(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue()));
+                tableView.getItems().add(new DictionaryTableEntry(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue()));
             }
             tableView.getSortOrder().add(column1);
             VBox vBox = new VBox(tableView);
@@ -147,6 +152,32 @@ public class Controller {
         }
     }
 
+    public void showQuery(ArrayList<Pair<String, Double>> queryResult) {
+        TableView tableView = new TableView();
+
+        TableColumn<String, SingleQueryTableEntry> column1 = new TableColumn<>("DocID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("docID"));
+        TableColumn<String, SingleQueryTableEntry> column2 = new TableColumn<>("Rank");
+        column2.setCellValueFactory(new PropertyValueFactory<>("rank"));
+
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+
+        for (Pair<String, Double> p : queryResult) {
+            tableView.getItems().add(new SingleQueryTableEntry(p.getKey(), p.getValue()));
+        }
+
+        VBox vBox = new VBox(tableView);
+
+        Scene scene = new Scene(vBox);
+
+        Stage secondaryStage = new Stage();
+
+        secondaryStage.setScene(scene);
+        secondaryStage.setAlwaysOnTop(true);
+        secondaryStage.show();
+    }
+
     public void reset(ActionEvent actionEvent) {
         Main.model = new Model();
         System.gc();
@@ -154,6 +185,7 @@ public class Controller {
         loaded = false;
         clickedCorpusBrowse = false;
         clickedDicBrowse = false;
+        clickedQueryBrowse = false;
         deleteFilesInDir("PostingFile");
         deleteFilesInDir("PostingFiles");
         deleteFilesInDir("SPostingFile");
@@ -206,9 +238,7 @@ public class Controller {
 
     public void handleRunQueryClick(ActionEvent actionEvent) {
         if (loaded) {
-            for (Pair<String, Double> p : Main.model.getSearcher().search(query.getText())) {
-                System.out.println("Doc = " + p.getKey() + " Rank = " + p.getValue());
-            }
+            showQuery(Main.model.getSearcher().search(query.getText()));
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("no dictionary loaded");
@@ -222,7 +252,28 @@ public class Controller {
     public void handleSearchDocIDClick(ActionEvent actionEvent) {
     }
 
-    public class MyTableEntry {
+    public void handleRunQueryFileButton(ActionEvent actionEvent) {
+        if (loaded) {
+            if (clickedQueryBrowse) {
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("no query file loaded");
+                alert.setHeaderText("Please click Browse to load query file");
+                alert.showAndWait();
+            }
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("no dictionary loaded");
+            alert.setHeaderText("Please click Load to load dictionary from Posting files\n" +
+                    "or run to run the Parser on the corpus\n" +
+                    "no need to load the dictionary if you run it on the corpus");
+            alert.showAndWait();
+        }
+    }
+
+    public class DictionaryTableEntry {
         private String term;
         private Integer amount;
         //private Integer pointer;
@@ -231,11 +282,11 @@ public class Controller {
 //            return pointer;
 //        }
 
-        public MyTableEntry() {
+        public DictionaryTableEntry() {
 
         }
 
-        public MyTableEntry(String term, Integer amount, Integer pointer) {
+        public DictionaryTableEntry(String term, Integer amount, Integer pointer) {
             this.term = term;
             this.amount = amount;
             //this.pointer = pointer;
@@ -259,6 +310,32 @@ public class Controller {
 
         public void setAmount(Integer amount) {
             this.amount = amount;
+        }
+    }
+
+    public class SingleQueryTableEntry {
+        private String docID;
+        private Double rank;
+
+        public SingleQueryTableEntry(String docID, Double rank) {
+            this.docID = docID;
+            this.rank = rank;
+        }
+
+        public String getDocID() {
+            return docID;
+        }
+
+        public void setDocID(String docID) {
+            this.docID = docID;
+        }
+
+        public double getRank() {
+            return rank;
+        }
+
+        public void setRank(double rank) {
+            this.rank = rank;
         }
     }
 }
