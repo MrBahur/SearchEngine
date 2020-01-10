@@ -13,14 +13,11 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Optional;
 
 public class Controller {
     @FXML
@@ -255,7 +252,15 @@ public class Controller {
     public void handleRunQueryFileButton(ActionEvent actionEvent) {
         if (loaded) {
             if (clickedQueryBrowse) {
-
+                File f = new File(queryFile.getText() + "\\03 queries.txt");
+                if (f.exists()) {
+                    showMultiQuery(Main.model.getSearcher().search(f));
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("no query file loaded, please insert query file in the name '03 queries.txt'");
+                    alert.setHeaderText("Please click Browse to load query file");
+                    alert.showAndWait();
+                }
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("no query file loaded");
@@ -270,6 +275,66 @@ public class Controller {
                     "or run to run the Parser on the corpus\n" +
                     "no need to load the dictionary if you run it on the corpus");
             alert.showAndWait();
+        }
+    }
+
+    private void showMultiQuery(ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> queriesResults) {
+        TableView tableView = new TableView();
+
+        TableColumn<String, MultiQueryTableEntry> column1 = new TableColumn<>("Query Number");
+        column1.setCellValueFactory(new PropertyValueFactory<>("queryID"));
+        TableColumn<String, MultiQueryTableEntry> column2 = new TableColumn<>("DocID");
+        column2.setCellValueFactory(new PropertyValueFactory<>("docID"));
+        TableColumn<String, MultiQueryTableEntry> column3 = new TableColumn<>("Rank");
+        column3.setCellValueFactory(new PropertyValueFactory<>("rank"));
+
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+        tableView.getColumns().add(column3);
+
+
+        for (Pair<Integer, ArrayList<Pair<String, Double>>> p1 : queriesResults) {
+            for (Pair<String, Double> p2 : p1.getValue()) {
+                tableView.getItems().add(new MultiQueryTableEntry(p1.getKey(), p2.getKey(), p2.getValue()));
+            }
+        }
+
+        VBox vBox = new VBox(tableView);
+
+        Scene scene = new Scene(vBox);
+
+        Stage secondaryStage = new Stage();
+
+        secondaryStage.setScene(scene);
+        secondaryStage.setAlwaysOnTop(true);
+        secondaryStage.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Save Query File");
+        alert.setHeaderText("Saving File Dialog");
+        alert.setContentText("do you want to save the results to a file?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            int iter = 1;
+            double sim = 0.0;
+            String runID = "ab";
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File selectedDirectory = directoryChooser.showDialog(Main.primaryStage);
+            String s = selectedDirectory.getPath();
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(s + "\\results.txt"));
+                for (Pair<Integer, ArrayList<Pair<String, Double>>> p1 : queriesResults) {
+                    for (Pair<String, Double> p2 : p1.getValue()) {
+                        String line = "" + p1.getKey() + ", " + iter + ", " + p2.getKey() + ", " + p2.getValue().intValue() + ", " + sim + ", " + runID + '\n';
+                        writer.write(line);
+                    }
+                }
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("pressed cancel");
         }
     }
 
@@ -310,6 +375,42 @@ public class Controller {
 
         public void setAmount(Integer amount) {
             this.amount = amount;
+        }
+    }
+
+    public class MultiQueryTableEntry {
+        private Integer queryID;
+        private String docID;
+        private Double rank;
+
+        public MultiQueryTableEntry(Integer queryID, String docID, Double rank) {
+            this.queryID = queryID;
+            this.docID = docID;
+            this.rank = rank;
+        }
+
+        public Integer getQueryID() {
+            return queryID;
+        }
+
+        public void setQueryID(Integer queryID) {
+            this.queryID = queryID;
+        }
+
+        public String getDocID() {
+            return docID;
+        }
+
+        public void setDocID(String docID) {
+            this.docID = docID;
+        }
+
+        public Double getRank() {
+            return rank;
+        }
+
+        public void setRank(Double rank) {
+            this.rank = rank;
         }
     }
 
