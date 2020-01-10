@@ -23,12 +23,8 @@ public class MyQuery {
         System.out.println("Number: " + this.queryNum);
     }
 
-
-
-
-
-
-
-
+    public String getQueryNum() {
+        return queryNum;
+    }
 }
 
