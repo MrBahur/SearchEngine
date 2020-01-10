@@ -36,6 +36,7 @@ public class MyQuery {
     }
 
     public void printQuery() {
+        System.out.println("Number: " + this.queryNum);
         System.out.println(query);
     }
 
