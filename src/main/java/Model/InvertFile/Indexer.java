@@ -264,7 +264,7 @@ public class Indexer {
             int amount = dictionary.get(entry.getKey()).getKey();
             dictionary.remove(entry.getKey());
             dictionary.put(entry.getKey(), new Pair<>(amount, counter));
-            termToIDF.put(entry.getKey(), Math.log((NUM_OF_DOCS - entry.getValue().size() + 0.5) / (entry.getValue().size() + 0.5)));
+            termToIDF.put(entry.getKey(), 1 + Math.log((NUM_OF_DOCS - entry.getValue().size() + 0.5) / (entry.getValue().size() + 0.5)));
             counter++;
         }
     }
