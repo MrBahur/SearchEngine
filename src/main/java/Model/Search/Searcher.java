@@ -27,7 +27,7 @@ public class Searcher {
     }
 
     public ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> search(File queryFile) {
-        ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList();
+        ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
             results.add(new Pair<Integer, ArrayList<Pair<String, Double>>>(q.getQueryNum(), search(q.getQuery())));
