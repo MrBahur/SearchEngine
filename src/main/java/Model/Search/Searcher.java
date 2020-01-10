@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.util.Pair;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -25,6 +26,14 @@ public class Searcher {
         this.ranker = new Ranker(toStem);
     }
 
+    public ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> search(File queryFile) {
+        ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList();
+        QueryReadFile queries = new QueryReadFile(queryFile.getPath());
+        for (MyQuery q : queries) {
+            results.add(new Pair<Integer, ArrayList<Pair<String, Double>>>(q.getQueryNum(), search(q.getQuery())));
+        }
+        return results;
+    }
 
     public ArrayList<Pair<String, Double>> search(String s) {
         Map<String, Double> docsToRankMap = new HashMap<>();
