@@ -4,10 +4,7 @@ package Model.Search;
 import Model.File.Term;
 import javafx.util.Pair;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Searcher {
@@ -16,6 +13,7 @@ public class Searcher {
     private QueryParser queryParser;
     private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
     private Ranker ranker;
+    private Map<String, LinkedList<String>> docsToPhrases;
 
 
     public Searcher(boolean toStem, String path, Map<String, Pair<Integer, Integer>> dictionary) {
@@ -23,17 +21,42 @@ public class Searcher {
         this.dictionary = dictionary;
         this.queryParser = new QueryParser(toStem, path, dictionary);
         this.ranker = new Ranker(toStem);
+        this.docsToPhrases = new HashMap<>();
+        getDocsToPhraseFromDisk(path);
+    }
+
+    public LinkedList<String> searchForPhrases(String docID) {
+        return docsToPhrases.getOrDefault(docID, null);
+    }
+
+    private void getDocsToPhraseFromDisk(String path) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\DocsToPhrases.txt"));
+            String line = reader.readLine();
+            while (line != null) {
+                String[] splitted = line.split("->");
+                docsToPhrases.put(splitted[0], new LinkedList<>());
+                if (splitted.length > 1) {
+                    for (String s : splitted[1].split(";")) {
+                        docsToPhrases.get(splitted[0]).add(s);
+                    }
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> search(File queryFile) {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
-            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+
-                    q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
-                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
-                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()
-                    +q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getQuery()+q.getDesc())));
+            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() +
+                    q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
+                    + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
+                    + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
+                    + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getDesc())));
         }
         return results;
     }

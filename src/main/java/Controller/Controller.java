@@ -14,10 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Controller {
     @FXML
@@ -248,6 +245,18 @@ public class Controller {
     }
 
     public void handleSearchDocIDClick(ActionEvent actionEvent) {
+        if (loaded) {
+            LinkedList<String> result = Main.model.getSearcher().searchForPhrases(docID.getText().toUpperCase());
+            if (result == null) {
+                System.out.println("no doc id in the name " + docID.getText() + "exist");
+            } else {
+                for (String s : result) {
+                    System.out.println(s);
+                }
+            }
+        } else {
+            System.out.println("raise exception");
+        }
     }
 
     public void handleRunQueryFileButton(ActionEvent actionEvent) {

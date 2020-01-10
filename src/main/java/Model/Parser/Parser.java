@@ -74,9 +74,9 @@ public class Parser {
                 parse(doc);
                 tempNumOfDocs += 1;
             }
-          /*  if (tempNumOfDocs >= 10000) {//here for debugging
-                break;
-            }*/
+//            if (tempNumOfDocs >= 10000) {//here for debugging
+//                break;
+//            }
         }
         this.indexer.markEnd();
     }
