@@ -2,7 +2,6 @@ package Model.Search;
 
 
 import Model.File.Term;
-import javafx.scene.control.Alert;
 import javafx.util.Pair;
 
 import java.io.BufferedReader;
@@ -30,7 +29,7 @@ public class Searcher {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
-            results.add(new Pair<>(q.getQueryNum(), search(q.getQuery())));
+            results.add(new Pair<>(q.getQueryNum(), search(q.getDesc())));
         }
         return results;
     }

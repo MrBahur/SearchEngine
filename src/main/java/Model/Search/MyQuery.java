@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 public class MyQuery {
     private int queryNum;
+    private String desc;
     private String query;
 
     /**
@@ -17,7 +18,7 @@ public class MyQuery {
         BufferedReader bufferedReader = new BufferedReader(new StringReader(plainText));
         String line;
         String queryNumber;
-        boolean inQuery = false;
+        boolean inDesc = false;
         StringBuilder stringBuilder = new StringBuilder();
         try {
             line = bufferedReader.readLine();
@@ -25,16 +26,18 @@ public class MyQuery {
             queryNumber = line.substring(line.indexOf("<num> Number: ") + 14).trim();
             queryNum = Integer.parseInt(queryNumber);
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.equals("<desc> Description: ")) {
-                    inQuery = true;
+                if (line.startsWith("<title>")) {
+                   query = line.substring(8);
+                }else if (line.equals("<desc> Description: ")) {
+                    inDesc = true;
                 } else if (line.equals("<narr> Narrative: ")) {
-                    inQuery = false;
-                } else if (inQuery) {
+                    inDesc = false;
+                } else if (inDesc) {
                    stringBuilder.append(line);
                    stringBuilder.append('\n');
                 }
             }
-            query = stringBuilder.toString();
+            desc = stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,10 +49,11 @@ public class MyQuery {
     public void printQuery() {
         System.out.println("Number: " + this.queryNum);
         System.out.println(query);
+        System.out.println(desc);
     }
 
     /**
-     * getter for query number
+     * getter for desc number
      *
      * @return queryNumber
      */
@@ -58,10 +62,14 @@ public class MyQuery {
     }
 
     /**
-     * getter for query
+     * getter for desc
      *
-     * @return query
+     * @return desc
      */
+    public String getDesc() {
+        return desc;
+    }
+
     public String getQuery() {
         return query;
     }
