@@ -22,14 +22,14 @@ public class Searcher {
         this.queryParser = new QueryParser(toStem, path, dictionary);
         this.ranker = new Ranker(toStem);
         this.docsToPhrases = new HashMap<>();
-        getDocsToPhraseFromDisk(path);
+        getDocsToPhraseFromDisk();
     }
 
     public LinkedList<Pair<String, Integer>> searchForPhrases(String docID) {
         return docsToPhrases.getOrDefault(docID, null);
     }
 
-    private void getDocsToPhraseFromDisk(String path) {
+    private void getDocsToPhraseFromDisk() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\DocsToPhrases.txt"));
             String line = reader.readLine();
