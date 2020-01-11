@@ -21,21 +21,22 @@ public class Ranker {
      * constructor for ranker that fill the fields
      *
      * @param toStem
+     * @param path
      */
-    public Ranker(boolean toStem) {
+    public Ranker(boolean toStem, String path) {
         this.toStem = toStem;
         docToNumOfTerms = new HashMap<>();
         documents = new HashMap<>();
         termToIDF = new HashMap<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + "docsToNumOfTerms.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(path + "\\" + "docsToNumOfTerms.txt"));
             String line = reader.readLine();
             do {
                 String[] tmp = line.split("->");
                 docToNumOfTerms.put(tmp[0], Integer.parseInt(tmp[1]));
                 line = reader.readLine();
             } while (line != null);
-            reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + "DocumentsInfo.txt"));
+            reader = new BufferedReader(new FileReader(path + "\\" + "DocumentsInfo.txt"));
             line = reader.readLine();
             do {
                 String[] tmp1 = line.split("->");
@@ -43,7 +44,7 @@ public class Ranker {
                 documents.put(tmp1[0], new Pair<>(Integer.parseInt(tmp2[0]), Integer.parseInt(tmp2[1])));
                 line = reader.readLine();
             } while (line != null);
-            reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + "termToIDF.txt"));
+            reader = new BufferedReader(new FileReader(path + "\\" + "termToIDF.txt"));
             line = reader.readLine();
             do {
                 String[] tmp = line.split("->");

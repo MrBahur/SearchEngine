@@ -86,7 +86,7 @@ public class Controller {
                             new Pair<>(Integer.parseInt(line.substring(line.indexOf("->") + 2, line.indexOf("="))),
                                     Integer.parseInt(line.substring(line.indexOf("=") + 1))));
                 }
-                Main.model.setSearcher(new Searcher(toStem.isSelected(), corpusDir.getText(), Main.model.getDictionary()));
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), dicDir.getText(), Main.model.getDictionary()));
                 loaded = true;
             } catch (IOException e) {
                 clickedCorpusBrowse = false;
@@ -108,7 +108,7 @@ public class Controller {
                             new Pair<>(Integer.parseInt(line.substring(line.indexOf("->") + 2, line.indexOf("="))),
                                     Integer.parseInt(line.substring(line.indexOf("=") + 1))));
                 }
-                Main.model.setSearcher(new Searcher(toStem.isSelected(), "PostingFile", Main.model.getDictionary()));
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), dicDir.getText(), Main.model.getDictionary()));
                 loaded = true;
             } catch (IOException e) {
                 clickedCorpusBrowse = false;

@@ -14,7 +14,7 @@ public class SemanticSearcher {
 
     public SemanticSearcher() {
         try {
-            File f = new File(ClassLoader.class.getResource("/word2vec.c.output.model.txt").getPath());
+            File f = new File("word2vec.c.output.model.txt");
             Word2VecModel model = Word2VecModel.fromTextFile(f);
             semanticSearcher = model.forSearch();
         } catch (IOException e) {

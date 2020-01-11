@@ -21,18 +21,18 @@ public class Searcher {
         this.toStem = toStem;
         this.dictionary = dictionary;
         this.queryParser = new QueryParser(toStem, path, dictionary);
-        this.ranker = new Ranker(toStem);
+        this.ranker = new Ranker(toStem, path);
         this.docsToPhrases = new HashMap<>();
-        getDocsToPhraseFromDisk();
+        getDocsToPhraseFromDisk(path);
     }
 
     public LinkedList<Pair<String, Integer>> searchForPhrases(String docID) {
         return docsToPhrases.getOrDefault(docID, null);
     }
 
-    private void getDocsToPhraseFromDisk() {
+    private void getDocsToPhraseFromDisk(String path) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\DocsToPhrases.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(path + "\\DocsToPhrases.txt"));
             String line = reader.readLine();
             while (line != null) {
                 String[] splitted = line.split("->");
@@ -53,6 +53,9 @@ public class Searcher {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
+            System.out.println(q.getQueryNum());
+            System.out.println("_____________________");
+            long start = System.currentTimeMillis();
             String toAdd = "";
             if (semantic) {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -73,6 +76,8 @@ public class Searcher {
                     + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
                     + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getDesc()
                     + toAdd)));
+            long finish = System.currentTimeMillis();
+            System.out.println("time in S: " + ((finish - start) / 1000.0));
         }
         return results;
     }

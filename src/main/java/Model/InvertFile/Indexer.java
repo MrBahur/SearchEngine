@@ -386,8 +386,10 @@ public class Indexer {
             writer.flush();
             writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\05 stop_words.txt"));
             for (String s : Parser.stopWords) {
-                writer.write(s);
-                writer.write('\n');
+                if (s != null) {
+                    writer.write(s);
+                    writer.write('\n');
+                }
             }
             writer.flush();
 
