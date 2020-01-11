@@ -13,7 +13,7 @@ public class Searcher {
     private QueryParser queryParser;
     private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
     private Ranker ranker;
-    private Map<String, LinkedList<String>> docsToPhrases;
+    private Map<String, LinkedList<Pair<String, Integer>>> docsToPhrases;
 
 
     public Searcher(boolean toStem, String path, Map<String, Pair<Integer, Integer>> dictionary) {
@@ -25,7 +25,7 @@ public class Searcher {
         getDocsToPhraseFromDisk(path);
     }
 
-    public LinkedList<String> searchForPhrases(String docID) {
+    public LinkedList<Pair<String, Integer>> searchForPhrases(String docID) {
         return docsToPhrases.getOrDefault(docID, null);
     }
 
@@ -38,7 +38,7 @@ public class Searcher {
                 docsToPhrases.put(splitted[0], new LinkedList<>());
                 if (splitted.length > 1) {
                     for (String s : splitted[1].split(";")) {
-                        docsToPhrases.get(splitted[0]).add(s);
+                        docsToPhrases.get(splitted[0]).add(new Pair<>(s.split("=")[0], Integer.parseInt(s.split("=")[1])));
                     }
                 }
                 line = reader.readLine();

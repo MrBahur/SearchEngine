@@ -29,7 +29,7 @@ public class Parser {
     private static long numberOfParsePhrases = 0; //indicator for how much are we parsing
     private static long numberOfNotParsePhrases = 0; //indicator for how much are we not parsing
     private int tempNumOfDocs = 0;
-    private static Set<String> stopWords = new HashSet<>(); //set of the stop words
+    public static Set<String> stopWords = new HashSet<>(); //set of the stop words
 
     /**
      * Constructor for Parser that gets String and boolean

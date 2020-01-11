@@ -7,6 +7,7 @@ import Model.File.Word;
 
 
 import Model.File.Number;
+import Model.Parser.Parser;
 import javafx.util.Pair;
 
 import java.io.*;
@@ -359,6 +360,8 @@ public class Indexer {
                 }
                 for (String s : tmp) {
                     writer.write(s);
+                    writer.write("=");
+                    writer.write(dictionary.get(s).getKey().toString());
                     writer.write(";");
                 }
                 writer.write('\n');
@@ -381,6 +384,13 @@ public class Indexer {
                 writer.write('\n');
             }
             writer.flush();
+            writer = new BufferedWriter(new FileWriter(((toStem) ? "S" : "") + "PostingFile\\05 stop_words.txt"));
+            for (String s : Parser.stopWords) {
+                writer.write(s);
+                writer.write('\n');
+            }
+            writer.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

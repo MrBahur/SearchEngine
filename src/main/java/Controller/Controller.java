@@ -98,6 +98,28 @@ public class Controller {
                         "thanks!");
                 alert.showAndWait();
             }
+        } else if (clickedDicBrowse) {
+            try {
+                BufferedReader f = new BufferedReader(new FileReader(dicDir.getText() + "\\Dictionary.txt"));
+                Main.model.setDictionary(new HashMap<>());
+                String line;
+                while ((line = f.readLine()) != null) {
+                    Main.model.getDictionary().put(line.substring(0, line.indexOf("->")),
+                            new Pair<>(Integer.parseInt(line.substring(line.indexOf("->") + 2, line.indexOf("="))),
+                                    Integer.parseInt(line.substring(line.indexOf("=") + 1))));
+                }
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), "PostingFile", Main.model.getDictionary()));
+                loaded = true;
+            } catch (IOException e) {
+                clickedCorpusBrowse = false;
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Wrong Path Message");
+                alert.setHeaderText("You entered Wrong path");
+                alert.setContentText("Please click the browse button and insert path that contains\n" +
+                        "the Posting Files and corpus for this project" +
+                        "thanks!");
+                alert.showAndWait();
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("didn't entered path");
@@ -246,16 +268,30 @@ public class Controller {
 
     public void handleSearchDocIDClick(ActionEvent actionEvent) {
         if (loaded) {
-            LinkedList<String> result = Main.model.getSearcher().searchForPhrases(docID.getText().toUpperCase());
+            LinkedList<Pair<String, Integer>> result = Main.model.getSearcher().searchForPhrases(docID.getText().toUpperCase());
             if (result == null) {
-                System.out.println("no doc id in the name " + docID.getText() + "exist");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("No Doc Found");
+                alert.setHeaderText("no doc id in the name " + docID.getText() + "exist");
+                alert.showAndWait();
             } else {
-                for (String s : result) {
-                    System.out.println(s);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Pair<String, Integer> p : result) {
+                    stringBuilder.append("Entity: ").append(p.getKey()).append(" Score: ").append(p.getValue()).append("\n");
                 }
+                String toPrint = stringBuilder.toString();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Top Entities in Doc " + docID.getText());
+                alert.setHeaderText(toPrint);
+                alert.showAndWait();
             }
         } else {
-            System.out.println("raise exception");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("no dictionary loaded");
+            alert.setHeaderText("Please click Load to load dictionary from Posting files\n" +
+                    "or run to run the Parser on the corpus\n" +
+                    "no need to load the dictionary if you run it on the corpus");
+            alert.showAndWait();
         }
     }
 
