@@ -168,7 +168,7 @@ public class Controller {
         }
     }
 
-    public void showQuery(ArrayList<Pair<String, Double>> queryResult) {
+    private void showQuery(ArrayList<Pair<String, Double>> queryResult) {
         TableView tableView = new TableView();
 
         TableColumn<String, SingleQueryTableEntry> column1 = new TableColumn<>("DocID");
@@ -255,7 +255,23 @@ public class Controller {
 
     public void handleRunQueryClick(ActionEvent actionEvent) {
         if (loaded) {
-            showQuery(Main.model.getSearcher().search(query.getText()));
+            String toSearch = query.getText();
+            if (toSemantic.isSelected()) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(toSearch).append(" ").append(toSearch).append(" ").append(toSearch).append(" ").append(toSearch).append(" ").append(toSearch).append(" ");
+                String[] splitted = toSearch.split(" ");
+                for (String word : splitted) {
+                    try {
+                        for (String s : Searcher.semanticSearcher.getTerms(word, 5)) {
+                            stringBuilder.append(s).append(" ");
+                        }
+                    } catch (com.medallia.word2vec.Searcher.UnknownWordException e) {
+                        e.printStackTrace();
+                    }
+                }
+                toSearch = stringBuilder.toString();
+            }
+            showQuery(Main.model.getSearcher().search(toSearch));
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("no dictionary loaded");
@@ -300,7 +316,7 @@ public class Controller {
             if (clickedQueryBrowse) {
                 File f = new File(queryFile.getText() + "\\03 queries.txt");
                 if (f.exists()) {
-                    showMultiQuery(Main.model.getSearcher().search(f));
+                    showMultiQuery(Main.model.getSearcher().search(f,toSemantic.isSelected()));
                 } else {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("no query file loaded, please insert query file in the name '03 queries.txt'");

@@ -14,6 +14,7 @@ public class Searcher {
     private Map<String, Pair<Integer, Integer>> dictionary;//Term -> <amount in corpus Map , pointer to posting file>
     private Ranker ranker;
     private Map<String, LinkedList<Pair<String, Integer>>> docsToPhrases;
+    public static SemanticSearcher semanticSearcher = new SemanticSearcher();
 
 
     public Searcher(boolean toStem, String path, Map<String, Pair<Integer, Integer>> dictionary) {
@@ -48,15 +49,30 @@ public class Searcher {
         }
     }
 
-    public ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> search(File queryFile) {
+    public ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> search(File queryFile, boolean semantic) {
         ArrayList<Pair<Integer, ArrayList<Pair<String, Double>>>> results = new ArrayList<>();
         QueryReadFile queries = new QueryReadFile(queryFile.getPath());
         for (MyQuery q : queries) {
+            String toAdd = "";
+            if (semantic) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String word : q.getQuery().split(" ")) {
+                    try {
+                        for (String s : semanticSearcher.getTerms(word.toLowerCase(), 5)) {
+                            stringBuilder.append(s).append(" ");
+                        }
+                    } catch (com.medallia.word2vec.Searcher.UnknownWordException e) {
+                        System.out.println(word);
+                    }
+                }
+                toAdd = stringBuilder.toString();
+            }
             results.add(new Pair<>(q.getQueryNum(), search(q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() +
                     q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
                     + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
                     + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery()
-                    + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getDesc())));
+                    + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getQuery() + q.getDesc()
+                    + toAdd)));
         }
         return results;
     }

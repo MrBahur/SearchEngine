@@ -95,7 +95,7 @@ public class Ranker {
         double idf = termToIDF.get(term.toString());
         double BM25 = ((numOfATimesInDoc * 1.0 / maxTf * 1.0) * (k + 1) / ((numOfATimesInDoc * 1.0 / maxTf * 1.0) + k *
                 (1 - b + b * (numOfTerms / avgDocLength))));
-        BM25 = 0.85 * BM25 + 0.15 * isPhrase;
-        return idf * BM25;
+        double x = idf * BM25;
+        return 0.85 * x + 0.15 * isPhrase;
     }
 }
