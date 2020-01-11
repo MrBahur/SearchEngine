@@ -232,7 +232,7 @@ public class Controller {
                 Main.model.getParser().parse();
                 Main.model.setDictionary(Main.model.getParser().getDictionary());
                 Main.model.setDocuments(Main.model.getParser().getDocuments());
-                Main.model.setSearcher(new Searcher(toStem.isSelected(), corpusDir.getText(), Main.model.getDictionary()));
+                Main.model.setSearcher(new Searcher(toStem.isSelected(), (((toStem.isSelected()) ? "S" : "") + "PostingFile"), Main.model.getDictionary()));
                 loaded = true;
             } else {
                 clickedCorpusBrowse = false;
@@ -316,7 +316,7 @@ public class Controller {
             if (clickedQueryBrowse) {
                 File f = new File(queryFile.getText() + "\\03 queries.txt");
                 if (f.exists()) {
-                    showMultiQuery(Main.model.getSearcher().search(f,toSemantic.isSelected()));
+                    showMultiQuery(Main.model.getSearcher().search(f, toSemantic.isSelected()));
                 } else {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("no query file loaded, please insert query file in the name '03 queries.txt'");
