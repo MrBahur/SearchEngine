@@ -15,6 +15,7 @@ public class Searcher {
     private Ranker ranker;
     private Map<String, LinkedList<Pair<String, Integer>>> docsToPhrases;
     public static SemanticSearcher semanticSearcher = new SemanticSearcher();
+    private String path;
 
 
     public Searcher(boolean toStem, String path, Map<String, Pair<Integer, Integer>> dictionary) {
@@ -23,6 +24,7 @@ public class Searcher {
         this.queryParser = new QueryParser(toStem, path, dictionary);
         this.ranker = new Ranker(toStem, path);
         this.docsToPhrases = new HashMap<>();
+        this.path = path;
         getDocsToPhraseFromDisk(path);
     }
 
@@ -106,7 +108,7 @@ public class Searcher {
     private void rank(Map.Entry<Term, Integer> entry, Map<String, Double> docsRanks) throws IOException {
         List<Pair<String, Integer>> lineInPostingFile = new LinkedList<>();
         String postingFileName = getPostingFileName(entry.getKey());
-        BufferedReader reader = new BufferedReader(new FileReader(((toStem) ? "S" : "") + "PostingFile" + "\\" + postingFileName));
+        BufferedReader reader = new BufferedReader(new FileReader(path + "\\" + postingFileName));
         int row = dictionary.get(entry.getKey().toString()).getValue();
         String sRow = "";
         for (int i = 0; i <= row; i++) {
